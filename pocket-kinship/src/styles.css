@@ -685,3 +685,83 @@ main {
   }
 }
 
+
+/* 모바일 게임 화면: 스크롤 없이 한 화면에 들어오도록 세로 여백을 줄인다 */
+@media (max-width: 700px) {
+  main {
+    padding: 8px 10px 10px;
+  }
+  .game-header {
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .game-header .back-button,
+  .game-header .top-buttons button {
+    min-height: 36px;
+    padding: 6px 10px;
+  }
+  .game-header .brand.compact {
+    width: 100px;
+  }
+  .play-layout {
+    gap: 8px;
+  }
+  .play-surface {
+    padding: 8px;
+    border-radius: 18px;
+  }
+  .board-toolbar {
+    gap: 6px;
+  }
+  .board-toolbar > span:first-of-type {
+    width: auto;
+    margin: 0;
+    font-size: 12px;
+  }
+  .board-toolbar button {
+    min-height: 32px;
+    padding: 4px 10px;
+  }
+  .play-surface .rule {
+    padding: 6px 0 0;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .board {
+    max-width: 300px;
+  }
+  .board-status {
+    min-height: 20px;
+    font-size: 11px;
+  }
+  .team-panel {
+    padding: 8px 10px 10px;
+    border-radius: 16px;
+  }
+  .team-panel h2 {
+    display: none;
+  }
+  .team-panel .hint {
+    margin: 0 0 6px;
+  }
+  .tray {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .tray button {
+    min-height: 0;
+    padding: 3px 2px 4px;
+    font-size: 10px;
+  }
+  .tray button span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tray img {
+    width: 40px;
+    height: 40px;
+  }
+}

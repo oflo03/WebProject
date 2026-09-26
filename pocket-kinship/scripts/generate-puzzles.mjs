@@ -27,9 +27,9 @@ const DIFFS = {
 };
 // 통과 조건: 정답 종류 수 [최소, 최대]. 가능한 정답 종류의 상한이 보드마다 다르다(오각형 12, 육각형 420, 사각형 45360).
 const BANDS = {
-  pentagon: { easy: [4, Infinity], super: [1, 3], expert: [3, Infinity], master: [1, 3] },
-  hexagon: { easy: [20, Infinity], super: [1, 8], expert: [10, Infinity], master: [1, 8] },
-  square: { easy: [100, Infinity], super: [1, 12], expert: [30, Infinity], master: [1, 12] },
+  pentagon: { easy: [4, Infinity], super: [1, 3], expert: [4, Infinity], master: [1, 3] },
+  hexagon: { easy: [20, Infinity], super: [1, 8], expert: [9, Infinity], master: [1, 8] },
+  square: { easy: [100, Infinity], super: [1, 12], expert: [13, Infinity], master: [1, 12] },
 };
 
 const pokemon = JSON.parse(await fs.readFile(path.join(DATA, 'pokemon.json'), 'utf8'));
