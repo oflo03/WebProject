@@ -145,7 +145,9 @@ export default function App() {
           name={(d) => DIFF_NAMES[d]}
         />
         {scope !== 'all' && <p className="hint">{t('hintGen')}</p>}
-        {difficulty === 'master' && <p className="hint">{t('hintMaster')}</p>}
+        {(difficulty === 'expert' || difficulty === 'master') && (
+          <p className="hint">{t('hintMaster')}</p>
+        )}
         {error && (
           <p className="error" role="alert">
             {t('noPuzzle')}

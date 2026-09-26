@@ -27,7 +27,7 @@ const STR = {
     square: '사각형 (9)',
     hintGen: '세대별 퍼즐에서는 등장 세대가 공통점으로 인정되지 않아요.',
     hintMaster:
-      'Master는 이웃한 노드끼리 서로 다른 카테고리 2개에서 공통점이 필요해요.',
+      'Expert와 Master는 이웃한 노드끼리 서로 다른 카테고리 2개에서 공통점이 필요해요.',
     noPuzzle: '이 조합의 퍼즐이 없어요. 다른 설정을 골라 주세요.',
     start: '시작',
     loading: '불러오는 중...',
@@ -41,17 +41,15 @@ const STR = {
     next: '다음 퍼즐',
     boardLabel: '보드',
     otherLang: 'English',
-    labelsAll: '설명 전체 보기',
     guideButton: '카테고리 설명',
     guideTitle: '카테고리 설명',
     guideIntro:
       '두 포켓몬이 같은 카테고리에서 같은 값을 가지면 공통점이에요. 값이 없는(해당 없음) 경우끼리는 공통점이 아니에요.',
     guideMaster:
-      'Master에서는 서로 다른 카테고리 2개에서 공통점이 있어야 해요.',
+      'Expert와 Master에서는 서로 다른 카테고리 2개에서 공통점이 있어야 해요.',
     guideNoGen: '이 퍼즐은 세대별 퍼즐이라 등장 세대는 쓰이지 않아요.',
     guideAbilities: (n) => `약 ${n}종 (목록은 생략)`,
     guideClose: '닫기',
-    labelsLatest: '최근 것만 보기',
   },
   en: {
     title: 'Pocket Kinship',
@@ -81,7 +79,7 @@ const STR = {
     hintGen:
       'In generation puzzles, the debut generation does not count as something in common.',
     hintMaster:
-      'In Master, neighboring nodes must share something in 2 different categories.',
+      'In Expert and Master, neighboring nodes must share something in 2 different categories.',
     noPuzzle: 'No puzzle for this combination. Try another setting.',
     start: 'Start',
     loading: 'Loading...',
@@ -97,18 +95,16 @@ const STR = {
     next: 'Next puzzle',
     boardLabel: 'Board',
     otherLang: '한국어',
-    labelsAll: 'Show all notes',
     guideButton: 'Category guide',
     guideTitle: 'Category guide',
     guideIntro:
       'Two Pokémon have something in common when they share the same value in the same category. Missing (not applicable) values never count.',
     guideMaster:
-      'In Master, the two Pokémon must share something in 2 different categories.',
+      'In Expert and Master, the two Pokémon must share something in 2 different categories.',
     guideNoGen:
       'This is a generation puzzle, so the debut generation is not used.',
     guideAbilities: (n) => `About ${n} abilities (list omitted)`,
     guideClose: 'Close',
-    labelsLatest: 'Latest only',
   },
 };
 
@@ -178,30 +174,21 @@ const FACT = {
     type: (v, L) => `${L} 타입`,
     evolveVia: (v, L) => `진화 방법: ${L}`,
     evolvedVia: (v, L) => `진화한 방법: ${L}`,
-    evolutionStage: (v) => {
-      const [n, t] = v.split('/');
-      return t === '1' ? '진화 없음' : `${t}단계 중 ${n}번째`;
-    },
     weak4x: (v, L) => `${L}에 4배 약점`,
     resist4x: (v, L) => `${L}에 1/4 반감`,
-    trainer: (v) => `${v} 사용`,
+    trainer: (v, L) => `${L} 사용`,
     generation: (v) => `${v}세대`,
     forms: (v, L) =>
       v === 'regional-has' || v === 'regional-self' ? L : `${L} 있음`,
     signatureMove: () => '전용기 있음',
     signatureZ: () => '전용 Z기술 있음',
     abilities: (v, L) => `특성: ${L}`,
-    position: (v, L) => L,
-    genderRatio: (v, L) => L,
+    classification: (v, L) => L,
   },
   en: {
     type: (v) => `${cap(v)} type`,
     evolveVia: (v) => `Evolves by ${EN_METHOD[v]}`,
     evolvedVia: (v) => `Evolved by ${EN_METHOD[v]}`,
-    evolutionStage: (v) => {
-      const [n, t] = v.split('/');
-      return t === '1' ? 'No evolution' : `Stage ${n} of ${t}`;
-    },
     weak4x: (v) => `4x weak to ${cap(v)}`,
     resist4x: (v) => `Resists ${cap(v)} 1/4x`,
     trainer: (v) => `Used by ${v}`,
@@ -210,8 +197,7 @@ const FACT = {
     signatureMove: () => 'Has a signature move',
     signatureZ: () => 'Has a signature Z-move',
     abilities: (v) => `Ability: ${title(v)}`,
-    position: (v) => EN_POSITION[v],
-    genderRatio: (v) => EN_GENDER[v],
+    classification: (v) => EN_POSITION[v] ?? EN_GENDER[v],
   },
 };
 export const factText = (lang, cat, value, koLabel) =>

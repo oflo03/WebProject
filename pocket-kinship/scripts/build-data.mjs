@@ -74,6 +74,8 @@ function methods(details) {
 }
 
 const overrides = JSON.parse(await fs.readFile(path.join(DATA, 'overrides.json'), 'utf8'));
+// 트레이너 한국어 이름 (scripts/fetch-trainer-names.mjs 로 생성). 없으면 영문 이름을 그대로 쓴다.
+const trainerNames = JSON.parse(await fs.readFile(path.join(DATA, 'trainer-names.json'), 'utf8').catch(() => '{}'));
 
 console.log('species...');
 const list = await get('/pokemon-species?limit=2000');
@@ -83,19 +85,14 @@ console.log('evolution chains...');
 const chainIds = [...new Set(species.map((s) => s.evolution_chain.url.split('/').at(-2)))];
 const evo = {};
 for (const c of await pool(chainIds, 8, (id) => get(`/evolution-chain/${id}`))) {
-  const names = [];
-  let total = 0;
-  const visit = (node, depth) => {
-    total = Math.max(total, depth);
-    names.push(node.species.name);
-    const me = (evo[node.species.name] = { depth, chain: c.id, evolvedVia: methods(node.evolution_details), evolveVia: new Set() });
+  const visit = (node) => {
+    const me = (evo[node.species.name] = { chain: c.id, evolvedVia: methods(node.evolution_details), evolveVia: new Set() });
     for (const child of node.evolves_to) {
-      visit(child, depth + 1);
+      visit(child);
       methods(child.evolution_details).forEach((m) => me.evolveVia.add(m));
     }
   };
-  visit(c.chain, 1);
-  for (const n of names) evo[n].stage = `${evo[n].depth}/${total}`;
+  visit(c.chain);
 }
 
 console.log('type chart...');
@@ -150,7 +147,6 @@ function entry(id, sp, poke, { ko: koName, en: enName, generation, forms }) {
       type: types,
       evolveVia: [...e.evolveVia],
       evolvedVia: e.evolvedVia,
-      evolutionStage: [e.stage],
       weak4x: TYPES.filter((a) => mult(a, types) === 4),
       resist4x: TYPES.filter((a) => mult(a, types) === 0.25),
       trainer: [],
@@ -159,8 +155,7 @@ function entry(id, sp, poke, { ko: koName, en: enName, generation, forms }) {
       signatureMove: [],
       signatureZ: [],
       abilities: poke.abilities.map((a) => a.ability.name),
-      position: positionOf(sp),
-      genderRatio: genderOf(sp),
+      classification: [...positionOf(sp), ...genderOf(sp)], // 포지션 먼저, 그다음 성비
     },
   };
 }
@@ -210,22 +205,19 @@ console.log('labels...');
 const abilitySlugs = [...new Set(entries.flatMap((e) => e.attrs.abilities))].sort();
 const abilities = Object.fromEntries(await pool(abilitySlugs, 8, async (s) => [s, ko((await get(`/ability/${s}`)).names) ?? s]));
 const typeLabels = Object.fromEntries(await pool(TYPES, 4, async (t) => [t, ko((await get(`/type/${t}`)).names) ?? t]));
-const same = (values) => Object.fromEntries([...new Set(values)].sort().map((v) => [v, v]));
 const categories = {
   type: { label: { ko: '타입', en: 'Type' }, values: typeLabels },
   evolveVia: { label: { ko: '진화할 방법', en: 'Evolves by' }, values: METHODS },
   evolvedVia: { label: { ko: '진화한 방법', en: 'Evolved by' }, values: METHODS },
-  evolutionStage: { label: { ko: '진화 방식', en: 'Evolution stage' }, values: same(entries.flatMap((e) => e.attrs.evolutionStage)) },
   weak4x: { label: { ko: '4배 약점 타입', en: '4x weakness' }, values: typeLabels },
   resist4x: { label: { ko: '1/4 반감 타입', en: '1/4x resistance' }, values: typeLabels },
-  trainer: { label: { ko: '사용한 네임드 트레이너', en: 'Named trainer' }, values: same(Object.keys(overrides.trainer)) },
+  trainer: { label: { ko: '사용한 네임드 트레이너', en: 'Named trainer' }, values: Object.fromEntries(Object.keys(overrides.trainer).sort().map((n) => [n, trainerNames[n] ?? n])) },
   generation: { label: { ko: '등장 세대', en: 'Generation' }, values: Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `${n}세대`])) },
   forms: { label: { ko: '보유 폼', en: 'Forms' }, values: FORMS },
   signatureMove: { label: { ko: '전용기', en: 'Signature move' }, values: HAS },
   signatureZ: { label: { ko: '전용 Z기술', en: 'Signature Z-move' }, values: HAS },
   abilities: { label: { ko: '보유 특성', en: 'Abilities' }, values: abilities },
-  position: { label: { ko: '포지션', en: 'Classification' }, values: POSITIONS },
-  genderRatio: { label: { ko: '독특한 성비', en: 'Gender ratio' }, values: GENDERS },
+  classification: { label: { ko: '특수 분류', en: 'Special class' }, values: { ...POSITIONS, ...GENDERS } },
 };
 
 await fs.writeFile(path.join(DATA, 'pokemon.json'), '[\n' + entries.map((e) => JSON.stringify(e)).join(',\n') + '\n]\n');

@@ -84,7 +84,7 @@ h2 {
 main {
   max-width: 1120px;
   margin: auto;
-  padding: 24px 36px 32px;
+  padding: 16px 36px 20px;
   min-height: 100dvh;
 }
 .menu-nav,
@@ -115,26 +115,26 @@ main {
 }
 .menu-hero {
   text-align: center;
-  padding: 22px 0 24px;
+  padding: 6px 0 14px;
 }
 .brand {
   display: block;
-  width: min(350px, 80vw);
+  width: min(270px, 80vw);
   height: auto;
   margin: auto;
 }
 .hero-line {
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.6px;
-  margin-top: 12px;
+  margin-top: 4px;
   text-wrap: balance;
 }
 .sub {
   font-size: 13px;
   line-height: 1.7;
   color: var(--muted);
-  margin: 9px auto 0;
+  margin: 4px auto 0;
   max-width: 520px;
   text-wrap: balance;
 }
@@ -142,7 +142,7 @@ main {
   max-width: 620px;
   margin: auto;
   background: #fffef9ed;
-  padding: 27px 32px 31px;
+  padding: 18px 28px 20px;
   border-radius: 26px;
   border: 1px solid #fff;
   box-shadow:
@@ -154,7 +154,7 @@ main {
   align-items: end;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 25px;
+  margin-bottom: 12px;
 }
 .eyebrow {
   display: block;
@@ -162,7 +162,7 @@ main {
   color: var(--accent);
   font-weight: 700;
   letter-spacing: 0.6px;
-  margin-bottom: 7px;
+  margin-bottom: 3px;
 }
 .setup-note {
   font-size: 11px;
@@ -172,12 +172,12 @@ main {
 .choice {
   border: 0;
   padding: 0;
-  margin: 0 0 22px;
+  margin: 0 0 12px;
   min-width: 0;
 }
 .choice legend {
   padding: 0;
-  margin-bottom: 12px;
+  margin-bottom: 7px;
   font-size: 13px;
   font-weight: 700;
 }
@@ -193,7 +193,11 @@ main {
   gap: 7px;
 }
 .scopes .options {
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(10, 1fr);
+}
+.scopes .options button {
+  min-height: 38px;
+  padding: 6px 0;
 }
 .options button {
   font-size: 12px;
@@ -207,11 +211,11 @@ main {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 76px;
+  min-height: 58px;
 }
 .board-icon {
-  width: 47px;
-  height: 47px;
+  width: 38px;
+  height: 38px;
   overflow: visible;
 }
 .board-icon line {
@@ -234,8 +238,8 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  min-height: 62px;
+  gap: 5px;
+  min-height: 50px;
 }
 .difficulty-dots {
   display: flex;
@@ -258,8 +262,8 @@ main {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  min-height: 52px;
-  margin-top: 22px;
+  min-height: 48px;
+  margin-top: 12px;
   padding: 12px 21px !important;
 }
 .start-button > span:last-child {
@@ -283,7 +287,7 @@ main {
   text-align: center;
   font-size: 11px;
   color: #748a7c;
-  margin-top: 22px;
+  margin-top: 10px;
 }
 .game-header {
   justify-content: space-between;
@@ -469,34 +473,26 @@ main {
   fill: var(--fg);
   font-size: 11px;
 }
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: #193f3c65;
-  backdrop-filter: blur(7px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 25;
-  padding: 20px;
-}
 .result {
   background: var(--card);
-  border-radius: 28px;
-  padding: 32px;
-  max-width: 360px;
-  width: 100%;
+  border: 2px solid var(--ok);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 14px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  box-shadow: 0 20px 80px #193f3c30;
+  gap: 8px;
+}
+.result h3 {
+  margin: 0;
 }
 .result .grade {
-  font-size: 84px;
+  font-size: 64px;
   font-weight: 800;
   color: var(--accent);
-  line-height: 1.2;
+  line-height: 1.1;
+  margin: 0;
 }
 .guide {
   display: inline-block;
@@ -558,7 +554,7 @@ main {
 }
 @media (min-width: 1500px) {
   .menu-hero {
-    padding-top: 40px;
+    padding-top: 20px;
   }
   .setup {
     margin-top: 8px;
@@ -586,10 +582,10 @@ main {
     padding: 8px 10px;
   }
   .menu-hero {
-    padding: 21px 0;
+    padding: 8px 0 14px;
   }
   .brand {
-    width: 280px;
+    width: 230px;
   }
   .hero-line {
     font-size: 18px;
@@ -599,11 +595,11 @@ main {
     max-width: 310px;
   }
   .setup {
-    padding: 23px 20px 26px;
+    padding: 18px 16px 20px;
     border-radius: 23px;
   }
   .setup-heading {
-    margin-bottom: 22px;
+    margin-bottom: 12px;
   }
   .setup-heading h2 {
     font-size: 21px;
@@ -614,14 +610,17 @@ main {
   .boards button {
     flex-direction: column;
     gap: 4px;
-    min-height: 92px;
+    min-height: 78px;
   }
   .board-icon {
     width: 44px;
     height: 44px;
   }
   .choice {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
+  }
+  .scopes .options {
+    grid-template-columns: repeat(5, 1fr);
   }
   .game-header {
     flex-wrap: wrap;

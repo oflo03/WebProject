@@ -22,7 +22,8 @@ export function sharedFacts(a, b, scope, lang) {
   return sharedCats(a, b, scope).flatMap((c) => a.attrs[c].filter((v) => b.attrs[c].includes(v)).map((v) => factText(lang, c, v, categories[c].values[v])));
 }
 
-export const needed =(difficulty) => (difficulty === 'master' ? 2 : 1);
+// Expert 이상은 서로 다른 카테고리 2개에서 공통점이 필요하다
+export const needed = (difficulty) => (difficulty === 'expert' || difficulty === 'master' ? 2 : 1);
 
 export const grade = (n) => (n === 0 ? 'S' : n <= 2 ? 'A' : n <= 5 ? 'B' : n <= 10 ? 'C' : 'F');
 

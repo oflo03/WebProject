@@ -43,8 +43,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const [flash, setFlash] = useState(null); // 잘못 놓아 자동 회수 대기 중인 노드
   const [ghost, setGhost] = useState(null); // 드래그 중인 포켓몬 { id, x, y, node }
   const [hover, setHover] = useState(null); // 드래그 중 포인터 아래의 노드
-  const [recent, setRecent] = useState([]); // 방금 놓거나 옮긴 노드. 이 노드의 연결선에 설명을 띄운다.
-  const [showAll, setShowAll] = useState(false); // 모든 연결선에 설명을 띄울지
 
   const done = flash === null && placed.every(Boolean);
   const tray = puzzle.pokemon.filter((id) => !placed.includes(id));
@@ -68,7 +66,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
 
   // 일단 놓았다가 잠깐 뒤 자동 회수한다. 어떤 이웃과 안 맞는지는 알려주지 않는다.
   const wrong = (node, id) => {
-    setRecent([]);
     setRetracts((r) => r + 1);
     setFlash(node);
     setTimeout(() => {
@@ -84,11 +81,9 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
     setPicked(null);
     setMsg('');
     if (!fits(id, node, placed)) wrong(node, id);
-    else setRecent([node]);
   };
 
   const retract = (node) => {
-    setRecent([]);
     setPlaced(placed.map((v, j) => (j === node ? null : v)));
     setRetracts((r) => r + 1);
     setMsg('');
@@ -105,7 +100,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
       if (!fits(id, to, next)) wrong(to, id);
       else {
         setRetracts((r) => r + 1);
-        setRecent([to]);
       }
       return;
     }
@@ -113,7 +107,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
     if (fits(next[from], from, next) && fits(next[to], to, next)) {
       setPlaced(next);
       setRetracts((r) => r + 1);
-      setRecent([from, to]);
     } else {
       wrong(to, null); // 교환이 안 맞으면 배치는 그대로 두고 감점만
     }
@@ -203,7 +196,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const reset = () => {
     if (!placed.some(Boolean)) return;
     setPlaced(Array(b.nodes).fill(null));
-    setRecent([]);
     setRetracts((r) => r + 1);
     setPicked(null);
     setMsg('');
@@ -235,9 +227,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
             </span>
             <span className="count">{t('retracts', retracts)}</span>
             <button onClick={reset}>{t('reset')}</button>
-            <button onClick={() => setShowAll(!showAll)}>
-              {showAll ? t('labelsLatest') : t('labelsAll')}
-            </button>
           </header>
           <p className="rule">{t('rule', k)}</p>
 
@@ -317,12 +306,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
             })}
             {flash === null &&
               b.edges.map(([x, y]) => {
-                if (
-                  !placed[x] ||
-                  !placed[y] ||
-                  !(showAll || recent.includes(x) || recent.includes(y))
-                )
-                  return null;
+                if (!placed[x] || !placed[y]) return null;
                 const facts = edgeFacts(x, y);
                 const lines =
                   facts.length > MAX_LINES
@@ -376,6 +360,18 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
           <h2>{t('team')}</h2>
           <p className="hint">{t('trayHint')}</p>
 
+          {done && (
+            <div className="result">
+              <h3>{t('clear')}</h3>
+              <p className="grade">{grade(retracts)}</p>
+              <p>{t('retracts', retracts)}</p>
+              <button onClick={onMenu}>{t('menu')}</button>
+              <button className="primary" onClick={onNext}>
+                {t('next')}
+              </button>
+            </div>
+          )}
+
           <ul className="tray">
             {tray.map((id) => (
               <li key={id}>
@@ -404,19 +400,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
         />
       )}
 
-      {done && (
-        <div className="overlay">
-          <div className="result">
-            <h2>{t('clear')}</h2>
-            <p className="grade">{grade(retracts)}</p>
-            <p>{t('retracts', retracts)}</p>
-            <button onClick={onMenu}>{t('menu')}</button>
-            <button className="primary" onClick={onNext}>
-              {t('next')}
-            </button>
-          </div>
-        </div>
-      )}
     </main>
   );
 }

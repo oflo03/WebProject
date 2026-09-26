@@ -16,19 +16,20 @@ const rng = () => { // mulberry32
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 };
 
-// 난이도. k: 인접 노드가 공유해야 하는 카테고리 수, q: 인접하지 않은 쌍이 "우연히 매칭돼도 되는" 확률
-// (q=0이면 인접하지 않은 쌍은 전부 매칭 불가 -> 정답 하나). 통과 조건은 정답 종류 수(대칭 제외)의 [최소, 최대].
-// 정답 종류의 상한이 보드마다 다르다(오각형 12, 육각형 420, 사각형 45360). 그래서 Easy/Super 구간은 보드별로 둔다.
+// 난이도는 두 축이다. k: 인접 노드가 공유해야 하는 카테고리 수 (Easy/Super 1, Expert/Master 2),
+// 정답 종류 수(보드 대칭 제외): Easy/Expert 는 많게, Super/Master 는 적게.
+// q: 인접하지 않은 쌍이 "우연히 매칭돼도 되는" 확률 (0이면 전부 매칭 불가 -> 정답이 하나로 좁혀진다).
 const DIFFS = {
   easy: { k: 1, q: 1 },
   super: { k: 1, q: 0.35 },
-  expert: { k: 1, q: 0, band: [1, 1] },
-  master: { k: 2, q: 0, band: [1, 1] },
+  expert: { k: 2, q: 1 },
+  master: { k: 2, q: 0.5 },
 };
+// 통과 조건: 정답 종류 수 [최소, 최대]. 가능한 정답 종류의 상한이 보드마다 다르다(오각형 12, 육각형 420, 사각형 45360).
 const BANDS = {
-  pentagon: { easy: [4, Infinity], super: [2, 3] },
-  hexagon: { easy: [20, Infinity], super: [2, 8] },
-  square: { easy: [100, Infinity], super: [2, 12] },
+  pentagon: { easy: [4, Infinity], super: [1, 3], expert: [3, Infinity], master: [1, 3] },
+  hexagon: { easy: [20, Infinity], super: [1, 8], expert: [10, Infinity], master: [1, 8] },
+  square: { easy: [100, Infinity], super: [1, 12], expert: [30, Infinity], master: [1, 12] },
 };
 
 const pokemon = JSON.parse(await fs.readFile(path.join(DATA, 'pokemon.json'), 'utf8'));
@@ -177,7 +178,7 @@ for (const scope of ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
         const key = [...at].sort((x, y) => x - y).join();
         if (seen.has(key)) continue;
         const classes = classesOf(S, b, d, at);
-        const [lo, hi] = d.band ?? BANDS[bname][dname];
+        const [lo, hi] = BANDS[bname][dname];
         if (classes < lo || classes > hi) continue;
         seen.add(key);
         const solution = at.map((i) => S.pool[i].id);

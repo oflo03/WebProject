@@ -22,17 +22,19 @@ export default function Guide({ lang, t, scope = 'all', difficulty }) {
             <button onClick={() => { setPinned(false); setHover(false); }}>{t('guideClose')}</button>
           </div>
           <p>{t('guideIntro')}</p>
-          {difficulty === 'master' && <p>{t('guideMaster')}</p>}
+          {(difficulty === 'expert' || difficulty === 'master') && <p>{t('guideMaster')}</p>}
           {noGen && <p>{t('guideNoGen')}</p>}
           {Object.entries(categories).map(([c, def]) => {
             const keys = Object.keys(def.values);
+            const labels = keys.map((v) => valueLabel(lang, c, v, def.values[v]));
+            if (c === 'trainer') labels.sort((x, y) => x.localeCompare(y, lang)); // 이름 순
             return (
               <section key={c} className={noGen && c === 'generation' ? 'off' : ''}>
                 <h3>{def.label[lang]}</h3>
                 <p>{CATEGORY_DESC[lang][c]}</p>
                 {c === 'abilities'
                   ? <p className="muted">{t('guideAbilities', keys.length)}</p>
-                  : <ul>{keys.map((v) => <li key={v}>{valueLabel(lang, c, v, def.values[v])}</li>)}</ul>}
+                  : <ul>{labels.map((l) => <li key={l}>{l}</li>)}</ul>}
               </section>
             );
           })}
