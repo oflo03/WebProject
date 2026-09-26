@@ -16,7 +16,7 @@ const STR = {
     progress: '배치',
     emptyNode: '빈 자리',
     subtitle:
-      '포켓몬을 보드에 전부 배치하세요. 이웃한 노드끼리는 공통점이 있어야 해요.',
+      '포켓몬을 보드에 전부 배치하세요.\n이웃한 노드끼리는 공통점이 있어야 해요.',
     scope: '범위',
     board: '보드',
     difficulty: '난이도',
@@ -55,7 +55,7 @@ const STR = {
     title: 'Pocket Kinship',
     tools: 'Game tools',
     puzzleGame: 'Connection puzzle',
-    heroLine: 'A little in common. A connection to make.',
+    heroLine: 'A little in common.\nA connection to make.',
     setup: 'Make it your puzzle',
     yourPuzzle: 'Find your next connection',
     noTimer: 'No timer. Take your time.',
@@ -67,7 +67,7 @@ const STR = {
     progress: 'Placed',
     emptyNode: 'Empty node',
     subtitle:
-      'Place every Pokémon on the board. Neighboring nodes must have something in common.',
+      'Place every Pokémon on the board.\nNeighboring nodes must have something in common.',
     scope: 'Scope',
     board: 'Board',
     difficulty: 'Difficulty',

@@ -135,7 +135,7 @@ main {
   line-height: 1.7;
   color: var(--muted);
   margin: 4px auto 0;
-  max-width: 520px;
+  max-width: none; /* 줄바꿈은 고정이라 너비 제한이 필요 없다 */
   text-wrap: balance;
 }
 .setup {
@@ -592,7 +592,6 @@ main {
   }
   .sub {
     font-size: 12px;
-    max-width: 310px;
   }
   .setup {
     padding: 18px 16px 20px;
@@ -766,7 +765,10 @@ main {
   }
 }
 
-/* 첫 화면 인트로: 로고와 소개가 크게 나왔다가 작아지고 설정 카드가 나타난다 */
+/* 첫 화면 인트로: 로고와 소개가 크게 나왔다가 작아진 뒤, 버튼과 설정 카드가 나타난다 */
+.menu-nav {
+  min-height: 44px;
+}
 .menu-hero {
   transition: padding 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -779,11 +781,27 @@ main {
     font-size 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
     margin 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+/* 줄바꿈 고정: 줄마다 한 줄로만 표시한다 */
+.menu .hero-line .line,
+.menu .sub .line {
+  display: block;
+  white-space: nowrap;
+}
 .menu .setup,
-.menu .menu-footer {
-  transition:
-    opacity 0.6s ease 0.25s,
-    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s;
+.menu .menu-footer,
+.menu .top-buttons {
+  animation: menu-in 0.5s ease both;
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.menu.instant *,
+.menu.instant {
+  animation: none !important;
+  transition: none !important;
 }
 .menu.intro {
   height: 100dvh;
@@ -796,16 +814,10 @@ main {
   width: min(460px, 86vw);
 }
 .menu.intro .hero-line {
-  font-size: 27px;
+  font-size: min(27px, 6.8vw);
   margin-top: 14px;
 }
 .menu.intro .sub {
-  font-size: 16px;
+  font-size: min(16px, 3.6vw);
   margin-top: 8px;
-}
-.menu.intro .setup,
-.menu.intro .menu-footer {
-  opacity: 0;
-  transform: translateY(28px);
-  pointer-events: none;
 }

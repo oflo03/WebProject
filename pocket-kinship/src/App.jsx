@@ -7,6 +7,15 @@ import { detectLang, makeT, saveLang } from './i18n.js';
 
 const BOARDS = ['pentagon', 'hexagon', 'square'];
 
+// 줄바꿈 위치를 고정한다: 문구의 줄바꿈 문자마다 줄을 나누고 각 줄은 다시 줄바꿈하지 않는다 (크기가 바뀌어도 흔들리지 않게)
+function Lines({ text }) {
+  return text.split('\n').map((line, i) => (
+    <span className="line" key={i}>
+      {line}
+    </span>
+  ));
+}
+
 function Choice({ title, options, value, onChange, name, kind, step }) {
   return (
     <fieldset className={`choice ${kind}`}>
@@ -47,10 +56,13 @@ export default function App() {
   const [difficulty, setDifficulty] = useState('easy');
   const [current, setCurrent] = useState(null);
   const [error, setError] = useState(false);
-  // 첫 화면: 로고와 소개를 크게 보여주다가 잠시 뒤 작아지며 설정 카드가 나타난다 (클릭하면 바로 넘어감)
-  const [intro, setIntro] = useState(
-    () => !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  // 첫 화면: 로고와 소개를 크게 보여주다가(intro) 작아지고(shrink), 애니메이션이 끝난 뒤에야 버튼과 설정 카드가 나타난다(ready).
+  // 화면을 누르면 애니메이션 없이 바로 ready 로 넘어간다.
+  const [phase, setPhase] = useState(() =>
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'ready' : 'intro',
   );
+  const [skipped, setSkipped] = useState(false);
+  const ready = phase === 'ready';
   const t = makeT(lang);
   const toggleLang = () => setLang(lang === 'ko' ? 'en' : 'ko');
   const load = () => {
@@ -61,10 +73,10 @@ export default function App() {
   };
   useEffect(load, []);
   useEffect(() => {
-    if (!intro) return;
-    const id = setTimeout(() => setIntro(false), 1800);
+    if (ready) return;
+    const id = setTimeout(() => setPhase(phase === 'intro' ? 'shrink' : 'ready'), phase === 'intro' ? 1800 : 900);
     return () => clearTimeout(id);
-  }, [intro]);
+  }, [phase]);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [current?.id]);
@@ -101,23 +113,38 @@ export default function App() {
       />
     );
   return (
-    <main className={`menu${intro ? ' intro' : ''}`} onClick={() => setIntro(false)}>
+    <main
+      className={`menu${phase === 'intro' ? ' intro' : ''}${skipped ? ' instant' : ''}`}
+      onClick={() => {
+        if (!ready) {
+          setSkipped(true);
+          setPhase('ready');
+        }
+      }}
+    >
       <nav className="menu-nav" aria-label={t('tools')}>
         <span className="small-brand">
           POCKET KINSHIP <span> / {t('puzzleGame')}</span>
         </span>
-        <div className="top-buttons">
-          <Guide lang={lang} t={t} scope={scope} difficulty={difficulty} />
-          <button onClick={toggleLang}>{t('otherLang')}</button>
-        </div>
+        {ready && (
+          <div className="top-buttons">
+            <Guide lang={lang} t={t} scope={scope} difficulty={difficulty} />
+            <button onClick={toggleLang}>{t('otherLang')}</button>
+          </div>
+        )}
       </nav>
       <header className="menu-hero">
         <h1>
           <Brand lang={lang} />
         </h1>
-        <p className="hero-line">{t('heroLine')}</p>
-        <p className="sub">{t('subtitle')}</p>
+        <p className="hero-line">
+          <Lines text={t('heroLine')} />
+        </p>
+        <p className="sub">
+          <Lines text={t('subtitle')} />
+        </p>
       </header>
+      {ready && (
       <section className="setup" aria-label={t('setup')}>
         <div className="setup-heading">
           <div>
@@ -177,7 +204,8 @@ export default function App() {
           </button>
         )}
       </section>
-      <footer className="menu-footer">{t('footerHint')}</footer>
+      )}
+      {ready && <footer className="menu-footer">{t('footerHint')}</footer>}
     </main>
   );
 }
