@@ -212,20 +212,20 @@ const abilities = Object.fromEntries(await pool(abilitySlugs, 8, async (s) => [s
 const typeLabels = Object.fromEntries(await pool(TYPES, 4, async (t) => [t, ko((await get(`/type/${t}`)).names) ?? t]));
 const same = (values) => Object.fromEntries([...new Set(values)].sort().map((v) => [v, v]));
 const categories = {
-  type: { label: '타입', values: typeLabels },
-  evolveVia: { label: '진화할 방법', values: METHODS },
-  evolvedVia: { label: '진화한 방법', values: METHODS },
-  evolutionStage: { label: '진화 방식', values: same(entries.flatMap((e) => e.attrs.evolutionStage)) },
-  weak4x: { label: '4배 약점 타입', values: typeLabels },
-  resist4x: { label: '1/4 반감 타입', values: typeLabels },
-  trainer: { label: '사용한 네임드 트레이너', values: same(Object.keys(overrides.trainer)) },
-  generation: { label: '등장 세대', values: Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `${n}세대`])) },
-  forms: { label: '보유 폼', values: FORMS },
-  signatureMove: { label: '전용기', values: HAS },
-  signatureZ: { label: '전용 Z기술', values: HAS },
-  abilities: { label: '보유 특성', values: abilities },
-  position: { label: '포지션', values: POSITIONS },
-  genderRatio: { label: '독특한 성비', values: GENDERS },
+  type: { label: { ko: '타입', en: 'Type' }, values: typeLabels },
+  evolveVia: { label: { ko: '진화할 방법', en: 'Evolves by' }, values: METHODS },
+  evolvedVia: { label: { ko: '진화한 방법', en: 'Evolved by' }, values: METHODS },
+  evolutionStage: { label: { ko: '진화 방식', en: 'Evolution stage' }, values: same(entries.flatMap((e) => e.attrs.evolutionStage)) },
+  weak4x: { label: { ko: '4배 약점 타입', en: '4x weakness' }, values: typeLabels },
+  resist4x: { label: { ko: '1/4 반감 타입', en: '1/4x resistance' }, values: typeLabels },
+  trainer: { label: { ko: '사용한 네임드 트레이너', en: 'Named trainer' }, values: same(Object.keys(overrides.trainer)) },
+  generation: { label: { ko: '등장 세대', en: 'Generation' }, values: Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `${n}세대`])) },
+  forms: { label: { ko: '보유 폼', en: 'Forms' }, values: FORMS },
+  signatureMove: { label: { ko: '전용기', en: 'Signature move' }, values: HAS },
+  signatureZ: { label: { ko: '전용 Z기술', en: 'Signature Z-move' }, values: HAS },
+  abilities: { label: { ko: '보유 특성', en: 'Abilities' }, values: abilities },
+  position: { label: { ko: '포지션', en: 'Classification' }, values: POSITIONS },
+  genderRatio: { label: { ko: '독특한 성비', en: 'Gender ratio' }, values: GENDERS },
 };
 
 await fs.writeFile(path.join(DATA, 'pokemon.json'), '[\n' + entries.map((e) => JSON.stringify(e)).join(',\n') + '\n]\n');

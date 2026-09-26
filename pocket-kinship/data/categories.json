@@ -1,6 +1,9 @@
 {
   "type": {
-    "label": "타입",
+    "label": {
+      "ko": "타입",
+      "en": "Type"
+    },
     "values": {
       "normal": "노말",
       "fire": "불꽃",
@@ -23,7 +26,10 @@
     }
   },
   "evolveVia": {
-    "label": "진화할 방법",
+    "label": {
+      "ko": "진화할 방법",
+      "en": "Evolves by"
+    },
     "values": {
       "friendship": "친밀도",
       "stone": "진화의 돌",
@@ -38,7 +44,10 @@
     }
   },
   "evolvedVia": {
-    "label": "진화한 방법",
+    "label": {
+      "ko": "진화한 방법",
+      "en": "Evolved by"
+    },
     "values": {
       "friendship": "친밀도",
       "stone": "진화의 돌",
@@ -53,7 +62,10 @@
     }
   },
   "evolutionStage": {
-    "label": "진화 방식",
+    "label": {
+      "ko": "진화 방식",
+      "en": "Evolution stage"
+    },
     "values": {
       "1/1": "1/1",
       "1/2": "1/2",
@@ -64,7 +76,10 @@
     }
   },
   "weak4x": {
-    "label": "4배 약점 타입",
+    "label": {
+      "ko": "4배 약점 타입",
+      "en": "4x weakness"
+    },
     "values": {
       "normal": "노말",
       "fire": "불꽃",
@@ -87,7 +102,10 @@
     }
   },
   "resist4x": {
-    "label": "1/4 반감 타입",
+    "label": {
+      "ko": "1/4 반감 타입",
+      "en": "1/4x resistance"
+    },
     "values": {
       "normal": "노말",
       "fire": "불꽃",
@@ -110,7 +128,10 @@
     }
   },
   "trainer": {
-    "label": "사용한 네임드 트레이너",
+    "label": {
+      "ko": "사용한 네임드 트레이너",
+      "en": "Named trainer"
+    },
     "values": {
       "Aaron": "Aaron",
       "Acerola": "Acerola",
@@ -221,7 +242,10 @@
     }
   },
   "generation": {
-    "label": "등장 세대",
+    "label": {
+      "ko": "등장 세대",
+      "en": "Generation"
+    },
     "values": {
       "1": "1세대",
       "2": "2세대",
@@ -235,7 +259,10 @@
     }
   },
   "forms": {
-    "label": "보유 폼",
+    "label": {
+      "ko": "보유 폼",
+      "en": "Forms"
+    },
     "values": {
       "mega": "메가진화",
       "gmax": "거다이맥스",
@@ -246,19 +273,28 @@
     }
   },
   "signatureMove": {
-    "label": "전용기",
+    "label": {
+      "ko": "전용기",
+      "en": "Signature move"
+    },
     "values": {
       "has": "보유"
     }
   },
   "signatureZ": {
-    "label": "전용 Z기술",
+    "label": {
+      "ko": "전용 Z기술",
+      "en": "Signature Z-move"
+    },
     "values": {
       "has": "보유"
     }
   },
   "abilities": {
-    "label": "보유 특성",
+    "label": {
+      "ko": "보유 특성",
+      "en": "Abilities"
+    },
     "values": {
       "adaptability": "적응력",
       "aftermath": "유폭",
@@ -555,7 +591,10 @@
     }
   },
   "position": {
-    "label": "포지션",
+    "label": {
+      "ko": "포지션",
+      "en": "Classification"
+    },
     "values": {
       "starter": "스타팅",
       "sub-legendary": "준전설",
@@ -566,7 +605,10 @@
     }
   },
   "genderRatio": {
-    "label": "독특한 성비",
+    "label": {
+      "ko": "독특한 성비",
+      "en": "Gender ratio"
+    },
     "values": {
       "male-only": "수컷 100%",
       "female-only": "암컷 100%",

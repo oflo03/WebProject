@@ -48,3 +48,11 @@ h1, h2 { margin: 0; }
 .result .grade { font-size: 64px; font-weight: 700; margin: 0; color: var(--accent); }
 
 .node.wrong circle { stroke: var(--bad); stroke-dasharray: none; stroke-width: 4; }
+
+.game { user-select: none; -webkit-user-select: none; }
+.board, .tray button { touch-action: none; }
+.tray button.dragging, .node.dragging image, .node.dragging .name { opacity: 0.35; }
+.node.hover circle { stroke: var(--accent); stroke-dasharray: none; stroke-width: 5; }
+.ghost { position: fixed; width: 64px; height: 64px; transform: translate(-50%, -50%); pointer-events: none; z-index: 20; image-rendering: pixelated; }
+
+.menu .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

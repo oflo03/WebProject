@@ -5,11 +5,9 @@ import boards from '../data/boards.json';
 export { categories, boards };
 export const byId = new Map(pokemon.map((p) => [p.id, p]));
 
-export const BOARD_NAMES = { pentagon: '오각형 (5)', hexagon: '육각형 (7)', square: '사각형 (9)' };
 export const DIFFICULTIES = ['easy', 'super', 'expert', 'master'];
 export const DIFF_NAMES = { easy: 'Easy', super: 'Super', expert: 'Expert', master: 'Master' };
 export const SCOPES = ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9];
-export const scopeName = (s) => (s === 'all' ? '전체' : `${s}세대`);
 
 export const sprite = (p) => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.pid}.png`;
 
