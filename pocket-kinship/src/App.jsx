@@ -47,6 +47,10 @@ export default function App() {
   const [difficulty, setDifficulty] = useState('easy');
   const [current, setCurrent] = useState(null);
   const [error, setError] = useState(false);
+  // 첫 화면: 로고와 소개를 크게 보여주다가 잠시 뒤 작아지며 설정 카드가 나타난다 (클릭하면 바로 넘어감)
+  const [intro, setIntro] = useState(
+    () => !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  );
   const t = makeT(lang);
   const toggleLang = () => setLang(lang === 'ko' ? 'en' : 'ko');
   const load = () => {
@@ -56,6 +60,11 @@ export default function App() {
       .catch(() => setLoadError(true));
   };
   useEffect(load, []);
+  useEffect(() => {
+    if (!intro) return;
+    const id = setTimeout(() => setIntro(false), 1800);
+    return () => clearTimeout(id);
+  }, [intro]);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [current?.id]);
@@ -92,7 +101,7 @@ export default function App() {
       />
     );
   return (
-    <main className="menu">
+    <main className={`menu${intro ? ' intro' : ''}`} onClick={() => setIntro(false)}>
       <nav className="menu-nav" aria-label={t('tools')}>
         <span className="small-brand">
           POCKET KINSHIP <span> / {t('puzzleGame')}</span>

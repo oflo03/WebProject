@@ -135,6 +135,10 @@ function classesOf(S, b, d, at) {
   const n = b.nodes;
   const ok = new Uint8Array(n * n);
   for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) ok[i * n + j] = has(S.c[d.k][at[i]], at[j]);
+  // 모든 쌍이 서로 이어지면 어떻게 놓아도 정답이라 퍼즐이 아니다. 0으로 돌려 구간 검사에서 걸러낸다.
+  let complete = true;
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (!ok[i * n + j]) complete = false;
+  if (complete) return 0;
   const cap = b.aut * 500;
   return Math.min(countSolutions(n, ok, b, cap), cap) / b.aut;
 }

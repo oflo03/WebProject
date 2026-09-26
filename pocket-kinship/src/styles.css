@@ -765,3 +765,47 @@ main {
     height: 40px;
   }
 }
+
+/* 첫 화면 인트로: 로고와 소개가 크게 나왔다가 작아지고 설정 카드가 나타난다 */
+.menu-hero {
+  transition: padding 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.menu .brand {
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.menu .hero-line,
+.menu .sub {
+  transition:
+    font-size 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    margin 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.menu .setup,
+.menu .menu-footer {
+  transition:
+    opacity 0.6s ease 0.25s,
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s;
+}
+.menu.intro {
+  height: 100dvh;
+  overflow: hidden;
+}
+.menu.intro .menu-hero {
+  padding-top: 14dvh;
+}
+.menu.intro .brand {
+  width: min(460px, 86vw);
+}
+.menu.intro .hero-line {
+  font-size: 27px;
+  margin-top: 14px;
+}
+.menu.intro .sub {
+  font-size: 16px;
+  margin-top: 8px;
+}
+.menu.intro .setup,
+.menu.intro .menu-footer {
+  opacity: 0;
+  transform: translateY(28px);
+  pointer-events: none;
+}
