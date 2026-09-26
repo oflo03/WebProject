@@ -372,7 +372,10 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
             </div>
           )}
 
-          <ul className="tray">
+          <ul
+            className="tray"
+            style={{ '--tray-cols': Math.ceil(b.nodes / 2) }} // 모바일에서는 항상 두 줄
+          >
             {tray.map((id) => (
               <li key={id}>
                 <button

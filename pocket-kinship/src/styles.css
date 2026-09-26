@@ -746,12 +746,12 @@ main {
     margin: 0 0 6px;
   }
   .tray {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--tray-cols, 5), minmax(0, 1fr));
     gap: 4px;
   }
   .tray button {
     min-height: 0;
-    padding: 3px 2px 4px;
+    padding: 2px 2px 3px;
     font-size: 10px;
   }
   .tray button span {
