@@ -585,7 +585,7 @@ main {
     padding: 8px 0 14px;
   }
   .brand {
-    width: 230px;
+    width: 100px; /* 게임 화면 위쪽 로고(.brand.compact)와 같은 크기 */
   }
   .hero-line {
     font-size: 18px;
