@@ -787,9 +787,9 @@ main {
   display: block;
   white-space: nowrap;
 }
+/* 위쪽 버튼은 애니메이션하지 않는다: transform/opacity 가 걸리면 안의 설명 창(fixed)이 어긋나고 반투명해진다 */
 .menu .setup,
-.menu .menu-footer,
-.menu .top-buttons {
+.menu .menu-footer {
   animation: menu-in 0.5s ease both;
 }
 @keyframes menu-in {
@@ -820,4 +820,69 @@ main {
 .menu.intro .sub {
   font-size: min(16px, 3.6vw);
   margin-top: 8px;
+}
+
+/* 세로가 짧은 PC 창: 로고와 여백을 줄여 설정이 한 화면에 다 보이게 한다 */
+@media (min-width: 701px) and (max-height: 740px) {
+  main {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .menu-hero {
+    padding: 0 0 8px;
+  }
+  .menu:not(.intro) .brand {
+    width: min(200px, 60vw);
+  }
+  .menu:not(.intro) .hero-line {
+    font-size: 16px;
+    margin-top: 2px;
+  }
+  .menu:not(.intro) .sub {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .setup {
+    padding: 14px 24px 16px;
+  }
+  .setup-heading {
+    display: none;
+  }
+  .choice {
+    margin-bottom: 8px;
+  }
+  .start-button {
+    margin-top: 8px;
+  }
+}
+@media (min-width: 701px) and (max-height: 620px) {
+  .menu:not(.intro) .brand {
+    width: 130px;
+  }
+  .menu:not(.intro) .sub,
+  .menu .menu-footer {
+    display: none;
+  }
+}
+@media (min-width: 701px) and (max-height: 520px) {
+  .menu:not(.intro) .brand {
+    width: 100px;
+  }
+  .menu:not(.intro) .hero-line {
+    display: none;
+  }
+}
+
+/* 이어질 수 없는 선 */
+.edge.bad {
+  stroke: var(--bad);
+  stroke-width: 4;
+}
+.edge-label.bad rect {
+  fill: #fff0ef;
+  stroke: var(--bad);
+}
+.edge-label.bad text {
+  fill: var(--bad);
+  font-weight: 700;
 }

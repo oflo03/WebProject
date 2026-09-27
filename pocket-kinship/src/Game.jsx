@@ -40,20 +40,15 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const [picked, setPicked] = useState(null);
   const [retracts, setRetracts] = useState(0);
   const [msg, setMsg] = useState('');
-  const [flash, setFlash] = useState(null); // 잘못 놓아 자동 회수 대기 중인 노드
   const [ghost, setGhost] = useState(null); // 드래그 중인 포켓몬 { id, x, y, node }
   const [hover, setHover] = useState(null); // 드래그 중 포인터 아래의 노드
 
-  const done = flash === null && placed.every(Boolean);
+  // 이어진 두 노드가 모두 채워져 있을 때, 공통 카테고리 수가 기준(k)을 채우는가
+  const linkOk = (x, y) =>
+    sharedCats(byId.get(placed[x]), byId.get(placed[y]), puzzle.scope).length >= k;
+  const badEdges = b.edges.filter(([x, y]) => placed[x] && placed[y] && !linkOk(x, y));
+  const done = placed.every(Boolean) && badEdges.length === 0;
   const tray = puzzle.pokemon.filter((id) => !placed.includes(id));
-
-  // id 포켓몬을 cfg 배치의 node 자리에 놓았을 때 이웃 조건을 만족하는가 (cfg[node] 자신은 무시)
-  const fits = (id, node, cfg) =>
-    nbrs[node].every(
-      (j) =>
-        !cfg[j] ||
-        sharedCats(byId.get(id), byId.get(cfg[j]), puzzle.scope).length >= k,
-    );
 
   // 두 노드가 이어져 있고 규칙을 만족할 때 공통점을 설명하는 문장들
   const edgeFacts = (x, y) => {
@@ -64,23 +59,10 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
       : [];
   };
 
-  // 일단 놓았다가 잠깐 뒤 자동 회수한다. 어떤 이웃과 안 맞는지는 알려주지 않는다.
-  const wrong = (node, id) => {
-    setRetracts((r) => r + 1);
-    setFlash(node);
-    setTimeout(() => {
-      setPlaced((cur) =>
-        cur.map((v, j) => (j === node && v === id ? null : v)),
-      );
-      setFlash(null);
-    }, 700);
-  };
-
   const place = (id, node) => {
     setPlaced(placed.map((v, j) => (j === node ? id : v)));
     setPicked(null);
     setMsg('');
-    if (!fits(id, node, placed)) wrong(node, id);
   };
 
   const retract = (node) => {
@@ -90,26 +72,12 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   };
 
   // 놓인 포켓몬을 다른 노드로 옮긴다. 빈 노드면 이동, 채워진 노드면 서로 교환. 옮기는 것도 회수 1회로 센다.
+  // 이어질 수 없는 자리여도 그대로 놓이고, 빨간 선으로만 보인다.
   const move = (from, to) => {
-    const id = placed[from];
     const next = placed.slice();
-    if (!placed[to]) {
-      next[from] = null;
-      next[to] = id;
-      setPlaced(next);
-      if (!fits(id, to, next)) wrong(to, id);
-      else {
-        setRetracts((r) => r + 1);
-      }
-      return;
-    }
-    [next[from], next[to]] = [placed[to], id];
-    if (fits(next[from], from, next) && fits(next[to], to, next)) {
-      setPlaced(next);
-      setRetracts((r) => r + 1);
-    } else {
-      wrong(to, null); // 교환이 안 맞으면 배치는 그대로 두고 감점만
-    }
+    [next[from], next[to]] = [placed[to], placed[from]];
+    setPlaced(next);
+    setRetracts((r) => r + 1);
   };
 
   const drop = (source, x, y) => {
@@ -170,12 +138,12 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   }, []);
 
   const startDrag = (e, source) => {
-    if (flash !== null || e.button > 0) return;
+    if (e.button > 0) return;
     dragRef.current = { source, sx: e.clientX, sy: e.clientY, active: false };
   };
 
   const clickNode = (i) => {
-    if (flash !== null || justDragged.current) return;
+    if (justDragged.current) return;
     if (placed[i]) {
       retract(i);
       return;
@@ -238,11 +206,12 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
           >
             {b.edges.map(([x, y]) => {
               const both = placed[x] && placed[y];
-              const facts = both ? edgeFacts(x, y) : [];
+              const bad = both && !linkOk(x, y);
+              const facts = both && !bad ? edgeFacts(x, y) : [];
               return (
                 <line
                   key={`${x}-${y}`}
-                  className={both && flash === null ? 'edge ok' : 'edge'}
+                  className={bad ? 'edge bad' : both ? 'edge ok' : 'edge'}
                   x1={pos[x][0]}
                   y1={pos[x][1]}
                   x2={pos[y][0]}
@@ -257,7 +226,6 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
               const cls = [
                 'node',
                 p && 'filled',
-                flash === i && 'wrong',
                 ghost && hover === i && 'hover',
                 ghost?.node === i && 'dragging',
               ]
@@ -304,10 +272,10 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
                 </g>
               );
             })}
-            {flash === null &&
-              b.edges.map(([x, y]) => {
+            {b.edges.map(([x, y]) => {
                 if (!placed[x] || !placed[y]) return null;
-                const facts = edgeFacts(x, y);
+                const bad = !linkOk(x, y);
+                const facts = bad ? [t('noLink')] : edgeFacts(x, y);
                 const lines =
                   facts.length > MAX_LINES
                     ? [
@@ -318,7 +286,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
                 const mx = (pos[x][0] + pos[y][0]) / 2;
                 const my = (pos[x][1] + pos[y][1]) / 2;
                 return (
-                  <g key={`l${x}-${y}`} className="edge-label">
+                  <g key={`l${x}-${y}`} className={bad ? 'edge-label bad' : 'edge-label'}>
                     {lines.map((txt, n) => {
                       const w = textWidth(txt);
                       const cy = my + (n - (lines.length - 1) / 2) * 16;

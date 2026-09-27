@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { categories } from './game.js';
 import { CATEGORY_DESC, valueLabel } from './guideText.js';
 
@@ -7,7 +7,13 @@ export default function Guide({ lang, t, scope = 'all', difficulty }) {
   const [hover, setHover] = useState(false);
   const [pinned, setPinned] = useState(false);
   const timer = useRef();
-  const enter = () => { clearTimeout(timer.current); setHover(true); };
+  // 버튼이 막 생겼을 때 마우스가 그 자리에 있어도 설명 창이 저절로 뜨지 않게, 잠깐 뒤부터 호버를 받는다
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setArmed(true), 700);
+    return () => clearTimeout(id);
+  }, []);
+  const enter = () => { if (!armed) return; clearTimeout(timer.current); setHover(true); };
   const leave = () => { timer.current = setTimeout(() => setHover(false), 200); };
   const open = hover || pinned;
   const noGen = scope !== 'all';

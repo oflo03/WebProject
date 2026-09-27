@@ -25,6 +25,7 @@ const STR = {
     pentagon: '오각형 (5)',
     hexagon: '육각형 (7)',
     square: '사각형 (9)',
+    noLink: '연결 불가',
     hintGen: '세대별 퍼즐에서는 등장 세대가 공통점으로 인정되지 않아요.',
     hintMaster:
       'Expert와 Master는 이웃한 노드끼리 서로 다른 카테고리 2개에서 공통점이 필요해요.',
@@ -76,6 +77,7 @@ const STR = {
     pentagon: 'Pentagon (5)',
     hexagon: 'Hexagon (7)',
     square: 'Square (9)',
+    noLink: 'Not connectable',
     hintGen:
       'In generation puzzles, the debut generation does not count as something in common.',
     hintMaster:
