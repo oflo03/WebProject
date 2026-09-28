@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Guide from './Guide.jsx';
 import { Brand } from './Brand.jsx';
+import { track } from './analytics.js';
 import {
   DIFF_NAMES,
   LAYOUT,
@@ -66,6 +67,22 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const badEdges = b.edges.filter(([x, y]) => placed[x] && placed[y] && !linkOk(x, y));
   const done = placed.every(Boolean) && badEdges.length === 0;
   const tray = puzzle.pokemon.filter((id) => !placed.includes(id));
+
+  // 클리어 이벤트는 done 이 true 로 바뀌는 순간 한 번만 보낸다 (재배치로 다시 true 가 돼도 중복 전송 안 함)
+  const cleared = useRef(false);
+  useEffect(() => {
+    if (done && !cleared.current) {
+      cleared.current = true;
+      track('play_clear', {
+        board: puzzle.board,
+        difficulty: puzzle.difficulty,
+        scope: String(puzzle.scope),
+        retracts,
+        grade: grade(retracts),
+      });
+    }
+    if (!done) cleared.current = false;
+  }, [done]);
 
   // 두 노드가 이어져 있고 규칙을 만족할 때 공통점을 설명하는 문장들
   const edgeFacts = (x, y) => {

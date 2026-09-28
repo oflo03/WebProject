@@ -230,3 +230,26 @@ pocket-kinship/scripts/build-data.mjs   # PokéAPI + overrides.json -> 위 두 �
 - 퍼즐 생성 시 모든 포켓몬 쌍이 서로 이어지는 리스트(어떻게 놓아도 정답인 퀴즈)는 뺀다. 생성 후 원본 데이터로 다시 확인해 남아 있지 않음을 검증했다. 이 조건 때문에 오각형은 Easy·Expert의 정답 종류가 4~6개로 줄었고, 6세대 오각형 Expert는 10/30개다.
 - 세로가 짧은 PC 창(높이 740px 이하)에서는 메뉴 로고와 여백을 단계적으로 줄인다: 740px 이하는 로고 200px에 설정 제목을 숨기고, 620px 이하는 로고 130px에 부제와 푸터를 숨기고, 520px 이하는 로고 100px에 소개 문구까지 숨겨서 설정이 한 화면에 다 보이게 한다.
 - 카테고리 설명 버튼은 생성된 뒤 0.7초가 지나야 호버에 반응한다 (버튼이 막 생겼을 때 마우스가 그 자리에 있어도 설명 창이 저절로 뜨지 않게). 위쪽 버튼에는 등장 애니메이션을 걸지 않는다 (transform/opacity가 걸리면 안의 설명 창이 어긋나고 반투명해진다).
+
+## 12. 사용 통계 (Firebase Analytics)
+
+- `src/analytics.js`에서 Firebase 앱을 초기화하고 `track(name, params)`로 이벤트를 보낸다.
+- 보내는 이벤트:
+  - `play_start`: 퍼즐 시작 시 (범위, 보드, 난이도). 메뉴의 `시작`과 클리어 화면의 `다음 퍼즐` 모두 이 이벤트를 보낸다.
+  - `play_clear`: 클리어 시 한 번만 (범위, 보드, 난이도, 회수 횟수, 등급).
+- 인당 플레이 횟수는 따로 셀 필요 없이, Firebase 콘솔의 Analytics 보고서에서 `play_start`의 "사용자당 이벤트 수"로 바로 나온다.
+- Analytics는 프로젝트에 Google 애널리틱스를 연결해야 동작한다. 연결 전에는 `measurementId`가 없어서 `track`이 조용히 아무 일도 하지 않는다.
+- 웹 앱 등록: `firebase apps:create WEB "Pocket Kinship Web"`, 설정 조회: `firebase apps:sdkconfig WEB <앱ID>`.
+
+## 13. 사용 통계 (Firestore, app-stats-hub 프로젝트)
+
+- 통계는 게임 배포 프로젝트(`pocket-kinship`)가 아니라 **별도 Firebase 프로젝트 `app-stats-hub`**에 모은다. 앞으로 만들 다른 웹앱도 같은 프로젝트에 자기 이름으로 모을 수 있다.
+- 데이터 위치: `apps/kinship/events/{자동ID}` 문서마다 `{type, ts, clientId, ...그 외 값}`.
+- 격리 방식: Firestore 멀티 데이터베이스(완전 물리적 분리)는 Blaze(종량제) 요금제가 있어야 해서 보류했다. 대신 하나의 기본 데이터베이스를 쓰되, `firestore.rules`로 앱마다 자기 경로(`apps/{appId}/events`)에만 쓰게 막았다. 새 앱을 추가하려면 규칙의 화이트리스트(`appId in [...]`)에 이름을 더한다.
+- 보안 규칙: 클라이언트는 이벤트를 **추가만** 할 수 있고 읽기·수정·삭제는 전부 막았다. 콘솔에서 보는 것은 관리자 권한이라 이 규칙과 무관하게 항상 보인다.
+- 관리 위치: `app-stats-hub/` (저장소 루트, `pocket-kinship/`과 같은 위치의 별도 폴더). `firebase.json`, `firestore.rules`, `firestore.indexes.json`을 담고 있고, 이 프로젝트 전용 `.firebaserc`로 배포한다.
+- 보내는 이벤트 (`pocket-kinship/src/analytics.js`의 `track(type, params)`):
+  - `play_start`: 퍼즐 시작 시 (board, difficulty, scope)
+  - `play_clear`: 클리어 시 한 번만 (board, difficulty, scope, retracts, grade)
+  - 모든 문서에 `clientId`(브라우저별 익명 ID, localStorage)가 같이 저장돼서 인당 횟수를 셀 수 있다.
+- 확인 방법: Firebase 콘솔 → `app-stats-hub` 프로젝트 → Firestore Database → 데이터 탭에서 `apps/kinship/events`를 연다. 집계 그래프는 없고 문서 목록을 표로 보는 것이라, "오늘 몇 명" 같은 숫자는 문서를 세거나 나중에 직접 쿼리/화면을 만들어야 한다.

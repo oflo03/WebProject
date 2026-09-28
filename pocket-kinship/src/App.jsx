@@ -4,6 +4,7 @@ import Guide from './Guide.jsx';
 import { Brand, BoardIcon } from './Brand.jsx';
 import { DIFFICULTIES, DIFF_NAMES, SCOPES } from './game.js';
 import { detectLang, makeT, saveLang } from './i18n.js';
+import { track } from './analytics.js';
 
 const BOARDS = ['pentagon', 'hexagon', 'square'];
 
@@ -99,7 +100,9 @@ export default function App() {
       return;
     }
     setError(false);
-    setCurrent(pool[Math.floor(Math.random() * pool.length)]);
+    const pz = pool[Math.floor(Math.random() * pool.length)];
+    setCurrent(pz);
+    track('play_start', { board: pz.board, difficulty: pz.difficulty, scope: String(pz.scope) });
   };
   if (current)
     return (
