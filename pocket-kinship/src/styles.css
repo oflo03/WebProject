@@ -241,6 +241,15 @@ main {
   gap: 5px;
   min-height: 50px;
 }
+.choice-desc {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.3;
+  text-align: center;
+}
+.on .choice-desc {
+  color: var(--accent);
+}
 .difficulty-dots {
   display: flex;
   gap: 3px;

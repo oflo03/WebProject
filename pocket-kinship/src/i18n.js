@@ -50,6 +50,13 @@ const STR = {
       'Expert와 Master에서는 서로 다른 카테고리 2개에서 공통점이 있어야 해요.',
     guideNoGen: '이 퍼즐은 세대별 퍼즐이라 등장 세대는 쓰이지 않아요.',
     guideAbilities: (n) => `약 ${n}종 (목록은 생략)`,
+    diffDesc: (d) =>
+      ({
+        easy: '누구나 가볍게',
+        super: '살짝 머리 쓰는',
+        expert: '진지하게 파고드는',
+        master: '깨면 인정, 고수의 영역',
+      })[d],
     guideClose: '닫기',
   },
   en: {
@@ -106,6 +113,13 @@ const STR = {
     guideNoGen:
       'This is a generation puzzle, so the debut generation is not used.',
     guideAbilities: (n) => `About ${n} abilities (list omitted)`,
+    diffDesc: (d) =>
+      ({
+        easy: 'Anyone can jump in',
+        super: 'A bit of a think',
+        expert: 'Dig in for real',
+        master: 'Beat it, earn it',
+      })[d],
     guideClose: 'Close',
   },
 };

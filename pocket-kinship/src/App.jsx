@@ -16,7 +16,7 @@ function Lines({ text }) {
   ));
 }
 
-function Choice({ title, options, value, onChange, name, kind, step }) {
+function Choice({ title, options, value, onChange, name, desc, kind, step }) {
   return (
     <fieldset className={`choice ${kind}`}>
       <legend>
@@ -40,6 +40,7 @@ function Choice({ title, options, value, onChange, name, kind, step }) {
               </span>
             )}
             <span>{name(o)}</span>
+            {desc && <span className="choice-desc">{desc(o)}</span>}
           </button>
         ))}
       </div>
@@ -179,6 +180,7 @@ export default function App() {
           value={difficulty}
           onChange={setDifficulty}
           name={(d) => DIFF_NAMES[d]}
+          desc={(d) => t('diffDesc', d)}
         />
         {scope !== 'all' && <p className="hint">{t('hintGen')}</p>}
         {(difficulty === 'expert' || difficulty === 'master') && (
