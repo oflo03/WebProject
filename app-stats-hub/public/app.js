@@ -1,6 +1,8 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import {
   collection,
+  doc,
+  getDoc,
   getDocs,
   getFirestore,
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
@@ -15,7 +17,7 @@ const db = getFirestore(initializeApp(firebaseConfig));
 // 통계를 볼 앱 목록. 새 웹앱을 추가하면 여기 한 줄만 더한다 (firestore.rules 의 화이트리스트에도 추가해야 한다).
 const APPS = [{ id: 'kinship', name: 'Pocket Kinship', desc: '포켓몬 연결 퍼즐' }];
 
-// pocket-kinship 게임이 보내는 값 -> 화면에 보일 한글 이름
+// pocket-kinship 게임이 보내는 값 -> 화면에 보일 한글 이름. counters/summary 의 필드 이름도 이 값들로 만든다.
 const SCOPES = ['all', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const BOARDS = { pentagon: '오각형', hexagon: '육각형', square: '사각형' };
 const DIFFS = ['easy', 'super', 'expert', 'master'];
@@ -53,23 +55,6 @@ function homeBody() {
   `;
 }
 
-// 최근 days 일치 날짜별 시작 횟수. 기록 없는 날도 0으로 채운다 (막대가 끊기지 않게).
-function dailyCounts(starts, days = 14) {
-  const buckets = new Map();
-  const today = new Date();
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    buckets.set(d.toISOString().slice(0, 10), 0);
-  }
-  for (const e of starts) {
-    if (!e.ts?.seconds) continue;
-    const key = new Date(e.ts.seconds * 1000).toISOString().slice(0, 10);
-    if (buckets.has(key)) buckets.set(key, buckets.get(key) + 1);
-  }
-  return [...buckets.entries()];
-}
-
 function chartSvg(data) {
   const w = 680;
   const h = 150;
@@ -91,45 +76,6 @@ function chartSvg(data) {
   return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">${bars}</svg>`;
 }
 
-// dimension 별("scope"/"board"/"difficulty") 값마다 시작·클리어 수를 모아 basis(인기=시작 많은 순, 승률=클리어율 높은 순) 1위를 고른다
-function topBy(starts, clears, dimension, basis) {
-  const keyOf = (e) =>
-    dimension === 'scope' ? scopeLabel(e.scope) : dimension === 'board' ? boardLabel(e.board) : diffLabel(e.difficulty);
-  const counts = new Map();
-  for (const e of starts) {
-    const k = keyOf(e);
-    const row = counts.get(k) ?? { starts: 0, clears: 0 };
-    row.starts++;
-    counts.set(k, row);
-  }
-  for (const e of clears) {
-    const k = keyOf(e);
-    const row = counts.get(k) ?? { starts: 0, clears: 0 };
-    row.clears++;
-    counts.set(k, row);
-  }
-  let best = null;
-  for (const [k, v] of counts) {
-    const score = basis === 'winrate' ? (v.starts ? v.clears / v.starts : -1) : v.starts;
-    if (!best || score > best.score) best = { key: k, score, ...v };
-  }
-  return best;
-}
-
-function leaderboardHtml(starts, clears, basis) {
-  const cards = [
-    ['scope', '범위'],
-    ['board', '보드'],
-    ['difficulty', '난이도'],
-  ].map(([dim, label]) => {
-    const top = topBy(starts, clears, dim, basis);
-    if (!top) return `<div class="card"><span class="num">-</span><span class="label">${label} 1위</span></div>`;
-    const detail = basis === 'winrate' ? `${Math.round(top.score * 100)}% (${top.starts}판)` : `${top.starts}회 플레이`;
-    return `<div class="card"><span class="num">${top.key}</span><span class="label">${label} 1위 · ${detail}</span></div>`;
-  });
-  return cards.join('');
-}
-
 // 로그 창은 필터 없이 전체 기록을 최신순으로 보여준다
 function logRowsHtml(events) {
   const sorted = events
@@ -148,16 +94,80 @@ function logRowsHtml(events) {
   return { count: sorted.length, rows: rows || '<tr><td colspan="6" class="muted">아직 기록이 없어요.</td></tr>' };
 }
 
-// 통계 창의 범위/보드/난이도 필터. 기준값이 비어 있으면(전체) 그 항목은 거르지 않는다.
-function applyFilters(events, filters) {
-  return events
-    .filter((e) => (filters.scope ? e.scope === filters.scope : true))
-    .filter((e) => (filters.board ? e.board === filters.board : true))
-    .filter((e) => (filters.difficulty ? e.difficulty === filters.difficulty : true));
-}
-
 function filterOptions(select, current) {
   return `<option value="">전체</option>${select.map((v) => `<option value="${v}" ${v === current ? 'selected' : ''}>${v}</option>`).join('')}`;
+}
+
+// counters/summary 는 apps/{appId}/counters/summary 문서 하나뿐이라 읽기 1건으로 끝난다.
+// (범위·보드·난이도를 동시에 좁혀 보는 건 지원하지 않는다 — 그러려면 조합마다 카운터가 따로 필요해서
+//  하나만 고르면 나머지 둘은 '전체'로 돌아간다.)
+async function fetchSummary(appId) {
+  const snap = await getDoc(doc(db, 'apps', appId, 'counters', 'summary'));
+  return snap.exists() ? snap.data() : {};
+}
+
+// 최근 days 일치 daily/{YYYY-MM-DD} 문서를 하루당 1건씩 읽는다 (14일 = 14건).
+async function fetchDaily(appId, days = 14) {
+  const today = new Date();
+  const dates = Array.from({ length: days }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (days - 1 - i));
+    return d.toISOString().slice(0, 10);
+  });
+  const docs = await Promise.all(dates.map((d) => getDoc(doc(db, 'apps', appId, 'daily', d))));
+  return dates.map((d, i) => [d, docs[i].exists() ? (docs[i].data().starts ?? 0) : 0]);
+}
+
+function statCards(summary, filters) {
+  let starts = summary.totalStarts ?? 0;
+  let clears = summary.totalClears ?? 0;
+  if (filters.scope) {
+    starts = summary[`scope_${filters.scope}_starts`] ?? 0;
+    clears = summary[`scope_${filters.scope}_clears`] ?? 0;
+  } else if (filters.board) {
+    starts = summary[`board_${filters.board}_starts`] ?? 0;
+    clears = summary[`board_${filters.board}_clears`] ?? 0;
+  } else if (filters.difficulty) {
+    starts = summary[`diff_${filters.difficulty}_starts`] ?? 0;
+    clears = summary[`diff_${filters.difficulty}_clears`] ?? 0;
+  }
+  // 플레이어 수·인당 플레이는 필터와 무관하게 전체 기준이다 (조합별 인원수는 따로 세지 않는다).
+  const users = summary.userCount ?? 0;
+  const perUser = users ? ((summary.totalStarts ?? 0) / users).toFixed(1) : '-';
+  return `
+    <div class="card"><span class="num">${starts}</span><span class="label">플레이</span></div>
+    <div class="card"><span class="num">${clears}</span><span class="label">클리어</span></div>
+    <div class="card"><span class="num">${users}</span><span class="label">플레이어 수</span></div>
+    <div class="card"><span class="num">${perUser}</span><span class="label">인당 플레이</span></div>
+  `;
+}
+
+// counters/summary 의 scope_*/board_*/diff_* 필드에서 basis(인기=플레이 많은 순, 승률=클리어율 높은 순) 1위를 고른다
+function topFromSummary(summary, prefix, values, labelFn, basis) {
+  let best = null;
+  for (const v of values) {
+    const starts = summary[`${prefix}_${v}_starts`] ?? 0;
+    const clears = summary[`${prefix}_${v}_clears`] ?? 0;
+    const score = basis === 'winrate' ? (starts ? clears / starts : -1) : starts;
+    if (!best || score > best.score) best = { key: labelFn(v), score, starts, clears };
+  }
+  return best;
+}
+
+function leaderboardHtml(summary, basis) {
+  const groups = [
+    ['scope', SCOPES, scopeLabel, '범위'],
+    ['board', Object.keys(BOARDS), boardLabel, '보드'],
+    ['difficulty', DIFFS, diffLabel, '난이도'],
+  ];
+  return groups
+    .map(([dim, values, labelFn, label]) => {
+      const top = topFromSummary(summary, dim === 'difficulty' ? 'diff' : dim, values, labelFn, basis);
+      if (!top || top.starts === 0) return `<div class="card"><span class="num">-</span><span class="label">${label} 1위</span></div>`;
+      const detail = basis === 'winrate' ? `${Math.round(top.score * 100)}% (${top.starts}판)` : `${top.starts}회 플레이`;
+      return `<div class="card"><span class="num">${top.key}</span><span class="label">${label} 1위 · ${detail}</span></div>`;
+    })
+    .join('');
 }
 
 async function appBody(appId) {
@@ -166,35 +176,23 @@ async function appBody(appId) {
 
   document.getElementById('main').innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  let events;
-  try {
-    const snap = await getDocs(collection(db, 'apps', appId, 'events'));
-    events = snap.docs.map((d) => d.data());
-  } catch (e) {
-    document.getElementById('main').innerHTML = `<p class="err">불러오기 실패: ${e.message}</p><button id="refresh">다시 시도</button>`;
-    document.getElementById('refresh').onclick = () => appBody(appId);
-    return;
-  }
-
-  const starts = events.filter((e) => e.type === 'play_start');
-  const clears = events.filter((e) => e.type === 'play_clear');
-
   document.getElementById('main').innerHTML = `
     <a href="#/" class="back-link">← 목록으로</a>
     <div class="title-row">
       <h2>${app.name}</h2>
-      <button id="refresh">↻ 새로고침</button>
     </div>
-    <p class="muted">${new Date().toLocaleTimeString('ko-KR')} 기준</p>
 
     <div class="title-row">
       <h3>통계</h3>
-      <div class="filters">
-        <select id="f-scope">${filterOptions(SCOPES, '')}</select>
-        <select id="f-board">${filterOptions(Object.keys(BOARDS), '')}</select>
-        <select id="f-difficulty">${filterOptions(DIFFS, '')}</select>
-      </div>
+      <button id="stats-refresh">↻ 통계 새로고침</button>
     </div>
+    <p class="muted" id="stats-updated"></p>
+    <div class="filters">
+      <select id="f-scope">${filterOptions(SCOPES, '')}</select>
+      <select id="f-board">${filterOptions(Object.keys(BOARDS), '')}</select>
+      <select id="f-difficulty">${filterOptions(DIFFS, '')}</select>
+    </div>
+    <p class="muted">하나만 고를 수 있어요. 고르면 나머지는 '전체'로 돌아가요.</p>
     <div class="stat-cards" id="stat-cards"></div>
     <p class="muted chart-caption">최근 14일 일별 플레이 횟수</p>
     <div class="table-wrap chart-wrap" id="chart-wrap"></div>
@@ -208,7 +206,10 @@ async function appBody(appId) {
     </div>
     <div class="stat-cards cols-3" id="leaderboard"></div>
 
-    <h3>로그</h3>
+    <div class="title-row">
+      <h3>로그</h3>
+      <button id="log-refresh">↻ 로그 새로고침</button>
+    </div>
     <p class="muted" id="log-count"></p>
     <div class="table-wrap">
       <table>
@@ -218,40 +219,61 @@ async function appBody(appId) {
     </div>
   `;
 
-  // 통계 필터는 이미 받아온 events 안에서만 걸러 다시 그린다 (다시 불러오지 않는다)
-  const renderStats = () => {
+  let summary = {};
+
+  const renderStatCards = () => {
     const filters = {
       scope: document.getElementById('f-scope').value,
       board: document.getElementById('f-board').value,
       difficulty: document.getElementById('f-difficulty').value,
     };
-    const fStarts = applyFilters(starts, filters);
-    const fClears = applyFilters(clears, filters);
-    const users = new Set(fStarts.map((e) => e.clientId).filter(Boolean));
-    const perUser = users.size ? (fStarts.length / users.size).toFixed(1) : '-';
-    document.getElementById('stat-cards').innerHTML = `
-      <div class="card"><span class="num">${fStarts.length}</span><span class="label">플레이</span></div>
-      <div class="card"><span class="num">${fClears.length}</span><span class="label">클리어</span></div>
-      <div class="card"><span class="num">${users.size}</span><span class="label">플레이어 수</span></div>
-      <div class="card"><span class="num">${perUser}</span><span class="label">인당 플레이</span></div>
-    `;
-    document.getElementById('chart-wrap').innerHTML = chartSvg(dailyCounts(fStarts));
+    document.getElementById('stat-cards').innerHTML = statCards(summary, filters);
   };
-  ['f-scope', 'f-board', 'f-difficulty'].forEach((id) => (document.getElementById(id).onchange = renderStats));
-  renderStats();
-
-  // 인기 순위는 통계 필터와 별개로 전체 기록 기준이다
-  const renderBoard = () => {
-    document.getElementById('leaderboard').innerHTML = leaderboardHtml(starts, clears, document.getElementById('basis').value);
+  const renderLeaderboard = () => {
+    document.getElementById('leaderboard').innerHTML = leaderboardHtml(summary, document.getElementById('basis').value);
   };
-  document.getElementById('basis').onchange = renderBoard;
-  renderBoard();
 
-  const { count, rows } = logRowsHtml(events);
-  document.getElementById('log-body').innerHTML = rows;
-  document.getElementById('log-count').textContent = `전체 ${count}건${count > 200 ? ' (최근 200건 표시)' : ''}`;
+  // 셀렉트 하나를 고르면 나머지 둘은 '전체'로 되돌린다 (조합 카운터가 없어서 하나씩만 지원한다)
+  ['f-scope', 'f-board', 'f-difficulty'].forEach((id) => {
+    document.getElementById(id).onchange = () => {
+      ['f-scope', 'f-board', 'f-difficulty'].filter((x) => x !== id).forEach((x) => (document.getElementById(x).value = ''));
+      renderStatCards();
+    };
+  });
+  document.getElementById('basis').onchange = renderLeaderboard;
 
-  document.getElementById('refresh').onclick = () => appBody(appId);
+  // 통계: counters/summary 1건 + daily 14건 = 읽기 15건. 이벤트 전체를 훑지 않는다.
+  const loadStats = async () => {
+    document.getElementById('stats-updated').textContent = '불러오는 중...';
+    try {
+      const [s, daily] = await Promise.all([fetchSummary(appId), fetchDaily(appId)]);
+      summary = s;
+      renderStatCards();
+      document.getElementById('chart-wrap').innerHTML = chartSvg(daily);
+      renderLeaderboard();
+      document.getElementById('stats-updated').textContent = `${new Date().toLocaleTimeString('ko-KR')} 기준`;
+    } catch (e) {
+      document.getElementById('stats-updated').textContent = `통계 불러오기 실패: ${e.message}`;
+    }
+  };
+
+  // 로그: 원본 이벤트를 전부 읽는다. 기록이 많아지면 이 버튼만 비용이 든다.
+  const loadLog = async () => {
+    document.getElementById('log-count').textContent = '불러오는 중...';
+    try {
+      const snap = await getDocs(collection(db, 'apps', appId, 'events'));
+      const { count, rows } = logRowsHtml(snap.docs.map((d) => d.data()));
+      document.getElementById('log-body').innerHTML = rows;
+      document.getElementById('log-count').textContent = `전체 ${count}건${count > 200 ? ' (최근 200건 표시)' : ''} · ${new Date().toLocaleTimeString('ko-KR')} 기준`;
+    } catch (e) {
+      document.getElementById('log-count').textContent = `로그 불러오기 실패: ${e.message}`;
+    }
+  };
+
+  document.getElementById('stats-refresh').onclick = loadStats;
+  document.getElementById('log-refresh').onclick = loadLog;
+  loadStats();
+  loadLog();
 }
 
 function route() {

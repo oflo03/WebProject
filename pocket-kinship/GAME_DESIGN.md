@@ -248,12 +248,29 @@ pocket-kinship/scripts/build-data.mjs   # PokéAPI + overrides.json -> 위 두 �
 - 데이터 위치: `apps/kinship/events/{자동ID}` 문서마다 `{type, ts, clientId, ...그 외 값}`.
 - 격리 방식: Firestore 멀티 데이터베이스(완전 물리적 분리)는 Blaze(종량제) 요금제가 있어야 해서 보류했다. 대신 하나의 기본 데이터베이스를 쓰되, `firestore.rules`로 앱마다 자기 경로(`apps/{appId}/events`)에만 쓰게 막았다. 새 앱을 추가하려면 규칙의 화이트리스트(`appId in [...]`)에 이름을 더한다.
 - 보안 규칙: 클라이언트는 이벤트를 **추가만** 할 수 있고 읽기·수정·삭제는 전부 막았다. 콘솔에서 보는 것은 관리자 권한이라 이 규칙과 무관하게 항상 보인다.
-- 관리 위치: `app-stats-hub/` (저장소 루트, `pocket-kinship/`과 같은 위치의 별도 폴더). `firebase.json`, `firestore.rules`, `firestore.indexes.json`을 담고 있고, 이 프로젝트 전용 `.firebaserc`로 배포한다.
+- 관리 위치: `app-stats-hub/` (저장소 루트, `pocket-kinship/`과 같은 위치의 별도 폴더). `firebase.json`, `firestore.rules`, `firestore.indexes.json`, `public/`(대시보드), `scripts/backfill-counters.mjs`를 담고 있고, 이 프로젝트 전용 `.firebaserc`로 배포한다.
 - 보내는 이벤트 (`pocket-kinship/src/analytics.js`의 `track(type, params)`):
   - `play_start`: 퍼즐 시작 시 (board, difficulty, scope)
   - `play_clear`: 클리어 시 한 번만 (board, difficulty, scope, retracts, grade)
   - 모든 문서에 `clientId`(브라우저별 익명 ID, localStorage)가 같이 저장돼서 인당 횟수를 셀 수 있다.
-- 확인 방법: Firebase 콘솔 → `app-stats-hub` 프로젝트 → Firestore Database → 데이터 탭에서 `apps/kinship/events`를 연다. 집계 그래프는 없고 문서 목록을 표로 보는 것이라, "오늘 몇 명" 같은 숫자는 문서를 세거나 나중에 직접 쿼리/화면을 만들어야 한다.
+
+### 집계 카운터 (통계를 가볍게 읽으려고)
+
+원본 로그(`events`)만 있으면 통계를 볼 때마다 문서를 전부 읽어야 해서 기록이 쌓일수록 비용이 커진다. 그래서 `track()`이 이벤트를 쓸 때 미리 정해둔 필드 이름으로 집계 문서도 같이 늘린다(`increment`). 대시보드는 이 문서 몇 개만 읽으면 된다.
+
+- `apps/{appId}/counters/summary` (문서 하나): `totalStarts`, `totalClears`, `userCount`, 그리고 `scope_<값>_starts`/`_clears`, `board_<값>_starts`/`_clears`, `diff_<값>_starts`/`_clears` (범위·보드·난이도 각각 따로, 조합은 없다).
+- `apps/{appId}/daily/{YYYY-MM-DD}`: `{ starts }`. 일별 그래프가 최근 14일치만 문서 14개를 읽는다.
+- `apps/{appId}/users/{clientId}`: 존재 여부만 쓴다. `analytics.js`가 브라우저를 처음 보면(문서가 없으면) 만들고 `userCount`를 늘린다. 탭 하나가 떠 있는 동안은 한 번만 확인한다(모듈 변수 플래그).
+- 규칙은 예전 `events`보다 느슨하다: 화이트리스트에 있는 `appId`면 `counters/summary`와 `daily/*`에 자유롭게 쓸 수 있다(누구나 늘릴 수 있다는 뜻이라, 조작 위험을 완전히 막지는 않는다 — `events` create 규칙만큼 엄격하진 않다).
+- 조합(예: 범위+보드+난이도를 동시에 좁히기)은 지원하지 않는다. 그러려면 조합마다 카운터가 따로 필요해서, 값이 늘어날수록 필드가 기하급수로 는다. 그래서 대시보드 필터는 세 개 중 하나만 고를 수 있게 했다(하나를 고르면 나머지는 자동으로 '전체'로 돌아간다).
+- 기존 기록에서 카운터를 한 번 채우는 스크립트: `app-stats-hub/scripts/backfill-counters.mjs` (`npm run backfill`). 이벤트를 전부 읽어 위 세 컬렉션을 계산해서 쓴다. 앱을 새로 추가했을 때도 이걸로 초기값을 채우면 된다.
+
+### 대시보드 새로고침 (통계 / 로그, 따로)
+
+- **통계 새로고침**: `counters/summary` 1건 + `daily` 14건, 총 읽기 15건. 통계 카드·그래프·인기 순위가 전부 여기서 나온다.
+- **로그 새로고침**: `events` 전체를 읽는다(원본 로그 표시용, 기존 방식 그대로). 기록이 많아질수록 이 버튼만 비용이 는다.
+- 페이지를 처음 열면 둘 다 자동으로 한 번 부른다. 그 뒤로는 버튼을 눌러야 다시 가져온다.
+- 확인 방법(콘솔): Firebase 콘솔 → `app-stats-hub` 프로젝트 → Firestore Database → 데이터 탭에서 `apps/kinship/counters/summary`, `apps/kinship/daily/*`, `apps/kinship/events`를 각각 연다.
 
 ## 14. 확인된 사실 로그
 
