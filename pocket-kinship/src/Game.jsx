@@ -71,6 +71,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const [memoHover, setMemoHover] = useState(null); // 드래그 중 포인터 아래의 메모 칸
   const [memo, setMemo] = useState(() => Array(MEMO_ROWS * 2).fill(null)); // 메모 칸마다 넣어둔 포켓몬 id (복사본, 보드/트레이와 무관)
   const [memoOpen, setMemoOpen] = useState(false); // 버튼을 눌러야 펼쳐진다 (기본은 접힘)
+  const [factLogOpen, setFactLogOpen] = useState(false); // 확인된 사실 로그도 기본은 접힘
 
   // 이 게임(퍼즐 한 판) 동안 실제로 보드에서 이웃해 판정된 적 있는 쌍의 결과. sortedIds.join('|') -> {ok, facts}
   // 보드를 초기화해도 지식은 남는다. 새 퍼즐을 시작하면(컴포넌트가 새로 마운트되며) 같이 리셋된다.
@@ -414,7 +415,8 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
           </div>
         </section>
 
-        <aside className="memo">
+        <div className="side-column">
+        <aside className="side-card memo">
           <div className="title-row">
             <button
               className="memo-toggle"
@@ -478,6 +480,49 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
             </>
           )}
         </aside>
+
+        <aside className="side-card fact-log">
+          <div className="title-row">
+            <button
+              className="memo-toggle"
+              aria-expanded={factLogOpen}
+              onClick={() => setFactLogOpen(!factLogOpen)}
+            >
+              <span className={`chev ${factLogOpen ? 'open' : ''}`} aria-hidden="true">
+                ▸
+              </span>
+              {t('factLogTitle')}
+            </button>
+          </div>
+          {factLogOpen && (
+            <>
+              <p className="hint">{t('factLogHint')}</p>
+              <ul className="fact-list">
+                {tested.current.size === 0 && <li className="muted">{t('factLogEmpty')}</li>}
+                {[...tested.current.entries()]
+                  .reverse()
+                  .map(([key, rec]) => {
+                    const [aId, cId] = key.split('|');
+                    const a = byId.get(aId);
+                    const c = byId.get(cId);
+                    return (
+                      <li key={key} className={rec.ok ? 'ok' : 'bad'}>
+                        <div className="fact-pair">
+                          <img src={sprite(a)} alt="" draggable={false} />
+                          <span className="fact-names">
+                            {a.name[lang]} · {c.name[lang]}
+                          </span>
+                          <img src={sprite(c)} alt="" draggable={false} />
+                        </div>
+                        <p className="fact-result">{rec.ok ? rec.facts.join(' · ') : t('noLink')}</p>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </>
+          )}
+        </aside>
+        </div>
 
         <aside className="team-panel">
           <span className="eyebrow">{DIFF_NAMES[puzzle.difficulty]}</span>

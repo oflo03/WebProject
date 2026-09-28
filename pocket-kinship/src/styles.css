@@ -316,23 +316,28 @@ main {
   .play-layout {
     grid-template-columns: 260px minmax(0, 1fr) 244px;
   }
-  .memo {
+  .side-column {
     order: -1;
   }
 }
-.memo {
+.side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.side-card {
   background: #edf4e6e6;
   border: 1px solid #ffffffc0;
   border-radius: 22px;
   padding: 22px 18px;
 }
-.memo .title-row {
+.side-card .title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
 }
-.memo .title-row button {
+.side-card .title-row button {
   font-size: 10px;
   padding: 5px 8px;
   min-height: 0;
@@ -357,11 +362,7 @@ main {
 .memo-toggle .chev.open {
   transform: rotate(90deg);
 }
-.memo h2 {
-  font-size: 15px;
-  margin: 0;
-}
-.memo .hint {
+.side-card .hint {
   margin: 6px 0 14px;
 }
 .memo-pill {
@@ -432,6 +433,55 @@ main {
 }
 .memo-badge.bad {
   border-color: var(--bad);
+  color: var(--bad);
+}
+.fact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.fact-list li {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+.fact-list li.ok {
+  border-color: var(--ok);
+}
+.fact-list li.bad {
+  border-color: var(--bad);
+}
+.fact-pair {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.fact-pair img {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  image-rendering: pixelated;
+}
+.fact-names {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+}
+.fact-result {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.fact-list li.ok .fact-result {
+  color: var(--ok);
+}
+.fact-list li.bad .fact-result {
   color: var(--bad);
 }
 .play-surface {
@@ -875,26 +925,18 @@ main {
   .team-panel .hint {
     margin: 0 0 6px;
   }
-  /* ponytail: 모바일에서도 메모 6줄을 전부 보여줘서, 이 블록이 지키던 '한 화면에 꽉 차기'가 다시 깨진다.
-     접기 토글을 달면 고칠 수 있지만 지금은 뺐다. 필요해지면 team-panel 처럼 접이식으로 만들 것. */
-  .memo {
+  /* 메모/확인된 사실은 기본으로 접혀 있어 한 화면 넓이만 차지한다. 펼쳤을 때는 그대로 두고 스크롤을 허용한다. */
+  .side-card {
     padding: 8px 10px 10px;
     border-radius: 16px;
   }
-  .memo .hint {
-    display: none;
-  }
   .memo-pill {
     padding: 8px 6px;
-    gap: 4px;
-  }
-  .memo-slot {
-    width: 32px;
-    height: 32px;
+    gap: 8px;
   }
   .memo-slot img {
-    width: 26px;
-    height: 26px;
+    width: 62px;
+    height: 62px;
   }
   .tray {
     grid-template-columns: repeat(var(--tray-cols, 5), minmax(0, 1fr));
