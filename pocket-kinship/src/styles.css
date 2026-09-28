@@ -356,8 +356,8 @@ main {
 }
 .memo-slot {
   flex: none;
-  width: 72px;
-  height: 72px;
+  width: 92px;
+  height: 92px;
   padding: 0;
   border-radius: 50%;
   display: flex;
@@ -368,15 +368,15 @@ main {
 }
 .memo-slot span {
   color: #9cb4a5;
-  font-size: 20px;
+  font-size: 24px;
 }
 .memo-slot.filled {
   border-style: solid;
   border-color: var(--accent);
 }
 .memo-slot img {
-  width: 62px;
-  height: 62px;
+  width: 80px;
+  height: 80px;
   image-rendering: pixelated;
 }
 .memo-slot.hover {

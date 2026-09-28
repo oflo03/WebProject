@@ -19,7 +19,7 @@ const MAX_LINES = 4;
 const textWidth = (s) =>
   [...s].reduce((w, ch) => w + (ch.charCodeAt(0) > 255 ? 11 : 6.2), 8);
 
-const MEMO_ROWS = 6;
+const MEMO_ROWS = 5;
 
 // 포인터 아래 메모 칸(있다면) 의 인덱스. 메모 칸은 보드처럼 스냅하지 않고 정확히 그 칸 위여야 한다.
 function memoSlotAt(clientX, clientY) {
