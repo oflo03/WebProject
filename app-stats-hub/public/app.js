@@ -22,7 +22,7 @@ const DIFFS = ['easy', 'super', 'expert', 'master'];
 const scopeLabel = (s) => (s == null ? '-' : s === 'all' ? '전체' : `${s}세대`);
 const boardLabel = (b) => BOARDS[b] ?? b ?? '-';
 const diffLabel = (d) => (d == null ? '-' : d[0].toUpperCase() + d.slice(1));
-const TYPE_LABEL = { play_start: '시작', play_clear: '클리어' };
+const TYPE_LABEL = { play_start: '플레이', play_clear: '클리어' };
 
 const root = document.getElementById('root');
 
@@ -124,21 +124,19 @@ function leaderboardHtml(starts, clears, basis) {
   ].map(([dim, label]) => {
     const top = topBy(starts, clears, dim, basis);
     if (!top) return `<div class="card"><span class="num">-</span><span class="label">${label} 1위</span></div>`;
-    const detail = basis === 'winrate' ? `${Math.round(top.score * 100)}% (${top.starts}판)` : `${top.starts}회 시작`;
+    const detail = basis === 'winrate' ? `${Math.round(top.score * 100)}% (${top.starts}판)` : `${top.starts}회 플레이`;
     return `<div class="card"><span class="num">${top.key}</span><span class="label">${label} 1위 · ${detail}</span></div>`;
   });
   return cards.join('');
 }
 
-function logRowsHtml(events, filters) {
-  const filtered = events
+// 로그 창은 필터 없이 전체 기록을 최신순으로 보여준다
+function logRowsHtml(events) {
+  const sorted = events
     .filter((e) => e.type === 'play_start' || e.type === 'play_clear')
-    .filter((e) => (filters.scope ? e.scope === filters.scope : true))
-    .filter((e) => (filters.board ? e.board === filters.board : true))
-    .filter((e) => (filters.difficulty ? e.difficulty === filters.difficulty : true))
     .sort((a, b) => (b.ts?.seconds ?? 0) - (a.ts?.seconds ?? 0));
 
-  const rows = filtered
+  const rows = sorted
     .slice(0, 200)
     .map((e) => {
       const t = e.ts?.seconds ? new Date(e.ts.seconds * 1000).toLocaleString('ko-KR') : '-';
@@ -147,11 +145,19 @@ function logRowsHtml(events, filters) {
     })
     .join('');
 
-  return { count: filtered.length, rows: rows || '<tr><td colspan="6" class="muted">조건에 맞는 기록이 없어요.</td></tr>' };
+  return { count: sorted.length, rows: rows || '<tr><td colspan="6" class="muted">아직 기록이 없어요.</td></tr>' };
+}
+
+// 통계 창의 범위/보드/난이도 필터. 기준값이 비어 있으면(전체) 그 항목은 거르지 않는다.
+function applyFilters(events, filters) {
+  return events
+    .filter((e) => (filters.scope ? e.scope === filters.scope : true))
+    .filter((e) => (filters.board ? e.board === filters.board : true))
+    .filter((e) => (filters.difficulty ? e.difficulty === filters.difficulty : true));
 }
 
 function filterOptions(select, current) {
-  return `<option value="">전체 로그</option>${select.map((v) => `<option value="${v}" ${v === current ? 'selected' : ''}>${v}</option>`).join('')}`;
+  return `<option value="">전체</option>${select.map((v) => `<option value="${v}" ${v === current ? 'selected' : ''}>${v}</option>`).join('')}`;
 }
 
 async function appBody(appId) {
@@ -172,10 +178,6 @@ async function appBody(appId) {
 
   const starts = events.filter((e) => e.type === 'play_start');
   const clears = events.filter((e) => e.type === 'play_clear');
-  const users = new Set(events.map((e) => e.clientId).filter(Boolean));
-  const perUser = users.size ? (starts.length / users.size).toFixed(1) : '-';
-  const filters = { scope: '', board: '', difficulty: '' };
-  let basis = 'popularity';
 
   document.getElementById('main').innerHTML = `
     <a href="#/" class="back-link">← 목록으로</a>
@@ -185,58 +187,69 @@ async function appBody(appId) {
     </div>
     <p class="muted">${new Date().toLocaleTimeString('ko-KR')} 기준</p>
 
-    <div class="stat-cards">
-      <div class="card"><span class="num">${starts.length}</span><span class="label">시작</span></div>
-      <div class="card"><span class="num">${clears.length}</span><span class="label">클리어</span></div>
-      <div class="card"><span class="num">${users.size}</span><span class="label">플레이어 수</span></div>
-      <div class="card"><span class="num">${perUser}</span><span class="label">인당 플레이</span></div>
+    <div class="title-row">
+      <h3>통계</h3>
+      <div class="filters">
+        <select id="f-scope">${filterOptions(SCOPES, '')}</select>
+        <select id="f-board">${filterOptions(Object.keys(BOARDS), '')}</select>
+        <select id="f-difficulty">${filterOptions(DIFFS, '')}</select>
+      </div>
     </div>
+    <div class="stat-cards" id="stat-cards"></div>
+    <p class="muted chart-caption">최근 14일 일별 플레이 횟수</p>
+    <div class="table-wrap chart-wrap" id="chart-wrap"></div>
 
-    <h3>일별 시작 횟수 (최근 14일)</h3>
-    <div class="table-wrap chart-wrap">${chartSvg(dailyCounts(starts))}</div>
+    <div class="title-row">
+      <h3>인기 순위</h3>
+      <select id="basis">
+        <option value="popularity">기준: 인기(플레이 횟수)</option>
+        <option value="winrate">기준: 승률(클리어율)</option>
+      </select>
+    </div>
+    <div class="stat-cards cols-3" id="leaderboard"></div>
 
     <h3>로그</h3>
-    <div class="filters">
-      <select id="f-scope">${filterOptions(SCOPES, '')}</select>
-      <select id="f-board">${filterOptions(Object.keys(BOARDS), '')}</select>
-      <select id="f-difficulty">${filterOptions(DIFFS, '')}</select>
-      <span class="muted" id="log-count"></span>
-    </div>
+    <p class="muted" id="log-count"></p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>시각</th><th>종류</th><th>범위</th><th>보드</th><th>난이도</th><th>상세</th></tr></thead>
         <tbody id="log-body"></tbody>
       </table>
     </div>
-
-    <div class="title-row">
-      <h3>1위</h3>
-      <select id="basis">
-        <option value="popularity">기준: 인기(시작 횟수)</option>
-        <option value="winrate">기준: 승률(클리어율)</option>
-      </select>
-    </div>
-    <div class="stat-cards cols-3" id="leaderboard"></div>
   `;
 
-  // 필터 select 는 이미 받아온 events 안에서만 걸러 다시 그린다 (다시 불러오지 않는다)
-  const renderLog = () => {
-    filters.scope = document.getElementById('f-scope').value;
-    filters.board = document.getElementById('f-board').value;
-    filters.difficulty = document.getElementById('f-difficulty').value;
-    const { count, rows } = logRowsHtml(events, filters);
-    document.getElementById('log-body').innerHTML = rows;
-    document.getElementById('log-count').textContent = `${count}건${count > 200 ? ' (최근 200건 표시)' : ''}`;
+  // 통계 필터는 이미 받아온 events 안에서만 걸러 다시 그린다 (다시 불러오지 않는다)
+  const renderStats = () => {
+    const filters = {
+      scope: document.getElementById('f-scope').value,
+      board: document.getElementById('f-board').value,
+      difficulty: document.getElementById('f-difficulty').value,
+    };
+    const fStarts = applyFilters(starts, filters);
+    const fClears = applyFilters(clears, filters);
+    const users = new Set(fStarts.map((e) => e.clientId).filter(Boolean));
+    const perUser = users.size ? (fStarts.length / users.size).toFixed(1) : '-';
+    document.getElementById('stat-cards').innerHTML = `
+      <div class="card"><span class="num">${fStarts.length}</span><span class="label">플레이</span></div>
+      <div class="card"><span class="num">${fClears.length}</span><span class="label">클리어</span></div>
+      <div class="card"><span class="num">${users.size}</span><span class="label">플레이어 수</span></div>
+      <div class="card"><span class="num">${perUser}</span><span class="label">인당 플레이</span></div>
+    `;
+    document.getElementById('chart-wrap').innerHTML = chartSvg(dailyCounts(fStarts));
   };
-  ['f-scope', 'f-board', 'f-difficulty'].forEach((id) => (document.getElementById(id).onchange = renderLog));
-  renderLog();
+  ['f-scope', 'f-board', 'f-difficulty'].forEach((id) => (document.getElementById(id).onchange = renderStats));
+  renderStats();
 
+  // 인기 순위는 통계 필터와 별개로 전체 기록 기준이다
   const renderBoard = () => {
-    basis = document.getElementById('basis').value;
-    document.getElementById('leaderboard').innerHTML = leaderboardHtml(starts, clears, basis);
+    document.getElementById('leaderboard').innerHTML = leaderboardHtml(starts, clears, document.getElementById('basis').value);
   };
   document.getElementById('basis').onchange = renderBoard;
   renderBoard();
+
+  const { count, rows } = logRowsHtml(events);
+  document.getElementById('log-body').innerHTML = rows;
+  document.getElementById('log-count').textContent = `전체 ${count}건${count > 200 ? ' (최근 200건 표시)' : ''}`;
 
   document.getElementById('refresh').onclick = () => appBody(appId);
 }
