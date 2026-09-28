@@ -6,23 +6,25 @@
     <title>Stats Hub</title>
     <style>
       :root {
-        --bg: #f6f5f0;
-        --fg: #22211f;
-        --muted: #77746c;
-        --card: #fff;
-        --line: #ddd9cd;
-        --accent: #4a63d8;
-        --bad: #b9483e;
+        --bg: #f5f8ef;
+        --fg: #22301f;
+        --muted: #6f8267;
+        --card: #ffffff;
+        --line: #e1ead6;
+        --accent: #2f9e6b;
+        --accent-2: #f7cf59;
+        --bad: #d85a4a;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #1b1b1a;
-          --fg: #ecebe6;
-          --muted: #9b988f;
-          --card: #262624;
-          --line: #4a4944;
-          --accent: #7e92f0;
-          --bad: #ee7a73;
+          --bg: #16201a;
+          --fg: #eaf3e4;
+          --muted: #93a68b;
+          --card: #1f2b21;
+          --line: #2c3a2b;
+          --accent: #5cc292;
+          --accent-2: #f7cf59;
+          --bad: #f08a7c;
         }
       }
       * {
@@ -35,19 +37,9 @@
         font-family: system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
       }
       #root {
-        max-width: 860px;
+        max-width: 880px;
         margin: 0 auto;
         min-height: 100dvh;
-      }
-      .center {
-        min-height: 100dvh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        text-align: center;
-        padding: 24px;
       }
       .muted {
         color: var(--muted);
@@ -57,121 +49,179 @@
         color: var(--bad);
         font-size: 13px;
       }
-      button {
+      button,
+      a.button {
         font: inherit;
         color: inherit;
         cursor: pointer;
         border: 1px solid var(--line);
         background: var(--card);
         padding: 8px 14px;
-        border-radius: 10px;
-      }
-      button.primary {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #fff;
-        padding: 10px 20px;
+        border-radius: 12px;
       }
       header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--line);
+        gap: 10px;
+        padding: 22px 24px 10px;
       }
       .brand {
-        font-weight: 700;
-        color: inherit;
-        text-decoration: none;
-      }
-      .user {
         display: flex;
         align-items: center;
-        gap: 10px;
-        font-size: 13px;
-        color: var(--muted);
+        gap: 8px;
+        font-weight: 800;
+        font-size: 20px;
+        color: inherit;
+        text-decoration: none;
+        letter-spacing: -0.3px;
+      }
+      .brand .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
       }
       main {
-        padding: 20px;
+        padding: 8px 24px 40px;
+      }
+      .tagline {
+        color: var(--muted);
+        font-size: 14px;
+        margin: 0 0 22px;
       }
       .app-list {
         list-style: none;
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 12px;
       }
       .app-list a {
         display: flex;
         flex-direction: column;
-        gap: 2px;
-        padding: 16px;
+        gap: 6px;
+        padding: 20px;
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 18px;
         background: var(--card);
         color: inherit;
         text-decoration: none;
+        box-shadow: 0 2px 0 var(--line);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
       }
       .app-list a:hover {
         border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 18%, transparent);
+      }
+      .app-list .icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--accent-2) 35%, var(--card));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .app-list strong {
+        font-size: 16px;
+      }
+      .back-link {
+        display: inline-block;
+        color: var(--accent);
+        font-size: 13px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      h2 {
+        margin: 0 0 4px;
+        font-size: 24px;
+        letter-spacing: -0.4px;
+      }
+      h3 {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 28px 0 10px;
       }
       .stat-cards {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 10px;
-        margin: 16px 0 24px;
+        margin: 18px 0 8px;
       }
       .card {
         background: var(--card);
         border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 14px;
+        border-radius: 16px;
+        padding: 16px;
         display: flex;
         flex-direction: column;
         gap: 4px;
       }
       .card .num {
-        font-size: 26px;
-        font-weight: 700;
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--accent);
       }
       .card .label {
         font-size: 12px;
         color: var(--muted);
       }
+      .table-wrap {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+      }
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 24px;
         font-size: 13px;
       }
-      th,
+      th {
+        text-align: left;
+        padding: 10px 14px;
+        background: color-mix(in srgb, var(--accent) 10%, var(--card));
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+      }
       td {
         text-align: left;
-        padding: 8px 10px;
-        border-bottom: 1px solid var(--line);
+        padding: 9px 14px;
+        border-top: 1px solid var(--line);
         white-space: nowrap;
+      }
+      tbody tr:nth-child(even) {
+        background: color-mix(in srgb, var(--accent) 4%, transparent);
       }
       td.muted {
         white-space: normal;
         word-break: break-all;
       }
-      h1 {
-        margin: 0;
-      }
-      h2 {
-        margin: 8px 0 0;
-      }
-      h3 {
-        font-size: 14px;
-        color: var(--muted);
-        margin: 20px 0 8px;
-      }
       @media (max-width: 600px) {
+        header,
+        main {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
         .stat-cards {
           grid-template-columns: repeat(2, 1fr);
         }
-        table {
-          display: block;
+        .table-wrap {
           overflow-x: auto;
         }
       }
