@@ -428,9 +428,10 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
               const a = aId && byId.get(aId);
               const c = cId && byId.get(cId);
               const rec = a && c && tested.current.get([aId, cId].sort().join('|'));
+              // 배지에는 기호만 쓴다: 칸이 좁아 글자가 다 안 보이던 문제라, 대신 title 로 전체 내용을 보여준다.
               const badgeCls = !a || !c ? '' : rec ? (rec.ok ? 'ok' : 'bad') : 'unknown';
-              const badgeText = !a || !c ? '' : rec ? (rec.ok ? rec.facts[0] ?? '' : t('noLink')) : '?';
-              const badgeTitle = rec?.ok ? rec.facts.join(' · ') : !rec && a && c ? t('memoUnknown') : undefined;
+              const badgeText = !a || !c ? '' : rec ? (rec.ok ? '✓' : '✗') : '?';
+              const badgeTitle = rec?.ok ? rec.facts.join(' · ') : rec ? t('noLink') : a && c ? t('memoUnknown') : undefined;
               const slot = (idx) => {
                 const id = memo[idx];
                 const p = id && byId.get(id);
