@@ -38,10 +38,6 @@ const STR = {
     rule: (k) =>
       `이웃한 칸과 서로 다른 카테고리 ${k}개 이상에서 공통점이 있어야 해요.`,
     pickFirst: '먼저 아래에서 포켓몬을 골라 주세요.',
-    memoTitle: '메모',
-    memoHint: '포켓몬을 드래그하거나, 고른 뒤 칸을 눌러 넣어요. 넣어도 원래 자리는 그대로예요.',
-    memoUnknown: '아직 이 게임에서 안 이어봤어요',
-    memoReset: '메모 초기화',
     factLogTitle: '확인된 사실',
     factLogHint: '이 판에서 보드에 이웃해 채워본 결과를 시간 역순으로 모아요.',
     factLogEmpty: '아직 이웃해본 쌍이 없어요.',
@@ -107,10 +103,6 @@ const STR = {
         ? `Neighboring nodes must share something in at least ${k} different categories.`
         : 'Neighboring nodes must share something in at least 1 category.',
     pickFirst: 'Pick a Pokémon below first.',
-    memoTitle: 'Notes',
-    memoHint: 'Drag a Pokémon in, or pick one below and tap a slot. It stays where it was.',
-    memoUnknown: "Haven't tried this pair this game",
-    memoReset: 'Clear notes',
     factLogTitle: 'Confirmed facts',
     factLogHint: 'Every pair you filled adjacent on the board this puzzle, newest first.',
     factLogEmpty: "No pairs tried yet.",
