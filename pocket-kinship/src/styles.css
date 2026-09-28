@@ -123,6 +123,23 @@ main {
   height: auto;
   margin: auto;
 }
+.brand-link {
+  display: inline-block;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  cursor: pointer;
+  border-radius: var(--radius, 8px);
+}
+.brand-link:hover {
+  opacity: 0.85;
+}
+.brand-link:focus-visible {
+  outline: 3px solid #bc820d;
+  outline-offset: 3px;
+}
 .hero-line {
   font-size: 19px;
   font-weight: 700;

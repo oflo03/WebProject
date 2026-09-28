@@ -228,7 +228,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
         <button className="back-button" onClick={onMenu}>
           ← {t('menu')}
         </button>
-        <Brand lang={lang} compact />
+        <Brand lang={lang} compact onClick={onMenu} />
         <div className="top-buttons">
           <Guide
             lang={lang}

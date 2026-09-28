@@ -2,13 +2,21 @@ import logoEn from '../output/logos/pocket-kinship-en.png';
 import logoKo from '../output/logos/pocket-kinship-ko.png';
 import { boards, LAYOUT } from './game.js';
 
-export function Brand({ lang, compact = false }) {
-  return (
+export function Brand({ lang, compact = false, onClick }) {
+  const img = (
     <img
       className={compact ? 'brand compact' : 'brand'}
       src={lang === 'ko' ? logoKo : logoEn}
       alt={lang === 'ko' ? '포켓 끼리끼리' : 'Pocket Kinship'}
     />
+  );
+  // 로고를 누르면 메뉴로 가는 화면(게임 중)에서만 버튼으로 감싼다
+  return onClick ? (
+    <button type="button" className="brand-link" onClick={onClick}>
+      {img}
+    </button>
+  ) : (
+    img
   );
 }
 
