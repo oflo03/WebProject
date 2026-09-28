@@ -312,6 +312,109 @@ main {
   gap: 20px;
   align-items: start;
 }
+@media (min-width: 701px) {
+  .play-layout {
+    grid-template-columns: 176px minmax(0, 1fr) 244px;
+  }
+  .memo {
+    order: -1;
+  }
+}
+.memo {
+  background: #edf4e6e6;
+  border: 1px solid #ffffffc0;
+  border-radius: 22px;
+  padding: 18px 14px;
+}
+.memo .title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.memo .title-row button {
+  font-size: 10px;
+  padding: 5px 8px;
+  min-height: 0;
+}
+.memo h2 {
+  font-size: 15px;
+  margin: 0;
+}
+.memo .hint {
+  margin: 6px 0 14px;
+}
+.memo-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 2px solid #cfe0d6;
+  border-radius: 999px;
+  padding: 14px 8px;
+}
+.memo-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.memo-slot {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 2px dashed #b8d0c1;
+}
+.memo-slot span {
+  color: #9cb4a5;
+  font-size: 15px;
+}
+.memo-slot.filled {
+  border-style: solid;
+  border-color: var(--accent);
+}
+.memo-slot img {
+  width: 34px;
+  height: 34px;
+  image-rendering: pixelated;
+}
+.memo-slot.hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.memo-link {
+  flex: 1;
+  min-width: 8px;
+  height: 2px;
+  background: #cfe0d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.memo-badge {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 2px 5px;
+  font-size: 9px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+.memo-badge.ok {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+.memo-badge.bad {
+  border-color: var(--bad);
+  color: var(--bad);
+}
 .play-surface {
   background: #fffef9eb;
   border: 1px solid #fff;
@@ -752,6 +855,27 @@ main {
   }
   .team-panel .hint {
     margin: 0 0 6px;
+  }
+  /* ponytail: 모바일에서도 메모 6줄을 전부 보여줘서, 이 블록이 지키던 '한 화면에 꽉 차기'가 다시 깨진다.
+     접기 토글을 달면 고칠 수 있지만 지금은 뺐다. 필요해지면 team-panel 처럼 접이식으로 만들 것. */
+  .memo {
+    padding: 8px 10px 10px;
+    border-radius: 16px;
+  }
+  .memo .hint {
+    display: none;
+  }
+  .memo-pill {
+    padding: 8px 6px;
+    gap: 4px;
+  }
+  .memo-slot {
+    width: 32px;
+    height: 32px;
+  }
+  .memo-slot img {
+    width: 26px;
+    height: 26px;
   }
   .tray {
     grid-template-columns: repeat(var(--tray-cols, 5), minmax(0, 1fr));

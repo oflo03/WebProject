@@ -19,6 +19,14 @@ const MAX_LINES = 4;
 const textWidth = (s) =>
   [...s].reduce((w, ch) => w + (ch.charCodeAt(0) > 255 ? 11 : 6.2), 8);
 
+const MEMO_ROWS = 6;
+
+// 포인터 아래 메모 칸(있다면) 의 인덱스. 메모 칸은 보드처럼 스냅하지 않고 정확히 그 칸 위여야 한다.
+function memoSlotAt(clientX, clientY) {
+  const el = document.elementFromPoint(clientX, clientY)?.closest('[data-memo]');
+  return el ? Number(el.dataset.memo) : null;
+}
+
 // 포인터 아래 svg 보드를 찾아, 그 안에서 가장 가까운 칸으로 스냅한다. 보드 밖이면 null.
 function nodeAt(clientX, clientY, pos) {
   const svg = document.querySelector('svg.board');
@@ -60,6 +68,23 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const [msg, setMsg] = useState('');
   const [ghost, setGhost] = useState(null); // 드래그 중인 포켓몬 { id, x, y, node }
   const [hover, setHover] = useState(null); // 드래그 중 포인터 아래의 노드
+  const [memoHover, setMemoHover] = useState(null); // 드래그 중 포인터 아래의 메모 칸
+  const [memo, setMemo] = useState(() => Array(MEMO_ROWS * 2).fill(null)); // 메모 칸마다 넣어둔 포켓몬 id (복사본, 보드/트레이와 무관)
+
+  // 이 게임(퍼즐 한 판) 동안 실제로 보드에서 이웃해 판정된 적 있는 쌍의 결과. sortedIds.join('|') -> {ok, facts}
+  // 보드를 초기화해도 지식은 남는다. 새 퍼즐을 시작하면(컴포넌트가 새로 마운트되며) 같이 리셋된다.
+  const tested = useRef(new Map());
+  const recordTests = (nextPlaced) => {
+    for (const [x, y] of b.edges) {
+      const a = nextPlaced[x];
+      const c = nextPlaced[y];
+      if (!a || !c) continue;
+      const key = [a, c].sort().join('|');
+      if (tested.current.has(key)) continue;
+      const ok = sharedCats(byId.get(a), byId.get(c), puzzle.scope).length >= k;
+      tested.current.set(key, { ok, facts: ok ? sharedFacts(byId.get(a), byId.get(c), puzzle.scope, lang) : [] });
+    }
+  };
 
   // 이어진 두 노드가 모두 채워져 있을 때, 공통 카테고리 수가 기준(k)을 채우는가
   const linkOk = (x, y) =>
@@ -94,7 +119,9 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   };
 
   const place = (id, node) => {
-    setPlaced(placed.map((v, j) => (j === node ? id : v)));
+    const next = placed.map((v, j) => (j === node ? id : v));
+    recordTests(next);
+    setPlaced(next);
     setPicked(null);
     setMsg('');
   };
@@ -110,11 +137,37 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const move = (from, to) => {
     const next = placed.slice();
     [next[from], next[to]] = [placed[to], placed[from]];
+    recordTests(next);
     setPlaced(next);
     setRetracts((r) => r + 1);
   };
 
+  // 메모 칸을 채운다. 원본은 보드/트레이 어디 있든 그대로 두고 복사본만 넣는다.
+  const setMemoSlot = (idx, id) => setMemo((m) => m.map((v, j) => (j === idx ? id : v)));
+
+  const clickMemoSlot = (idx) => {
+    if (justDragged.current) return;
+    if (memo[idx]) {
+      setMemoSlot(idx, null);
+      return;
+    }
+    if (!picked) {
+      setMsg(t('pickFirst'));
+      return;
+    }
+    setMemoSlot(idx, picked);
+    setPicked(null);
+    setMsg('');
+  };
+
+  const resetMemo = () => setMemo(Array(MEMO_ROWS * 2).fill(null));
+
   const drop = (source, x, y, pos) => {
+    const memoIdx = memoSlotAt(x, y);
+    if (memoIdx !== null) {
+      setMemoSlot(memoIdx, source.id);
+      return;
+    }
     const node = nodeAt(x, y, pos);
     if (source.from === 'tray') {
       if (node !== null && !placed[node]) place(source.id, node);
@@ -147,12 +200,14 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
         node: d.source.node,
       });
       setHover(nodeAt(e.clientX, e.clientY, pos));
+      setMemoHover(memoSlotAt(e.clientX, e.clientY));
     };
     const end = (e) => {
       const d = dragRef.current;
       dragRef.current = null;
       setGhost(null);
       setHover(null);
+      setMemoHover(null);
       if (!d?.active) return;
       justDragged.current = true;
       setTimeout(() => {
@@ -357,6 +412,58 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
             )}
           </div>
         </section>
+
+        <aside className="memo">
+          <div className="title-row">
+            <h2>{t('memoTitle')}</h2>
+            <button onClick={resetMemo}>{t('memoReset')}</button>
+          </div>
+          <p className="hint">{t('memoHint')}</p>
+          <div className="memo-pill">
+            {Array.from({ length: MEMO_ROWS }, (_, row) => {
+              const ai = row * 2;
+              const ci = row * 2 + 1;
+              const aId = memo[ai];
+              const cId = memo[ci];
+              const a = aId && byId.get(aId);
+              const c = cId && byId.get(cId);
+              const rec = a && c && tested.current.get([aId, cId].sort().join('|'));
+              const badgeCls = !a || !c ? '' : rec ? (rec.ok ? 'ok' : 'bad') : 'unknown';
+              const badgeText = !a || !c ? '' : rec ? (rec.ok ? rec.facts[0] ?? '' : t('noLink')) : '?';
+              const badgeTitle = rec?.ok ? rec.facts.join(' · ') : !rec && a && c ? t('memoUnknown') : undefined;
+              const slot = (idx) => {
+                const id = memo[idx];
+                const p = id && byId.get(id);
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    data-memo={idx}
+                    className={`memo-slot ${p ? 'filled' : ''} ${ghost && memoHover === idx ? 'hover' : ''}`}
+                    onClick={() => clickMemoSlot(idx)}
+                    aria-label={p ? p.name[lang] : t('emptySlot')}
+                  >
+                    {p ? <img src={sprite(p)} alt="" draggable={false} /> : <span>?</span>}
+                  </button>
+                );
+              };
+              return (
+                <div className="memo-row" key={row}>
+                  {slot(ai)}
+                  <div className="memo-link">
+                    {a && c && (
+                      <span className={`memo-badge ${badgeCls}`} title={badgeTitle}>
+                        {badgeText}
+                      </span>
+                    )}
+                  </div>
+                  {slot(ci)}
+                </div>
+              );
+            })}
+          </div>
+        </aside>
+
         <aside className="team-panel">
           <span className="eyebrow">{DIFF_NAMES[puzzle.difficulty]}</span>
           <h2>{t('team')}</h2>
