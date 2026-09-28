@@ -18,10 +18,27 @@ const MAX_LINES = 4;
 const textWidth = (s) =>
   [...s].reduce((w, ch) => w + (ch.charCodeAt(0) > 255 ? 11 : 6.2), 8);
 
-const nodeAt = (x, y) => {
-  const g = document.elementFromPoint(x, y)?.closest('[data-node]');
-  return g ? Number(g.dataset.node) : null;
-};
+// 포인터 아래 svg 보드를 찾아, 그 안에서 가장 가까운 칸으로 스냅한다. 보드 밖이면 null.
+function nodeAt(clientX, clientY, pos) {
+  const svg = document.querySelector('svg.board');
+  if (!svg) return null;
+  const rect = svg.getBoundingClientRect();
+  if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return null;
+  const pt = svg.createSVGPoint();
+  pt.x = clientX;
+  pt.y = clientY;
+  const { x, y } = pt.matrixTransform(svg.getScreenCTM().inverse());
+  let best = 0;
+  let bestDist = Infinity;
+  pos.forEach(([px, py], i) => {
+    const d = (px - x) ** 2 + (py - y) ** 2;
+    if (d < bestDist) {
+      bestDist = d;
+      best = i;
+    }
+  });
+  return best;
+}
 
 export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   const b = boards[puzzle.board];
@@ -80,8 +97,8 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
     setRetracts((r) => r + 1);
   };
 
-  const drop = (source, x, y) => {
-    const node = nodeAt(x, y);
+  const drop = (source, x, y, pos) => {
+    const node = nodeAt(x, y, pos);
     if (source.from === 'tray') {
       if (node !== null && !placed[node]) place(source.id, node);
     } else if (node === null) {
@@ -112,7 +129,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
         y: e.clientY,
         node: d.source.node,
       });
-      setHover(nodeAt(e.clientX, e.clientY));
+      setHover(nodeAt(e.clientX, e.clientY, pos));
     };
     const end = (e) => {
       const d = dragRef.current;
@@ -125,7 +142,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
         justDragged.current = false;
       }, 50);
       if (e.type === 'pointerup')
-        api.current.drop(d.source, e.clientX, e.clientY);
+        api.current.drop(d.source, e.clientX, e.clientY, pos);
     };
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', end);
@@ -238,7 +255,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
                   className={cls}
                   role="button"
                   tabIndex={0}
-                  aria-label={`${i + 1}: ${p ? p.name[lang] : t('emptyNode')}`}
+                  aria-label={`${i + 1}: ${p ? p.name[lang] : t('emptySlot')}`}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();

@@ -14,9 +14,9 @@ const STR = {
     team: '함께할 포켓몬',
     trayHint: '골라서 놓거나, 보드로 끌어 주세요.',
     progress: '배치',
-    emptyNode: '빈 자리',
+    emptySlot: '빈 칸',
     subtitle:
-      '포켓몬을 보드에 전부 배치하세요.\n이웃한 노드끼리는 공통점이 있어야 해요.',
+      '포켓몬을 보드에 전부 배치하세요.\n이웃한 칸끼리는 공통점이 있어야 해요.',
     scope: '범위',
     board: '보드',
     difficulty: '난이도',
@@ -28,7 +28,7 @@ const STR = {
     noLink: '연결 불가',
     hintGen: '세대별 퍼즐에서는 등장 세대가 공통점으로 인정되지 않아요.',
     hintMaster:
-      'Expert와 Master는 이웃한 노드끼리 서로 다른 카테고리 2개에서 공통점이 필요해요.',
+      'Expert와 Master는 이웃한 칸끼리 서로 다른 카테고리 2개에서 공통점이 필요해요.',
     noPuzzle: '이 조합의 퍼즐이 없어요. 다른 설정을 골라 주세요.',
     start: '시작',
     loading: '불러오는 중...',
@@ -36,7 +36,7 @@ const STR = {
     reset: '초기화',
     retracts: (n) => `회수 ${n}회`,
     rule: (k) =>
-      `이웃한 노드와 서로 다른 카테고리 ${k}개 이상에서 공통점이 있어야 해요.`,
+      `이웃한 칸과 서로 다른 카테고리 ${k}개 이상에서 공통점이 있어야 해요.`,
     pickFirst: '먼저 아래에서 포켓몬을 골라 주세요.',
     clear: '클리어!',
     next: '다음 퍼즐',
@@ -66,7 +66,7 @@ const STR = {
     team: 'Your Pokémon',
     trayHint: 'Pick and place, or drag onto the board.',
     progress: 'Placed',
-    emptyNode: 'Empty node',
+    emptySlot: 'Empty slot',
     subtitle:
       'Place every Pokémon on the board.\nNeighboring nodes must have something in common.',
     scope: 'Scope',
