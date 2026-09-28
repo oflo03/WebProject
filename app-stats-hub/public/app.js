@@ -15,6 +15,15 @@ const db = getFirestore(initializeApp(firebaseConfig));
 // 통계를 볼 앱 목록. 새 웹앱을 추가하면 여기 한 줄만 더한다 (firestore.rules 의 화이트리스트에도 추가해야 한다).
 const APPS = [{ id: 'kinship', name: 'Pocket Kinship', desc: '포켓몬 연결 퍼즐' }];
 
+// pocket-kinship 게임이 보내는 값 -> 화면에 보일 한글 이름
+const SCOPES = ['all', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const BOARDS = { pentagon: '오각형', hexagon: '육각형', square: '사각형' };
+const DIFFS = ['easy', 'super', 'expert', 'master'];
+const scopeLabel = (s) => (s == null ? '-' : s === 'all' ? '전체' : `${s}세대`);
+const boardLabel = (b) => BOARDS[b] ?? b ?? '-';
+const diffLabel = (d) => (d == null ? '-' : d[0].toUpperCase() + d.slice(1));
+const TYPE_LABEL = { play_start: '시작', play_clear: '클리어' };
+
 const root = document.getElementById('root');
 
 function shell(body) {
@@ -44,54 +53,105 @@ function homeBody() {
   `;
 }
 
-// 원시 이벤트 문서들을 화면에 쓸 숫자들로 집계한다
-function summarize(events) {
-  const starts = events.filter((e) => e.type === 'play_start');
-  const clears = events.filter((e) => e.type === 'play_clear');
-  const users = new Set(events.map((e) => e.clientId).filter(Boolean));
-
-  const byKey = new Map(); // "board·difficulty" -> { starts, clears, retracts:[] }
+// 최근 days 일치 날짜별 시작 횟수. 기록 없는 날도 0으로 채운다 (막대가 끊기지 않게).
+function dailyCounts(starts, days = 14) {
+  const buckets = new Map();
+  const today = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    buckets.set(d.toISOString().slice(0, 10), 0);
+  }
   for (const e of starts) {
-    const k = `${e.board ?? '-'} · ${e.difficulty ?? '-'}`;
-    if (!byKey.has(k)) byKey.set(k, { starts: 0, clears: 0, retracts: [], grades: {} });
-    byKey.get(k).starts++;
+    if (!e.ts?.seconds) continue;
+    const key = new Date(e.ts.seconds * 1000).toISOString().slice(0, 10);
+    if (buckets.has(key)) buckets.set(key, buckets.get(key) + 1);
+  }
+  return [...buckets.entries()];
+}
+
+function chartSvg(data) {
+  const w = 680;
+  const h = 150;
+  const padTop = 20;
+  const padBottom = 24;
+  const max = Math.max(1, ...data.map(([, c]) => c));
+  const barW = w / data.length;
+  const everyNth = Math.ceil(data.length / 7);
+  const bars = data
+    .map(([date, c], i) => {
+      const barH = (c / max) * (h - padTop - padBottom);
+      const x = i * barW;
+      const y = h - padBottom - barH;
+      const num = c > 0 ? `<text x="${x + barW / 2}" y="${y - 5}" class="chart-num">${c}</text>` : '';
+      const label = i % everyNth === 0 ? `<text x="${x + barW / 2}" y="${h - 6}" class="chart-label">${date.slice(5).replace('-', '/')}</text>` : '';
+      return `<rect x="${x + 2}" y="${y}" width="${barW - 4}" height="${Math.max(barH, c > 0 ? 2 : 0)}" rx="3" class="chart-bar"></rect>${num}${label}`;
+    })
+    .join('');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">${bars}</svg>`;
+}
+
+// dimension 별("scope"/"board"/"difficulty") 값마다 시작·클리어 수를 모아 basis(인기=시작 많은 순, 승률=클리어율 높은 순) 1위를 고른다
+function topBy(starts, clears, dimension, basis) {
+  const keyOf = (e) =>
+    dimension === 'scope' ? scopeLabel(e.scope) : dimension === 'board' ? boardLabel(e.board) : diffLabel(e.difficulty);
+  const counts = new Map();
+  for (const e of starts) {
+    const k = keyOf(e);
+    const row = counts.get(k) ?? { starts: 0, clears: 0 };
+    row.starts++;
+    counts.set(k, row);
   }
   for (const e of clears) {
-    const k = `${e.board ?? '-'} · ${e.difficulty ?? '-'}`;
-    if (!byKey.has(k)) byKey.set(k, { starts: 0, clears: 0, retracts: [], grades: {} });
-    const row = byKey.get(k);
+    const k = keyOf(e);
+    const row = counts.get(k) ?? { starts: 0, clears: 0 };
     row.clears++;
-    if (typeof e.retracts === 'number') row.retracts.push(e.retracts);
-    if (e.grade) row.grades[e.grade] = (row.grades[e.grade] ?? 0) + 1;
+    counts.set(k, row);
   }
+  let best = null;
+  for (const [k, v] of counts) {
+    const score = basis === 'winrate' ? (v.starts ? v.clears / v.starts : -1) : v.starts;
+    if (!best || score > best.score) best = { key: k, score, ...v };
+  }
+  return best;
+}
 
-  const avg = (arr) => (arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1) : '-');
-  const rows = [...byKey.entries()]
-    .sort((a, b) => b[1].starts - a[1].starts)
-    .map(
-      ([k, v]) => `
-      <tr>
-        <td>${k}</td>
-        <td>${v.starts}</td>
-        <td>${v.clears}</td>
-        <td>${v.starts ? Math.round((v.clears / v.starts) * 100) + '%' : '-'}</td>
-        <td>${avg(v.retracts)}</td>
-        <td>${Object.entries(v.grades).map(([g, n]) => `${g}×${n}`).join(' ') || '-'}</td>
-      </tr>`,
-    )
+function leaderboardHtml(starts, clears, basis) {
+  const cards = [
+    ['scope', '범위'],
+    ['board', '보드'],
+    ['difficulty', '난이도'],
+  ].map(([dim, label]) => {
+    const top = topBy(starts, clears, dim, basis);
+    if (!top) return `<div class="card"><span class="num">-</span><span class="label">${label} 1위</span></div>`;
+    const detail = basis === 'winrate' ? `${Math.round(top.score * 100)}% (${top.starts}판)` : `${top.starts}회 시작`;
+    return `<div class="card"><span class="num">${top.key}</span><span class="label">${label} 1위 · ${detail}</span></div>`;
+  });
+  return cards.join('');
+}
+
+function logRowsHtml(events, filters) {
+  const filtered = events
+    .filter((e) => e.type === 'play_start' || e.type === 'play_clear')
+    .filter((e) => (filters.scope ? e.scope === filters.scope : true))
+    .filter((e) => (filters.board ? e.board === filters.board : true))
+    .filter((e) => (filters.difficulty ? e.difficulty === filters.difficulty : true))
+    .sort((a, b) => (b.ts?.seconds ?? 0) - (a.ts?.seconds ?? 0));
+
+  const rows = filtered
+    .slice(0, 200)
+    .map((e) => {
+      const t = e.ts?.seconds ? new Date(e.ts.seconds * 1000).toLocaleString('ko-KR') : '-';
+      const extra = e.type === 'play_clear' ? `등급 ${e.grade ?? '-'} · 회수 ${e.retracts ?? '-'}회` : '-';
+      return `<tr><td>${t}</td><td>${TYPE_LABEL[e.type] ?? e.type}</td><td>${scopeLabel(e.scope)}</td><td>${boardLabel(e.board)}</td><td>${diffLabel(e.difficulty)}</td><td class="muted">${extra}</td></tr>`;
+    })
     .join('');
 
-  return {
-    totalStarts: starts.length,
-    totalClears: clears.length,
-    users: users.size,
-    perUser: users.size ? (starts.length / users.size).toFixed(1) : '-',
-    rows,
-    recent: events
-      .slice()
-      .sort((a, b) => (b.ts?.seconds ?? 0) - (a.ts?.seconds ?? 0))
-      .slice(0, 20),
-  };
+  return { count: filtered.length, rows: rows || '<tr><td colspan="6" class="muted">조건에 맞는 기록이 없어요.</td></tr>' };
+}
+
+function filterOptions(select, current) {
+  return `<option value="">전체 로그</option>${select.map((v) => `<option value="${v}" ${v === current ? 'selected' : ''}>${v}</option>`).join('')}`;
 }
 
 async function appBody(appId) {
@@ -105,45 +165,80 @@ async function appBody(appId) {
     const snap = await getDocs(collection(db, 'apps', appId, 'events'));
     events = snap.docs.map((d) => d.data());
   } catch (e) {
-    document.getElementById('main').innerHTML = `<p class="err">불러오기 실패: ${e.message}</p>`;
+    document.getElementById('main').innerHTML = `<p class="err">불러오기 실패: ${e.message}</p><button id="refresh">다시 시도</button>`;
+    document.getElementById('refresh').onclick = () => appBody(appId);
     return;
   }
 
-  const s = summarize(events);
+  const starts = events.filter((e) => e.type === 'play_start');
+  const clears = events.filter((e) => e.type === 'play_clear');
+  const users = new Set(events.map((e) => e.clientId).filter(Boolean));
+  const perUser = users.size ? (starts.length / users.size).toFixed(1) : '-';
+  const filters = { scope: '', board: '', difficulty: '' };
+  let basis = 'popularity';
+
   document.getElementById('main').innerHTML = `
     <a href="#/" class="back-link">← 목록으로</a>
-    <h2>${app.name}</h2>
+    <div class="title-row">
+      <h2>${app.name}</h2>
+      <button id="refresh">↻ 새로고침</button>
+    </div>
+    <p class="muted">${new Date().toLocaleTimeString('ko-KR')} 기준</p>
+
     <div class="stat-cards">
-      <div class="card"><span class="num">${s.totalStarts}</span><span class="label">시작</span></div>
-      <div class="card"><span class="num">${s.totalClears}</span><span class="label">클리어</span></div>
-      <div class="card"><span class="num">${s.users}</span><span class="label">플레이어 수</span></div>
-      <div class="card"><span class="num">${s.perUser}</span><span class="label">인당 플레이</span></div>
+      <div class="card"><span class="num">${starts.length}</span><span class="label">시작</span></div>
+      <div class="card"><span class="num">${clears.length}</span><span class="label">클리어</span></div>
+      <div class="card"><span class="num">${users.size}</span><span class="label">플레이어 수</span></div>
+      <div class="card"><span class="num">${perUser}</span><span class="label">인당 플레이</span></div>
     </div>
-    <h3>보드 · 난이도별</h3>
+
+    <h3>일별 시작 횟수 (최근 14일)</h3>
+    <div class="table-wrap chart-wrap">${chartSvg(dailyCounts(starts))}</div>
+
+    <h3>로그</h3>
+    <div class="filters">
+      <select id="f-scope">${filterOptions(SCOPES, '')}</select>
+      <select id="f-board">${filterOptions(Object.keys(BOARDS), '')}</select>
+      <select id="f-difficulty">${filterOptions(DIFFS, '')}</select>
+      <span class="muted" id="log-count"></span>
+    </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>조합</th><th>시작</th><th>클리어</th><th>클리어율</th><th>평균 회수</th><th>등급</th></tr></thead>
-        <tbody>${s.rows || '<tr><td colspan="6" class="muted">아직 기록이 없어요.</td></tr>'}</tbody>
+        <thead><tr><th>시각</th><th>종류</th><th>범위</th><th>보드</th><th>난이도</th><th>상세</th></tr></thead>
+        <tbody id="log-body"></tbody>
       </table>
     </div>
-    <h3>최근 이벤트</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>시각</th><th>종류</th><th>내용</th></tr></thead>
-        <tbody>
-          ${
-            s.recent
-              .map((e) => {
-                const t = e.ts?.seconds ? new Date(e.ts.seconds * 1000).toLocaleString('ko-KR') : '-';
-                const { type, ts, clientId, ...rest } = e;
-                return `<tr><td>${t}</td><td>${type}</td><td class="muted">${JSON.stringify(rest)}</td></tr>`;
-              })
-              .join('') || '<tr><td colspan="3" class="muted">-</td></tr>'
-          }
-        </tbody>
-      </table>
+
+    <div class="title-row">
+      <h3>1위</h3>
+      <select id="basis">
+        <option value="popularity">기준: 인기(시작 횟수)</option>
+        <option value="winrate">기준: 승률(클리어율)</option>
+      </select>
     </div>
+    <div class="stat-cards cols-3" id="leaderboard"></div>
   `;
+
+  // 필터 select 는 이미 받아온 events 안에서만 걸러 다시 그린다 (다시 불러오지 않는다)
+  const renderLog = () => {
+    filters.scope = document.getElementById('f-scope').value;
+    filters.board = document.getElementById('f-board').value;
+    filters.difficulty = document.getElementById('f-difficulty').value;
+    const { count, rows } = logRowsHtml(events, filters);
+    document.getElementById('log-body').innerHTML = rows;
+    document.getElementById('log-count').textContent = `${count}건${count > 200 ? ' (최근 200건 표시)' : ''}`;
+  };
+  ['f-scope', 'f-board', 'f-difficulty'].forEach((id) => (document.getElementById(id).onchange = renderLog));
+  renderLog();
+
+  const renderBoard = () => {
+    basis = document.getElementById('basis').value;
+    document.getElementById('leaderboard').innerHTML = leaderboardHtml(starts, clears, basis);
+  };
+  document.getElementById('basis').onchange = renderBoard;
+  renderBoard();
+
+  document.getElementById('refresh').onclick = () => appBody(appId);
 }
 
 function route() {

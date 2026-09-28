@@ -145,6 +145,24 @@
         font-size: 24px;
         letter-spacing: -0.4px;
       }
+      .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .title-row h2 {
+        margin: 0;
+      }
+      #refresh {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        border-color: var(--line);
+      }
+      #refresh:hover {
+        border-color: var(--accent);
+      }
       h3 {
         font-size: 13px;
         font-weight: 700;
@@ -158,6 +176,9 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 10px;
         margin: 18px 0 8px;
+      }
+      .stat-cards.cols-3 {
+        grid-template-columns: repeat(3, 1fr);
       }
       .card {
         background: var(--card);
@@ -182,6 +203,37 @@
         border: 1px solid var(--line);
         border-radius: 16px;
         overflow: hidden;
+      }
+      .chart-wrap {
+        padding: 10px 0 0;
+      }
+      .chart-bar {
+        fill: var(--accent);
+      }
+      .chart-num {
+        font-size: 9px;
+        fill: var(--muted);
+        text-anchor: middle;
+      }
+      .chart-label {
+        font-size: 10px;
+        fill: var(--muted);
+        text-anchor: middle;
+      }
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      select {
+        font: inherit;
+        color: inherit;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 7px 10px;
       }
       table {
         width: 100%;
@@ -213,6 +265,9 @@
         word-break: break-all;
       }
       @media (max-width: 600px) {
+        .stat-cards.cols-3 {
+          grid-template-columns: repeat(1, 1fr);
+        }
         header,
         main {
           padding-left: 16px;
