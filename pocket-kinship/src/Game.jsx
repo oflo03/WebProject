@@ -196,7 +196,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   };
 
   const clickNode = (i) => {
-    if (justDragged.current) return;
+    if (justDragged.current || done) return; // 클리어한 뒤에는 보드를 더 건드릴 수 없다
     if (placed[i]) {
       retract(i);
       return;
@@ -215,7 +215,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
   };
 
   const reset = () => {
-    if (!placed.some(Boolean)) return;
+    if (!placed.some(Boolean) || done) return;
     setPlaced(Array(b.nodes).fill(null));
     setRetracts((r) => r + 1);
     setPicked(null);
@@ -247,12 +247,12 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
               {t(puzzle.board)} · {DIFF_NAMES[puzzle.difficulty]}
             </span>
             <span className="count">{t('retracts', retracts)}</span>
-            <button onClick={reset}>{t('reset')}</button>
+            <button onClick={reset} disabled={done}>{t('reset')}</button>
           </header>
           <p className="rule">{t('rule', k)}</p>
 
           <svg
-            className="board"
+            className={`board ${done ? 'locked' : ''}`}
             viewBox="0 0 460 460"
             role="group"
             aria-label={t('boardLabel')}
@@ -300,7 +300,7 @@ export default function Game({ puzzle, lang, t, onLang, onNext, onMenu }) {
                   }}
                   onClick={() => clickNode(i)}
                   onPointerDown={(e) =>
-                    p && startDrag(e, { from: 'node', node: i, id: p.id })
+                    p && !done && startDrag(e, { from: 'node', node: i, id: p.id })
                   }
                 >
                   <circle cx={x} cy={y} r="34" />

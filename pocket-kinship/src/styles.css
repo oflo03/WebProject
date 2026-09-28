@@ -472,6 +472,9 @@ main {
 .node {
   cursor: pointer;
 }
+.board.locked .node {
+  cursor: default;
+}
 .node circle {
   fill: #f5f8ef;
   stroke: #b8d0c1;
