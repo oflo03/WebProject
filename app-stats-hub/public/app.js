@@ -98,6 +98,36 @@ function filterOptions(select, current) {
   return `<option value="">전체</option>${select.map((v) => `<option value="${v}" ${v === current ? 'selected' : ''}>${v}</option>`).join('')}`;
 }
 
+// 원본 이벤트에서 counters/summary 와 같은 이름의 필드를 직접 세서, 카운터가 맞게 늘고 있는지 검산한다
+// (analytics.js 의 counterUpdates() 와 같은 계산이다).
+function countsFromEvents(events) {
+  const s = { totalStarts: 0, totalClears: 0 };
+  const users = new Set();
+  for (const e of events) {
+    if (e.clientId) users.add(e.clientId);
+    const kind = e.type === 'play_start' ? 'starts' : e.type === 'play_clear' ? 'clears' : null;
+    if (!kind) continue;
+    s[e.type === 'play_start' ? 'totalStarts' : 'totalClears']++;
+    if (e.scope != null) s[`scope_${e.scope}_${kind}`] = (s[`scope_${e.scope}_${kind}`] ?? 0) + 1;
+    if (e.board) s[`board_${e.board}_${kind}`] = (s[`board_${e.board}_${kind}`] ?? 0) + 1;
+    if (e.difficulty) s[`diff_${e.difficulty}_${kind}`] = (s[`diff_${e.difficulty}_${kind}`] ?? 0) + 1;
+  }
+  s.userCount = users.size;
+  return s;
+}
+
+// 두 집계를 필드별로 비교한다. 값이 있는 필드만(0끼리는 굳이 안 채운 쪽도 많아서) 합쳐서 본다.
+function diffCounts(expected, actual) {
+  const keys = new Set([...Object.keys(expected), ...Object.keys(actual || {})]);
+  const mismatches = [];
+  for (const k of keys) {
+    const e = expected[k] ?? 0;
+    const a = actual?.[k] ?? 0;
+    if (e !== a) mismatches.push({ k, e, a });
+  }
+  return mismatches;
+}
+
 // counters/summary 는 apps/{appId}/counters/summary 문서 하나뿐이라 읽기 1건으로 끝난다.
 // (범위·보드·난이도를 동시에 좁혀 보는 건 지원하지 않는다 — 그러려면 조합마다 카운터가 따로 필요해서
 //  하나만 고르면 나머지 둘은 '전체'로 돌아간다.)
@@ -211,6 +241,7 @@ async function appBody(appId) {
       <button id="log-refresh">↻ 로그 새로고침</button>
     </div>
     <p class="muted" id="log-count"></p>
+    <p class="muted" id="log-check"></p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>시각</th><th>종류</th><th>범위</th><th>보드</th><th>난이도</th><th>상세</th></tr></thead>
@@ -258,13 +289,32 @@ async function appBody(appId) {
   };
 
   // 로그: 원본 이벤트를 전부 읽는다. 기록이 많아지면 이 버튼만 비용이 든다.
+  // 읽은 김에, 그 이벤트로 직접 센 값과 counters/summary 가 맞는지도 검산한다.
   const loadLog = async () => {
     document.getElementById('log-count').textContent = '불러오는 중...';
+    document.getElementById('log-check').textContent = '';
     try {
       const snap = await getDocs(collection(db, 'apps', appId, 'events'));
-      const { count, rows } = logRowsHtml(snap.docs.map((d) => d.data()));
+      const events = snap.docs.map((d) => d.data());
+      const { count, rows } = logRowsHtml(events);
       document.getElementById('log-body').innerHTML = rows;
       document.getElementById('log-count').textContent = `전체 ${count}건${count > 200 ? ' (최근 200건 표시)' : ''} · ${new Date().toLocaleTimeString('ko-KR')} 기준`;
+
+      const mismatches = diffCounts(countsFromEvents(events), summary);
+      const checkEl = document.getElementById('log-check');
+      if (!Object.keys(summary).length) {
+        checkEl.textContent = '카운터 확인: 통계를 먼저 불러와야 비교할 수 있어요.';
+        checkEl.className = 'muted';
+      } else if (mismatches.length === 0) {
+        checkEl.textContent = '카운터 확인: 로그와 일치해요 ✓';
+        checkEl.className = 'muted ok';
+      } else {
+        checkEl.textContent = `카운터 확인: ${mismatches.length}개 항목이 달라요 — ${mismatches
+          .slice(0, 6)
+          .map((m) => `${m.k}(집계 ${m.a} / 로그 ${m.e})`)
+          .join(', ')}${mismatches.length > 6 ? ' …' : ''}`;
+        checkEl.className = 'muted bad';
+      }
     } catch (e) {
       document.getElementById('log-count').textContent = `로그 불러오기 실패: ${e.message}`;
     }
@@ -273,7 +323,8 @@ async function appBody(appId) {
   document.getElementById('stats-refresh').onclick = loadStats;
   document.getElementById('log-refresh').onclick = loadLog;
   loadStats();
-  loadLog();
+  // 로그는 접속 시 자동으로 읽지 않는다. '로그 새로고침'을 눌러야 그때 전체를 읽는다 (비용이 드는 쪽이라 명시적으로).
+  document.getElementById('log-count').textContent = '아직 안 불러왔어요. 새로고침을 눌러 주세요.';
 }
 
 function route() {
