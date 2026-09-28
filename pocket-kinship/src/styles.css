@@ -314,7 +314,7 @@ main {
 }
 @media (min-width: 701px) {
   .play-layout {
-    grid-template-columns: 176px minmax(0, 1fr) 244px;
+    grid-template-columns: 260px minmax(0, 1fr) 244px;
   }
   .memo {
     order: -1;
@@ -324,7 +324,7 @@ main {
   background: #edf4e6e6;
   border: 1px solid #ffffffc0;
   border-radius: 22px;
-  padding: 18px 14px;
+  padding: 22px 18px;
 }
 .memo .title-row {
   display: flex;
@@ -347,20 +347,20 @@ main {
 .memo-pill {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
   border: 2px solid #cfe0d6;
   border-radius: 999px;
-  padding: 14px 8px;
+  padding: 22px 14px;
 }
 .memo-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 .memo-slot {
   flex: none;
-  width: 40px;
-  height: 40px;
+  width: 58px;
+  height: 58px;
   padding: 0;
   border-radius: 50%;
   display: flex;
@@ -371,15 +371,15 @@ main {
 }
 .memo-slot span {
   color: #9cb4a5;
-  font-size: 15px;
+  font-size: 18px;
 }
 .memo-slot.filled {
   border-style: solid;
   border-color: var(--accent);
 }
 .memo-slot img {
-  width: 34px;
-  height: 34px;
+  width: 50px;
+  height: 50px;
   image-rendering: pixelated;
 }
 .memo-slot.hover {
@@ -388,7 +388,7 @@ main {
 }
 .memo-link {
   flex: 1;
-  min-width: 8px;
+  min-width: 20px;
   height: 2px;
   background: #cfe0d6;
   display: flex;
@@ -399,13 +399,13 @@ main {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 2px 5px;
-  font-size: 9px;
+  padding: 3px 7px;
+  font-size: 10px;
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100px;
+  max-width: 130px;
 }
 .memo-badge.ok {
   border-color: var(--ok);
