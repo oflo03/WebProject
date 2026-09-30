@@ -43,10 +43,12 @@ const TYPE_LABEL = { play_start: '플레이', play_clear: '클리어' };
 
 const root = document.getElementById('root');
 
-function shell(body) {
+// title: 앱 화면이면 앱 이름. 헤더 한 줄에 브랜드 / 앱 이름 / 목록으로 링크를 나란히 둔다.
+function shell(body, title) {
   root.innerHTML = `
     <header>
       <a href="#/" class="brand"><span class="dot"></span>Stats Hub</a>
+      ${title ? `<span class="crumb-sep">/</span><h2 class="crumb">${title}</h2><a href="#/" class="back-link">← 목록으로</a>` : ''}
     </header>
     <main id="main">${body}</main>
   `;
@@ -232,16 +234,12 @@ function leaderboardHtml(app, summary, basis) {
 
 async function appBody(appId) {
   const app = APPS.find((a) => a.id === appId);
-  if (!app) return `<p>알 수 없는 앱: ${appId}</p><p><a href="#/">← 목록으로</a></p>`;
-
-  document.getElementById('main').innerHTML = `<p class="muted">불러오는 중...</p>`;
+  if (!app) {
+    document.getElementById('main').innerHTML = `<p>알 수 없는 앱: ${appId}</p>`;
+    return;
+  }
 
   document.getElementById('main').innerHTML = `
-    <a href="#/" class="back-link">← 목록으로</a>
-    <div class="title-row">
-      <h2>${app.name}</h2>
-    </div>
-
     <div class="title-row">
       <h3>통계</h3>
       <button id="stats-refresh">↻ 통계 새로고침</button>
@@ -391,7 +389,7 @@ function route() {
   if (!path) {
     shell(homeBody());
   } else {
-    shell(`<p class="muted">불러오는 중...</p>`);
+    shell(`<p class="muted">불러오는 중...</p>`, APPS.find((a) => a.id === path)?.name ?? path);
     appBody(path);
   }
 }
