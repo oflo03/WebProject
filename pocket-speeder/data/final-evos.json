@@ -1,0 +1,2133 @@
+[
+ {
+  "dex": 681,
+  "ko": "킬가르도",
+  "types": [
+   "steel",
+   "ghost"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 306,
+  "ko": "보스로라",
+  "types": [
+   "steel",
+   "rock"
+  ],
+  "spd": 50,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 594,
+  "ko": "맘복치",
+  "types": [
+   "water"
+  ],
+  "spd": 65,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 334,
+  "ko": "파비코리",
+  "types": [
+   "dragon",
+   "flying"
+  ],
+  "spd": 80,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 979,
+  "ko": "저승갓숭",
+  "types": [
+   "fighting",
+   "ghost"
+  ],
+  "spd": 90,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 842,
+  "ko": "단지래플",
+  "types": [
+   "grass",
+   "dragon"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 752,
+  "ko": "깨비물거미",
+  "types": [
+   "water",
+   "bug"
+  ],
+  "spd": 42,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1018,
+  "ko": "브리두라스",
+  "types": [
+   "steel",
+   "dragon"
+  ],
+  "spd": 85,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 883,
+  "ko": "어치르돈",
+  "types": [
+   "water",
+   "ice"
+  ],
+  "spd": 55,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 184,
+  "ko": "마릴리",
+  "types": [
+   "water",
+   "fairy"
+  ],
+  "spd": 50,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 354,
+  "ko": "다크펫",
+  "types": [
+   "ghost"
+  ],
+  "spd": 65,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 689,
+  "ko": "거북손데스",
+  "types": [
+   "rock",
+   "water"
+  ],
+  "spd": 68,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 847,
+  "ko": "꼬치조",
+  "types": [
+   "water"
+  ],
+  "spd": 136,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 902,
+  "ko": "대쓰여너",
+  "types": [
+   "water",
+   "ghost"
+  ],
+  "spd": 78,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 411,
+  "ko": "바리톱스",
+  "types": [
+   "rock",
+   "steel"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 998,
+  "ko": "드닐레이브",
+  "types": [
+   "dragon",
+   "ice"
+  ],
+  "spd": 87,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 400,
+  "ko": "비버통",
+  "types": [
+   "normal",
+   "water"
+  ],
+  "spd": 71,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 806,
+  "ko": "두파팡",
+  "types": [
+   "fire",
+   "ghost"
+  ],
+  "spd": 107,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 9,
+  "ko": "거북왕",
+  "types": [
+   "water"
+  ],
+  "spd": 78,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 947,
+  "ko": "공푸리",
+  "types": [
+   "grass",
+   "ghost"
+  ],
+  "spd": 90,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 437,
+  "ko": "동탁군",
+  "types": [
+   "steel",
+   "psychic"
+  ],
+  "spd": 33,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 779,
+  "ko": "치갈기",
+  "types": [
+   "water",
+   "psychic"
+  ],
+  "spd": 92,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 565,
+  "ko": "늑골라",
+  "types": [
+   "water",
+   "rock"
+  ],
+  "spd": 32,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 797,
+  "ko": "철화구야",
+  "types": [
+   "steel",
+   "flying"
+  ],
+  "spd": 61,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 937,
+  "ko": "파라블레이즈",
+  "types": [
+   "fire",
+   "ghost"
+  ],
+  "spd": 85,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 609,
+  "ko": "샹델라",
+  "types": [
+   "ghost",
+   "fire"
+  ],
+  "spd": 80,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 693,
+  "ko": "블로스터",
+  "types": [
+   "water"
+  ],
+  "spd": 59,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 91,
+  "ko": "파르셀",
+  "types": [
+   "water",
+   "ice"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 638,
+  "ko": "코바르온",
+  "types": [
+   "steel",
+   "fighting"
+  ],
+  "spd": 108,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 563,
+  "ko": "데스니칸",
+  "types": [
+   "ghost"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 879,
+  "ko": "대왕끼리동",
+  "types": [
+   "steel"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 823,
+  "ko": "아머까오",
+  "types": [
+   "flying",
+   "steel"
+  ],
+  "spd": 67,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 845,
+  "ko": "윽우지",
+  "types": [
+   "flying",
+   "water"
+  ],
+  "spd": 85,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 342,
+  "ko": "가재장군",
+  "types": [
+   "water",
+   "dark"
+  ],
+  "spd": 55,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 864,
+  "ko": "산호르곤",
+  "types": [
+   "ghost"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 967,
+  "ko": "모토마",
+  "types": [
+   "dragon",
+   "normal"
+  ],
+  "spd": 121,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 724,
+  "ko": "모크나이퍼",
+  "types": [
+   "grass",
+   "ghost"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 87,
+  "ko": "쥬레곤",
+  "types": [
+   "water",
+   "ice"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 781,
+  "ko": "타타륜",
+  "types": [
+   "ghost",
+   "grass"
+  ],
+  "spd": 40,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 483,
+  "ko": "디아루가",
+  "types": [
+   "steel",
+   "dragon"
+  ],
+  "spd": 90,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 977,
+  "ko": "어써러셔",
+  "types": [
+   "water"
+  ],
+  "spd": 35,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 882,
+  "ko": "어래곤",
+  "types": [
+   "water",
+   "dragon"
+  ],
+  "spd": 75,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 880,
+  "ko": "파치래곤",
+  "types": [
+   "electric",
+   "dragon"
+  ],
+  "spd": 75,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 691,
+  "ko": "드래캄",
+  "types": [
+   "poison",
+   "dragon"
+  ],
+  "spd": 44,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 887,
+  "ko": "드래펄트",
+  "types": [
+   "dragon",
+   "ghost"
+  ],
+  "spd": 142,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 149,
+  "ko": "망나뇽",
+  "types": [
+   "dragon",
+   "flying"
+  ],
+  "spd": 80,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 780,
+  "ko": "할비롱",
+  "types": [
+   "normal",
+   "dragon"
+  ],
+  "spd": 36,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 834,
+  "ko": "갈가부기",
+  "types": [
+   "water",
+   "rock"
+  ],
+  "spd": 74,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 426,
+  "ko": "둥실라이드",
+  "types": [
+   "ghost",
+   "flying"
+  ],
+  "spd": 80,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 621,
+  "ko": "크리만",
+  "types": [
+   "dragon"
+  ],
+  "spd": 48,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 632,
+  "ko": "아이앤트",
+  "types": [
+   "bug",
+   "steel"
+  ],
+  "spd": 109,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 477,
+  "ko": "야느와르몽",
+  "types": [
+   "ghost"
+  ],
+  "spd": 45,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 395,
+  "ko": "엠페르트",
+  "types": [
+   "water",
+   "steel"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 589,
+  "ko": "슈바르고",
+  "types": [
+   "bug",
+   "steel"
+  ],
+  "spd": 20,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 890,
+  "ko": "무한다이노",
+  "types": [
+   "poison",
+   "dragon"
+  ],
+  "spd": 130,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 530,
+  "ko": "몰드류",
+  "types": [
+   "ground",
+   "steel"
+  ],
+  "spd": 88,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 160,
+  "ko": "장크로다일",
+  "types": [
+   "water"
+  ],
+  "spd": 78,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 598,
+  "ko": "너트령",
+  "types": [
+   "grass",
+   "steel"
+  ],
+  "spd": 20,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 841,
+  "ko": "애프룡",
+  "types": [
+   "grass",
+   "dragon"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 419,
+  "ko": "플로젤",
+  "types": [
+   "water"
+  ],
+  "spd": 115,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 987,
+  "ko": "날개치는머리",
+  "types": [
+   "ghost",
+   "fairy"
+  ],
+  "spd": 135,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 330,
+  "ko": "플라이곤",
+  "types": [
+   "ground",
+   "dragon"
+  ],
+  "spd": 100,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 205,
+  "ko": "쏘콘",
+  "types": [
+   "bug",
+   "steel"
+  ],
+  "spd": 40,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 478,
+  "ko": "눈여아",
+  "types": [
+   "ice",
+   "ghost"
+  ],
+  "spd": 110,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 445,
+  "ko": "한카리아스",
+  "types": [
+   "dragon",
+   "ground"
+  ],
+  "spd": 102,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 423,
+  "ko": "트리토돈",
+  "types": [
+   "water",
+   "ground"
+  ],
+  "spd": 39,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 649,
+  "ko": "게노세크트",
+  "types": [
+   "bug",
+   "steel"
+  ],
+  "spd": 99,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 94,
+  "ko": "팬텀",
+  "types": [
+   "ghost",
+   "poison"
+  ],
+  "spd": 110,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1000,
+  "ko": "타부자고",
+  "types": [
+   "steel",
+   "ghost"
+  ],
+  "spd": 84,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 487,
+  "ko": "기라티나",
+  "types": [
+   "ghost",
+   "dragon"
+  ],
+  "spd": 90,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 55,
+  "ko": "골덕",
+  "types": [
+   "water"
+  ],
+  "spd": 85,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 768,
+  "ko": "갑주무사",
+  "types": [
+   "bug",
+   "water"
+  ],
+  "spd": 40,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 623,
+  "ko": "골루그",
+  "types": [
+   "ground",
+   "ghost"
+  ],
+  "spd": 55,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 706,
+  "ko": "미끄래곤",
+  "types": [
+   "dragon"
+  ],
+  "spd": 80,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 368,
+  "ko": "분홍장이",
+  "types": [
+   "water"
+  ],
+  "spd": 52,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1020,
+  "ko": "꿰뚫는화염",
+  "types": [
+   "fire",
+   "dragon"
+  ],
+  "spd": 91,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 711,
+  "ko": "펌킨인",
+  "types": [
+   "ghost",
+   "grass"
+  ],
+  "spd": 84,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 658,
+  "ko": "개굴닌자",
+  "types": [
+   "water",
+   "dark"
+  ],
+  "spd": 122,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 799,
+  "ko": "악식킹",
+  "types": [
+   "dark",
+   "dragon"
+  ],
+  "spd": 43,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 130,
+  "ko": "갸라도스",
+  "types": [
+   "water",
+   "flying"
+  ],
+  "spd": 81,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 612,
+  "ko": "액스라이즈",
+  "types": [
+   "dragon"
+  ],
+  "spd": 97,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 485,
+  "ko": "히드런",
+  "types": [
+   "fire",
+   "steel"
+  ],
+  "spd": 77,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 720,
+  "ko": "후파",
+  "types": [
+   "psychic",
+   "ghost"
+  ],
+  "spd": 70,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 972,
+  "ko": "묘두기",
+  "types": [
+   "ghost"
+  ],
+  "spd": 68,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 367,
+  "ko": "헌테일",
+  "types": [
+   "water"
+  ],
+  "spd": 52,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1019,
+  "ko": "과미드라",
+  "types": [
+   "grass",
+   "dragon"
+  ],
+  "spd": 44,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 635,
+  "ko": "삼삼드래",
+  "types": [
+   "dark",
+   "dragon"
+  ],
+  "spd": 98,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 818,
+  "ko": "인텔리레온",
+  "types": [
+   "water"
+  ],
+  "spd": 120,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 991,
+  "ko": "무쇠보따리",
+  "types": [
+   "ice",
+   "water"
+  ],
+  "spd": 136,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 1023,
+  "ko": "무쇠감투",
+  "types": [
+   "steel",
+   "psychic"
+  ],
+  "spd": 98,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 990,
+  "ko": "무쇠바퀴",
+  "types": [
+   "ground",
+   "steel"
+  ],
+  "spd": 106,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 593,
+  "ko": "탱탱겔",
+  "types": [
+   "water",
+   "ghost"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 385,
+  "ko": "지라치",
+  "types": [
+   "steel",
+   "psychic"
+  ],
+  "spd": 100,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 141,
+  "ko": "투구푸스",
+  "types": [
+   "rock",
+   "water"
+  ],
+  "spd": 80,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 798,
+  "ko": "종이신도",
+  "types": [
+   "grass",
+   "steel"
+  ],
+  "spd": 109,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 647,
+  "ko": "케르디오",
+  "types": [
+   "water",
+   "fighting"
+  ],
+  "spd": 108,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 983,
+  "ko": "대도각참",
+  "types": [
+   "dark",
+   "steel"
+  ],
+  "spd": 50,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 230,
+  "ko": "킹드라",
+  "types": [
+   "water",
+   "dragon"
+  ],
+  "spd": 85,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 99,
+  "ko": "킹크랩",
+  "types": [
+   "water"
+  ],
+  "spd": 75,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 707,
+  "ko": "클레피",
+  "types": [
+   "steel",
+   "fairy"
+  ],
+  "spd": 75,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 601,
+  "ko": "기기기어르",
+  "types": [
+   "steel"
+  ],
+  "spd": 90,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 784,
+  "ko": "짜랑고우거",
+  "types": [
+   "dragon",
+   "fighting"
+  ],
+  "spd": 85,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1007,
+  "ko": "코라이돈",
+  "types": [
+   "fighting",
+   "dragon"
+  ],
+  "spd": 135,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 382,
+  "ko": "가이오가",
+  "types": [
+   "water"
+  ],
+  "spd": 90,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 646,
+  "ko": "큐레무",
+  "types": [
+   "dragon",
+   "ice"
+  ],
+  "spd": 95,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 171,
+  "ko": "랜턴",
+  "types": [
+   "water",
+   "electric"
+  ],
+  "spd": 67,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 131,
+  "ko": "라프라스",
+  "types": [
+   "water",
+   "ice"
+  ],
+  "spd": 60,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 380,
+  "ko": "라티아스",
+  "types": [
+   "dragon",
+   "psychic"
+  ],
+  "spd": 110,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 381,
+  "ko": "라티오스",
+  "types": [
+   "dragon",
+   "psychic"
+  ],
+  "spd": 110,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 448,
+  "ko": "루카리오",
+  "types": [
+   "fighting",
+   "steel"
+  ],
+  "spd": 90,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 272,
+  "ko": "로파파",
+  "types": [
+   "water",
+   "grass"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 457,
+  "ko": "네오라이트",
+  "types": [
+   "water"
+  ],
+  "spd": 91,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 792,
+  "ko": "루나아라",
+  "types": [
+   "psychic",
+   "ghost"
+  ],
+  "spd": 97,
+  "solo": false,
+  "legend": true
+ },
+ {
+  "dex": 370,
+  "ko": "사랑동이",
+  "types": [
+   "water"
+  ],
+  "spd": 97,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 801,
+  "ko": "마기아나",
+  "types": [
+   "steel",
+   "fairy"
+  ],
+  "spd": 65,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 462,
+  "ko": "자포코일",
+  "types": [
+   "electric",
+   "steel"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 490,
+  "ko": "마나피",
+  "types": [
+   "water"
+  ],
+  "spd": 100,
+  "solo": false,
+  "legend": true
+ },
+ {
+  "dex": 226,
+  "ko": "만타인",
+  "types": [
+   "water",
+   "flying"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 802,
+  "ko": "마샤도",
+  "types": [
+   "fighting",
+   "ghost"
+  ],
+  "spd": 125,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 303,
+  "ko": "입치트",
+  "types": [
+   "steel",
+   "fairy"
+  ],
+  "spd": 50,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 809,
+  "ko": "멜메탈",
+  "types": [
+   "steel"
+  ],
+  "spd": 34,
+  "solo": false,
+  "legend": true
+ },
+ {
+  "dex": 376,
+  "ko": "메타그로스",
+  "types": [
+   "steel",
+   "psychic"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 350,
+  "ko": "밀로틱",
+  "types": [
+   "water"
+  ],
+  "spd": 81,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 778,
+  "ko": "따라큐",
+  "types": [
+   "ghost",
+   "fairy"
+  ],
+  "spd": 96,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 1008,
+  "ko": "미라이돈",
+  "types": [
+   "electric",
+   "dragon"
+  ],
+  "spd": 135,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 429,
+  "ko": "무우마직",
+  "types": [
+   "ghost"
+  ],
+  "spd": 105,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 804,
+  "ko": "아고용",
+  "types": [
+   "poison",
+   "dragon"
+  ],
+  "spd": 121,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 715,
+  "ko": "음번",
+  "types": [
+   "flying",
+   "dragon"
+  ],
+  "spd": 123,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 224,
+  "ko": "대포무노",
+  "types": [
+   "water"
+  ],
+  "spd": 45,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 139,
+  "ko": "암스타",
+  "types": [
+   "rock",
+   "water"
+  ],
+  "spd": 55,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 968,
+  "ko": "꿈트렁",
+  "types": [
+   "steel"
+  ],
+  "spd": 65,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 964,
+  "ko": "돌핀맨",
+  "types": [
+   "water"
+  ],
+  "spd": 100,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 484,
+  "ko": "펄기아",
+  "types": [
+   "water",
+   "dragon"
+  ],
+  "spd": 100,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 770,
+  "ko": "모래성이당",
+  "types": [
+   "ghost",
+   "ground"
+  ],
+  "spd": 35,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1025,
+  "ko": "복숭악동",
+  "types": [
+   "poison",
+   "ghost"
+  ],
+  "spd": 88,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 279,
+  "ko": "패리퍼",
+  "types": [
+   "water",
+   "flying"
+  ],
+  "spd": 65,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 863,
+  "ko": "나이킹",
+  "types": [
+   "steel"
+  ],
+  "spd": 50,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 186,
+  "ko": "왕구리",
+  "types": [
+   "water"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 62,
+  "ko": "강챙이",
+  "types": [
+   "water",
+   "fighting"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 855,
+  "ko": "포트데스",
+  "types": [
+   "ghost"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 730,
+  "ko": "누리레느",
+  "types": [
+   "water",
+   "fairy"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 476,
+  "ko": "대코파스",
+  "types": [
+   "rock",
+   "steel"
+  ],
+  "spd": 40,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 771,
+  "ko": "해무기",
+  "types": [
+   "water"
+  ],
+  "spd": 5,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 195,
+  "ko": "누오",
+  "types": [
+   "water",
+   "ground"
+  ],
+  "spd": 35,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 914,
+  "ko": "웨이니발",
+  "types": [
+   "water",
+   "fighting"
+  ],
+  "spd": 85,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1021,
+  "ko": "날뛰는우레",
+  "types": [
+   "electric",
+   "dragon"
+  ],
+  "spd": 75,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 384,
+  "ko": "레쿠쟈",
+  "types": [
+   "dragon",
+   "flying"
+  ],
+  "spd": 95,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 895,
+  "ko": "레지드래고",
+  "types": [
+   "dragon"
+  ],
+  "spd": 80,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 379,
+  "ko": "레지스틸",
+  "types": [
+   "steel"
+  ],
+  "spd": 50,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 369,
+  "ko": "시라칸",
+  "types": [
+   "water",
+   "rock"
+  ],
+  "spd": 55,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 643,
+  "ko": "레시라무",
+  "types": [
+   "dragon",
+   "fire"
+  ],
+  "spd": 90,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 966,
+  "ko": "부르르룸",
+  "types": [
+   "steel",
+   "poison"
+  ],
+  "spd": 90,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1005,
+  "ko": "고동치는달",
+  "types": [
+   "dragon",
+   "dark"
+  ],
+  "spd": 119,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 479,
+  "ko": "로토무",
+  "types": [
+   "electric",
+   "ghost"
+  ],
+  "spd": 91,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 867,
+  "ko": "데스판",
+  "types": [
+   "ground",
+   "ghost"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 302,
+  "ko": "깜까미",
+  "types": [
+   "dark",
+   "ghost"
+  ],
+  "spd": 50,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 373,
+  "ko": "보만다",
+  "types": [
+   "dragon",
+   "flying"
+  ],
+  "spd": 100,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 503,
+  "ko": "대검귀",
+  "types": [
+   "water"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 212,
+  "ko": "핫삼",
+  "types": [
+   "bug",
+   "steel"
+  ],
+  "spd": 65,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 119,
+  "ko": "왕콘치",
+  "types": [
+   "water"
+  ],
+  "spd": 68,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 537,
+  "ko": "두빅굴",
+  "types": [
+   "water",
+   "ground"
+  ],
+  "spd": 74,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 319,
+  "ko": "샤크니아",
+  "types": [
+   "water",
+   "dark"
+  ],
+  "spd": 95,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 292,
+  "ko": "껍질몬",
+  "types": [
+   "bug",
+   "ghost"
+  ],
+  "spd": 40,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 516,
+  "ko": "앗차키",
+  "types": [
+   "water"
+  ],
+  "spd": 101,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1013,
+  "ko": "그우린차",
+  "types": [
+   "grass",
+   "ghost"
+  ],
+  "spd": 70,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 227,
+  "ko": "무장조",
+  "types": [
+   "steel",
+   "flying"
+  ],
+  "spd": 70,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 911,
+  "ko": "라우드본",
+  "types": [
+   "fire",
+   "ghost"
+  ],
+  "spd": 66,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 80,
+  "ko": "야도란",
+  "types": [
+   "water",
+   "psychic"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 199,
+  "ko": "야도킹",
+  "types": [
+   "water",
+   "psychic"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 791,
+  "ko": "솔가레오",
+  "types": [
+   "psychic",
+   "steel"
+  ],
+  "spd": 97,
+  "solo": false,
+  "legend": true
+ },
+ {
+  "dex": 897,
+  "ko": "레이스포스",
+  "types": [
+   "ghost"
+  ],
+  "spd": 130,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 442,
+  "ko": "화강돌",
+  "types": [
+   "ghost",
+   "dark"
+  ],
+  "spd": 35,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 805,
+  "ko": "차곡차곡",
+  "types": [
+   "rock",
+   "steel"
+  ],
+  "spd": 13,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 121,
+  "ko": "아쿠스타",
+  "types": [
+   "water",
+   "psychic"
+  ],
+  "spd": 115,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 208,
+  "ko": "강철톤",
+  "types": [
+   "steel",
+   "ground"
+  ],
+  "spd": 30,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 245,
+  "ko": "스이쿤",
+  "types": [
+   "water"
+  ],
+  "spd": 85,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 260,
+  "ko": "대짱이",
+  "types": [
+   "water",
+   "ground"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 581,
+  "ko": "스완나",
+  "types": [
+   "water",
+   "flying"
+  ],
+  "spd": 98,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 788,
+  "ko": "카푸느지느",
+  "types": [
+   "water",
+   "fairy"
+  ],
+  "spd": 85,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 978,
+  "ko": "싸리용",
+  "types": [
+   "dragon",
+   "water"
+  ],
+  "spd": 82,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 73,
+  "ko": "독파리",
+  "types": [
+   "water",
+   "poison"
+  ],
+  "spd": 100,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 959,
+  "ko": "두드리짱",
+  "types": [
+   "fairy",
+   "steel"
+  ],
+  "spd": 94,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 777,
+  "ko": "토게데마루",
+  "types": [
+   "electric",
+   "steel"
+  ],
+  "spd": 96,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 748,
+  "ko": "더시마사리",
+  "types": [
+   "poison",
+   "water"
+  ],
+  "spd": 35,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 709,
+  "ko": "대로트",
+  "types": [
+   "ghost",
+   "grass"
+  ],
+  "spd": 56,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 776,
+  "ko": "폭거북스",
+  "types": [
+   "fire",
+   "dragon"
+  ],
+  "spd": 36,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 697,
+  "ko": "견고라스",
+  "types": [
+   "rock",
+   "dragon"
+  ],
+  "spd": 71,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 134,
+  "ko": "샤미드",
+  "types": [
+   "water"
+  ],
+  "spd": 65,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 976,
+  "ko": "가비루사",
+  "types": [
+   "water",
+   "psychic"
+  ],
+  "spd": 70,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 721,
+  "ko": "볼케니온",
+  "types": [
+   "fire",
+   "water"
+  ],
+  "spd": 70,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 321,
+  "ko": "고래왕",
+  "types": [
+   "water"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 1009,
+  "ko": "굽이치는물결",
+  "types": [
+   "water",
+   "dragon"
+  ],
+  "spd": 109,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 365,
+  "ko": "씨카이저",
+  "types": [
+   "ice",
+   "water"
+  ],
+  "spd": 65,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 340,
+  "ko": "메깅",
+  "types": [
+   "water",
+   "ground"
+  ],
+  "spd": 60,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 746,
+  "ko": "약어리",
+  "types": [
+   "water"
+  ],
+  "spd": 40,
+  "solo": true,
+  "legend": false
+ },
+ {
+  "dex": 961,
+  "ko": "바닥트리오",
+  "types": [
+   "water"
+  ],
+  "spd": 120,
+  "solo": false,
+  "legend": false
+ },
+ {
+  "dex": 644,
+  "ko": "제크로무",
+  "types": [
+   "dragon",
+   "electric"
+  ],
+  "spd": 90,
+  "solo": true,
+  "legend": true
+ },
+ {
+  "dex": 718,
+  "ko": "지가르데",
+  "types": [
+   "dragon",
+   "ground"
+  ],
+  "spd": 95,
+  "solo": true,
+  "legend": true
+ }
+]

@@ -1,0 +1,906 @@
+{
+ "dragon": [
+  {
+   "id": "dragapult",
+   "ko": "드래펄트",
+   "spd": 142,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "koraidon",
+   "ko": "코라이돈",
+   "spd": 135,
+   "joker": false,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "eternatus",
+   "ko": "무한다이노",
+   "spd": 130,
+   "joker": false,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "noivern",
+   "ko": "음번",
+   "spd": 123,
+   "joker": false,
+   "final": true,
+   "usage": 0.51275
+  },
+  {
+   "id": "cyclizar",
+   "ko": "모토마",
+   "spd": 121,
+   "joker": false,
+   "final": true,
+   "usage": 0.25744
+  },
+  {
+   "id": "roaring-moon",
+   "ko": "고동치는달",
+   "spd": 119,
+   "joker": false,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "latios",
+   "ko": "라티오스",
+   "spd": 110,
+   "joker": false,
+   "final": true,
+   "usage": 1.22334
+  },
+  {
+   "id": "garchomp",
+   "ko": "한카리아스",
+   "spd": 102,
+   "joker": false,
+   "final": true,
+   "usage": 9.39182
+  },
+  {
+   "id": "palkia",
+   "ko": "펄기아",
+   "spd": 100,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "hydreigon",
+   "ko": "삼삼드래",
+   "spd": 98,
+   "joker": false,
+   "final": true,
+   "usage": 2.03774
+  },
+  {
+   "id": "haxorus",
+   "ko": "액스라이즈",
+   "spd": 97,
+   "joker": false,
+   "final": true,
+   "usage": 1.02594
+  },
+  {
+   "id": "giratina",
+   "ko": "기라티나",
+   "spd": 90,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "dialga",
+   "ko": "디아루가",
+   "spd": 90,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "baxcalibur",
+   "ko": "드닐레이브",
+   "spd": 87,
+   "joker": false,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "archaludon",
+   "ko": "브리두라스",
+   "spd": 85,
+   "joker": true,
+   "final": true,
+   "usage": 2.26185
+  },
+  {
+   "id": "dragonite",
+   "ko": "망나뇽",
+   "spd": 80,
+   "joker": false,
+   "final": true,
+   "usage": 6.05094
+  },
+  {
+   "id": "dracovish",
+   "ko": "어래곤",
+   "spd": 75,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "tyrantrum",
+   "ko": "견고라스",
+   "spd": 71,
+   "joker": false,
+   "final": true,
+   "usage": 0.40389
+  },
+  {
+   "id": "flapple",
+   "ko": "애프룡",
+   "spd": 70,
+   "joker": false,
+   "final": true,
+   "usage": 0.04713
+  },
+  {
+   "id": "fraxure",
+   "ko": "액슨도",
+   "spd": 67,
+   "joker": false,
+   "final": false,
+   "usage": 0.01257
+  },
+  {
+   "id": "sliggoo",
+   "ko": "미끄네일",
+   "spd": 60,
+   "joker": false,
+   "final": false,
+   "usage": 0.00325
+  },
+  {
+   "id": "noibat",
+   "ko": "음뱃",
+   "spd": 55,
+   "joker": false,
+   "final": false,
+   "usage": 0.00561
+  },
+  {
+   "id": "shelgon",
+   "ko": "쉘곤",
+   "spd": 50,
+   "joker": false,
+   "final": false,
+   "usage": 0.00662
+  },
+  {
+   "id": "druddigon",
+   "ko": "크리만",
+   "spd": 48,
+   "joker": false,
+   "final": true,
+   "usage": 0.29515
+  },
+  {
+   "id": "hydrapple",
+   "ko": "과미드라",
+   "spd": 44,
+   "joker": false,
+   "final": true,
+   "usage": 1.11976
+  },
+  {
+   "id": "guzzlord",
+   "ko": "악식킹",
+   "spd": 43,
+   "joker": false,
+   "final": true,
+   "usage": 0.10145
+  },
+  {
+   "id": "drampa",
+   "ko": "할비롱",
+   "spd": 36,
+   "joker": false,
+   "final": true,
+   "usage": 0.13893
+  },
+  {
+   "id": "appletun",
+   "ko": "단지래플",
+   "spd": 30,
+   "joker": false,
+   "final": true,
+   "usage": 0.10066
+  }
+ ],
+ "ghost": [
+  {
+   "id": "dragapult",
+   "ko": "드래펄트",
+   "spd": 142,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "flutter-mane",
+   "ko": "날개치는머리",
+   "spd": 135,
+   "joker": false,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "spectrier",
+   "ko": "레이스포스",
+   "spd": 130,
+   "joker": false,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "marshadow",
+   "ko": "마샤도",
+   "spd": 125,
+   "joker": false,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "gengar",
+   "ko": "팬텀",
+   "spd": 110,
+   "joker": false,
+   "final": true,
+   "usage": 1.92249
+  },
+  {
+   "id": "blacephalon",
+   "ko": "두파팡",
+   "spd": 107,
+   "joker": false,
+   "final": true,
+   "usage": 1.74361
+  },
+  {
+   "id": "mismagius",
+   "ko": "무우마직",
+   "spd": 105,
+   "joker": false,
+   "final": true,
+   "usage": 0.28336
+  },
+  {
+   "id": "mimikyu",
+   "ko": "따라큐",
+   "spd": 96,
+   "joker": false,
+   "final": true,
+   "usage": 1.68963
+  },
+  {
+   "id": "rotom",
+   "ko": "로토무",
+   "spd": 91,
+   "joker": false,
+   "final": true,
+   "usage": 0.07833
+  },
+  {
+   "id": "giratina",
+   "ko": "기라티나",
+   "spd": 90,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "pecharunt",
+   "ko": "복숭악동",
+   "spd": 88,
+   "joker": false,
+   "final": true,
+   "usage": 3.07098
+  },
+  {
+   "id": "ceruledge",
+   "ko": "파라블레이즈",
+   "spd": 85,
+   "joker": false,
+   "final": true,
+   "usage": 6.1203
+  },
+  {
+   "id": "gholdengo",
+   "ko": "타부자고",
+   "spd": 84,
+   "joker": true,
+   "final": true,
+   "usage": 12.33094
+  },
+  {
+   "id": "basculegion",
+   "ko": "대쓰여너",
+   "spd": 78,
+   "joker": true,
+   "final": true,
+   "usage": 0.50433
+  },
+  {
+   "id": "sinistcha",
+   "ko": "그우린차",
+   "spd": 70,
+   "joker": false,
+   "final": true,
+   "usage": 0.86355
+  },
+  {
+   "id": "skeledirge",
+   "ko": "라우드본",
+   "spd": 66,
+   "joker": false,
+   "final": true,
+   "usage": 0.9328
+  },
+  {
+   "id": "jellicent",
+   "ko": "탱탱겔",
+   "spd": 60,
+   "joker": true,
+   "final": true,
+   "usage": 0.46774
+  },
+  {
+   "id": "aegislash",
+   "ko": "킬가르도",
+   "spd": 60,
+   "joker": true,
+   "final": true,
+   "usage": 1.89152
+  },
+  {
+   "id": "golurk",
+   "ko": "골루그",
+   "spd": 55,
+   "joker": false,
+   "final": true,
+   "usage": 0.31748
+  },
+  {
+   "id": "sableye",
+   "ko": "깜까미",
+   "spd": 50,
+   "joker": false,
+   "final": true,
+   "usage": 0.55404
+  },
+  {
+   "id": "dusknoir",
+   "ko": "야느와르몽",
+   "spd": 45,
+   "joker": false,
+   "final": true,
+   "usage": 0.17978
+  },
+  {
+   "id": "shedinja",
+   "ko": "껍질몬",
+   "spd": 40,
+   "joker": false,
+   "final": true,
+   "usage": 0.87534
+  },
+  {
+   "id": "spiritomb",
+   "ko": "화강돌",
+   "spd": 35,
+   "joker": false,
+   "final": true,
+   "usage": 0.40153
+  },
+  {
+   "id": "cofagrigus",
+   "ko": "데스니칸",
+   "spd": 30,
+   "joker": false,
+   "final": true,
+   "usage": 0.54024
+  },
+  {
+   "id": "dusclops",
+   "ko": "미라몽",
+   "spd": 25,
+   "joker": false,
+   "final": false,
+   "usage": 0.24588
+  },
+  {
+   "id": "litwick",
+   "ko": "불켜미",
+   "spd": 20,
+   "joker": false,
+   "final": false,
+   "usage": 0.00382
+  },
+  {
+   "id": "sandygast",
+   "ko": "모래꿍",
+   "spd": 15,
+   "joker": false,
+   "final": false,
+   "usage": 0.00112
+  },
+  {
+   "id": "gimmighoul",
+   "ko": "모으령",
+   "spd": 10,
+   "joker": false,
+   "final": false,
+   "usage": 0.0009
+  }
+ ],
+ "water": [
+  {
+   "id": "barraskewda",
+   "ko": "꼬치조",
+   "spd": 136,
+   "joker": false,
+   "final": true,
+   "usage": 0.92876
+  },
+  {
+   "id": "greninja",
+   "ko": "개굴닌자",
+   "spd": 122,
+   "joker": false,
+   "final": true,
+   "usage": 3.87887
+  },
+  {
+   "id": "starmie",
+   "ko": "아쿠스타",
+   "spd": 115,
+   "joker": false,
+   "final": true,
+   "usage": 0.43542
+  },
+  {
+   "id": "keldeo",
+   "ko": "케르디오",
+   "spd": 108,
+   "joker": false,
+   "final": true,
+   "usage": 1.06286
+  },
+  {
+   "id": "simipour",
+   "ko": "앗차키",
+   "spd": 101,
+   "joker": false,
+   "final": true,
+   "usage": 0.05117
+  },
+  {
+   "id": "palkia",
+   "ko": "펄기아",
+   "spd": 100,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "swanna",
+   "ko": "스완나",
+   "spd": 98,
+   "joker": false,
+   "final": true,
+   "usage": 0.0826
+  },
+  {
+   "id": "luvdisc",
+   "ko": "사랑동이",
+   "spd": 97,
+   "joker": false,
+   "final": true,
+   "usage": 0.01335
+  },
+  {
+   "id": "bruxish",
+   "ko": "치갈기",
+   "spd": 92,
+   "joker": false,
+   "final": true,
+   "usage": 0.09393
+  },
+  {
+   "id": "lumineon",
+   "ko": "네오라이트",
+   "spd": 91,
+   "joker": false,
+   "final": true,
+   "usage": 0.02738
+  },
+  {
+   "id": "tapu-fini",
+   "ko": "카푸느지느",
+   "spd": 85,
+   "joker": false,
+   "final": true,
+   "usage": 2.16242
+  },
+  {
+   "id": "milotic",
+   "ko": "밀로틱",
+   "spd": 81,
+   "joker": false,
+   "final": true,
+   "usage": 1.19865
+  },
+  {
+   "id": "basculegion",
+   "ko": "대쓰여너",
+   "spd": 78,
+   "joker": true,
+   "final": true,
+   "usage": 0.50433
+  },
+  {
+   "id": "dracovish",
+   "ko": "어래곤",
+   "spd": 75,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "alomomola",
+   "ko": "맘복치",
+   "spd": 65,
+   "joker": false,
+   "final": true,
+   "usage": 14.14726
+  },
+  {
+   "id": "jellicent",
+   "ko": "탱탱겔",
+   "spd": 60,
+   "joker": true,
+   "final": true,
+   "usage": 0.46774
+  },
+  {
+   "id": "empoleon",
+   "ko": "엠페르트",
+   "spd": 60,
+   "joker": true,
+   "final": true,
+   "usage": 0.85514
+  },
+  {
+   "id": "crawdaunt",
+   "ko": "가재장군",
+   "spd": 55,
+   "joker": false,
+   "final": true,
+   "usage": 0.71576
+  },
+  {
+   "id": "azumarill",
+   "ko": "마릴리",
+   "spd": 50,
+   "joker": false,
+   "final": true,
+   "usage": 1.04513
+  },
+  {
+   "id": "araquanid",
+   "ko": "깨비물거미",
+   "spd": 42,
+   "joker": false,
+   "final": true,
+   "usage": 1.62981
+  },
+  {
+   "id": "golisopod",
+   "ko": "갑주무사",
+   "spd": 40,
+   "joker": true,
+   "final": true,
+   "usage": 0.66402
+  },
+  {
+   "id": "toxapex",
+   "ko": "더시마사리",
+   "spd": 35,
+   "joker": false,
+   "final": true,
+   "usage": 5.93176
+  },
+  {
+   "id": "slowbro",
+   "ko": "야도란",
+   "spd": 30,
+   "joker": false,
+   "final": true,
+   "usage": 2.27981
+  },
+  {
+   "id": "dewpider",
+   "ko": "물거미",
+   "spd": 27,
+   "joker": false,
+   "final": false,
+   "usage": 0.00202
+  },
+  {
+   "id": "spheal",
+   "ko": "대굴레오",
+   "spd": 25,
+   "joker": false,
+   "final": false,
+   "usage": 0.00842
+  },
+  {
+   "id": "tirtouga",
+   "ko": "프로토가",
+   "spd": 22,
+   "joker": false,
+   "final": false,
+   "usage": 0.00887
+  },
+  {
+   "id": "slowpoke",
+   "ko": "야돈",
+   "spd": 15,
+   "joker": false,
+   "final": false,
+   "usage": 0.07092
+  },
+  {
+   "id": "pyukumuku",
+   "ko": "해무기",
+   "spd": 5,
+   "joker": false,
+   "final": true,
+   "usage": 1.42478
+  }
+ ],
+ "steel": [
+  {
+   "id": "kartana",
+   "ko": "종이신도",
+   "spd": 109,
+   "joker": false,
+   "final": true,
+   "usage": 3.07827
+  },
+  {
+   "id": "iron-treads",
+   "ko": "무쇠바퀴",
+   "spd": 106,
+   "joker": false,
+   "final": true,
+   "usage": 6.27258
+  },
+  {
+   "id": "jirachi",
+   "ko": "지라치",
+   "spd": 100,
+   "joker": false,
+   "final": true,
+   "usage": 1.01203
+  },
+  {
+   "id": "iron-crown",
+   "ko": "무쇠감투",
+   "spd": 98,
+   "joker": false,
+   "final": true,
+   "usage": 1.67796
+  },
+  {
+   "id": "tinkaton",
+   "ko": "두드리짱",
+   "spd": 94,
+   "joker": false,
+   "final": true,
+   "usage": 0.60948
+  },
+  {
+   "id": "dialga",
+   "ko": "디아루가",
+   "spd": 90,
+   "joker": true,
+   "final": true,
+   "usage": 0
+  },
+  {
+   "id": "excadrill",
+   "ko": "몰드류",
+   "spd": 88,
+   "joker": false,
+   "final": true,
+   "usage": 3.38341
+  },
+  {
+   "id": "archaludon",
+   "ko": "브리두라스",
+   "spd": 85,
+   "joker": true,
+   "final": true,
+   "usage": 2.26185
+  },
+  {
+   "id": "gholdengo",
+   "ko": "타부자고",
+   "spd": 84,
+   "joker": true,
+   "final": true,
+   "usage": 12.33094
+  },
+  {
+   "id": "heatran",
+   "ko": "히드런",
+   "spd": 77,
+   "joker": false,
+   "final": true,
+   "usage": 6.17013
+  },
+  {
+   "id": "klefki",
+   "ko": "클레피",
+   "spd": 75,
+   "joker": false,
+   "final": true,
+   "usage": 0.54563
+  },
+  {
+   "id": "skarmory",
+   "ko": "무장조",
+   "spd": 70,
+   "joker": false,
+   "final": true,
+   "usage": 1.73261
+  },
+  {
+   "id": "corviknight",
+   "ko": "아머까오",
+   "spd": 67,
+   "joker": false,
+   "final": true,
+   "usage": 8.86145
+  },
+  {
+   "id": "scizor",
+   "ko": "핫삼",
+   "spd": 65,
+   "joker": false,
+   "final": true,
+   "usage": 1.60052
+  },
+  {
+   "id": "aegislash",
+   "ko": "킬가르도",
+   "spd": 60,
+   "joker": true,
+   "final": true,
+   "usage": 1.89152
+  },
+  {
+   "id": "empoleon",
+   "ko": "엠페르트",
+   "spd": 60,
+   "joker": true,
+   "final": true,
+   "usage": 0.85514
+  },
+  {
+   "id": "tinkatink",
+   "ko": "어리짱",
+   "spd": 58,
+   "joker": false,
+   "final": false,
+   "usage": 0.00483
+  },
+  {
+   "id": "kingambit",
+   "ko": "대도각참",
+   "spd": 50,
+   "joker": false,
+   "final": true,
+   "usage": 9.88717
+  },
+  {
+   "id": "varoom",
+   "ko": "부르롱",
+   "spd": 47,
+   "joker": false,
+   "final": false,
+   "usage": 0.00067
+  },
+  {
+   "id": "magnemite",
+   "ko": "코일",
+   "spd": 45,
+   "joker": false,
+   "final": false,
+   "usage": 0.04175
+  },
+  {
+   "id": "golisopod",
+   "ko": "갑주무사",
+   "spd": 40,
+   "joker": true,
+   "final": true,
+   "usage": 0.66402
+  },
+  {
+   "id": "melmetal",
+   "ko": "멜메탈",
+   "spd": 34,
+   "joker": false,
+   "final": true,
+   "usage": 3.48575
+  },
+  {
+   "id": "bronzong",
+   "ko": "동탁군",
+   "spd": 33,
+   "joker": false,
+   "final": true,
+   "usage": 0.36248
+  },
+  {
+   "id": "steelix",
+   "ko": "강철톤",
+   "spd": 30,
+   "joker": false,
+   "final": true,
+   "usage": 0.28381
+  },
+  {
+   "id": "bronzor",
+   "ko": "동미러",
+   "spd": 23,
+   "joker": false,
+   "final": false,
+   "usage": 0.0083
+  },
+  {
+   "id": "ferrothorn",
+   "ko": "너트령",
+   "spd": 20,
+   "joker": false,
+   "final": true,
+   "usage": 10.17805
+  },
+  {
+   "id": "stakataka",
+   "ko": "차곡차곡",
+   "spd": 13,
+   "joker": false,
+   "final": true,
+   "usage": 0.46191
+  },
+  {
+   "id": "ferroseed",
+   "ko": "철시드",
+   "spd": 10,
+   "joker": false,
+   "final": false,
+   "usage": 0.03546
+  }
+ ]
+}

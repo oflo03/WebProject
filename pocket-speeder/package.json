@@ -1,0 +1,23 @@
+{
+  "name": "pocket-speeder",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "data": "node scripts/build-data.mjs && python scripts/build-art.py",
+    "check": "node scripts/check-rules.mjs"
+  },
+  "dependencies": {
+    "firebase": "^12.19.0",
+    "gsap": "^3.15.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.1"
+  }
+}

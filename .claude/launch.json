@@ -1,6 +1,8 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "pocket-kinship", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "pocket-kinship", "run", "dev", "--", "--port", "5173", "--strictPort"], "port": 5173 }
+    { "name": "pocket-kinship", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "pocket-kinship", "run", "dev", "--", "--port", "5173", "--strictPort"], "port": 5173 },
+    { "name": "pocket-speeder", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "pocket-speeder", "run", "dev", "--", "--port", "5175", "--strictPort"], "port": 5175 },
+    { "name": "app-stats-hub", "runtimeExecutable": "python", "runtimeArgs": ["-m", "http.server", "5176", "--directory", "app-stats-hub/public"], "port": 5176 }
   ]
 }
