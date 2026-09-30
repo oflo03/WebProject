@@ -200,7 +200,7 @@ function Menu({ lang, mode, hints, onHints, onLang, onMode, onStart }) {
             <span>{t.start}</span>
             <span aria-hidden="true">→</span>
           </button>
-          <p className="setup-footnote">{t.setupNotes[hints]}</p>
+          <p className="setup-footnote">{t.setupNotes[hints][mode]}</p>
         </section>
         <dialog
           className="howto-dialog"
