@@ -225,6 +225,33 @@
       .chart-caption {
         margin: 14px 0 6px;
       }
+      .chart-head {
+        margin: 14px 0 6px;
+        flex-wrap: wrap;
+      }
+      .chart-head .chart-caption {
+        margin: 0;
+      }
+      .chart-tabs {
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--card);
+      }
+      .chart-tabs button {
+        border: 0;
+        background: transparent;
+        padding: 6px 14px;
+        border-radius: 10px;
+        color: var(--muted);
+      }
+      .chart-tabs button[aria-selected='true'] {
+        background: var(--accent);
+        color: var(--card);
+        font-weight: 600;
+      }
       .chart-legend {
         display: flex;
         align-items: center;

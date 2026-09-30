@@ -71,14 +71,15 @@ function homeBody() {
 }
 
 // data: [날짜, 플레이, 클리어][] — 두 꺾은선을 겹쳐 그린다. 숫자는 플레이는 점 위, 클리어는 점 아래.
-function chartSvg(data) {
+// data: [[라벨, 플레이, 클리어], ...]. 일별은 날짜를 MM/DD 로 줄여 일부만, 값별 그래프는 라벨을 전부 쓴다.
+function chartSvg(data, { aria = '최근 14일 일별 플레이·클리어 횟수', daily = true } = {}) {
   const w = 680;
   const h = 190;
-  const pad = { l: 16, r: 16, t: 22, b: 30 };
+  const pad = { l: 28, r: 28, t: 22, b: 30 };
   const max = Math.max(1, ...data.flatMap(([, s, c]) => [s, c]));
-  const x = (i) => pad.l + (i * (w - pad.l - pad.r)) / (data.length - 1);
+  const x = (i) => (data.length > 1 ? pad.l + (i * (w - pad.l - pad.r)) / (data.length - 1) : w / 2);
   const y = (v) => pad.t + (1 - v / max) * (h - pad.t - pad.b);
-  const everyNth = Math.ceil(data.length / 7);
+  const everyNth = daily ? Math.ceil(data.length / 7) : 1;
   const grid = [0, 0.5, 1].map((f) => `<line x1="${pad.l}" x2="${w - pad.r}" y1="${y(max * f)}" y2="${y(max * f)}" class="chart-grid"></line>`).join('');
   const line = (idx, cls, dy) => {
     const pts = data.map((d, i) => `${x(i)},${y(d[idx])}`).join(' ');
@@ -92,11 +93,11 @@ function chartSvg(data) {
     return `<polyline points="${pts}" class="chart-line ${cls}"></polyline>${dots}`;
   };
   const labels = data
-    .map(([date], i) => (i % everyNth === 0 ? `<text x="${x(i)}" y="${h - 8}" class="chart-label">${date.slice(5).replace('-', '/')}</text>` : ''))
+    .map(([key], i) => (i % everyNth === 0 ? `<text x="${x(i)}" y="${h - 8}" class="chart-label">${daily ? key.slice(5).replace('-', '/') : key}</text>` : ''))
     .join('');
   return `
     <div class="chart-legend"><span class="key starts"></span>플레이 <span class="key clears"></span>클리어</div>
-    <svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="최근 14일 일별 플레이·클리어 횟수">
+    <svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${aria}">
       ${grid}${line(1, 'starts', -9)}${line(2, 'clears', 16)}${labels}
     </svg>`;
 }
@@ -251,7 +252,13 @@ async function appBody(appId) {
     </div>
     ${app.dims.length > 1 ? `<p class="muted">하나만 고를 수 있어요. 고르면 나머지는 '전체'로 돌아가요.</p>` : ''}
     <div class="stat-cards" id="stat-cards"></div>
-    <p class="muted chart-caption">최근 14일 일별 플레이·클리어 횟수</p>
+    <div class="title-row chart-head">
+      <div class="chart-tabs" id="chart-tabs" role="tablist" aria-label="그래프 종류">
+        <button role="tab" data-kind="daily">일별</button>
+        ${app.dims.map((d, i) => `<button role="tab" data-kind="${i}">${d.name}별</button>`).join('')}
+      </div>
+      <p class="muted chart-caption" id="chart-caption"></p>
+    </div>
     <div class="table-wrap chart-wrap" id="chart-wrap"></div>
 
     <div class="title-row">
@@ -278,6 +285,32 @@ async function appBody(appId) {
   `;
 
   let summary = {};
+  let daily = [];
+
+  // 일별은 최근 14일, 나머지는 counters/summary 의 값별 누적. 둘 다 꺾은선이고 추가 읽기는 없다.
+  let kind = 'daily';
+  const renderChart = () => {
+    document.querySelectorAll('#chart-tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.kind === kind));
+    const cap = document.getElementById('chart-caption');
+    const wrap = document.getElementById('chart-wrap');
+    if (kind === 'daily') {
+      cap.textContent = '최근 14일 일별 플레이·클리어 횟수';
+      wrap.innerHTML = chartSvg(daily);
+      return;
+    }
+    const d = app.dims[kind];
+    cap.textContent = `${d.name}별 누적 플레이·클리어 횟수`;
+    const data = d.values.map((v) => [d.label(v), summary[`${d.prefix}_${v}_starts`] ?? 0, summary[`${d.prefix}_${v}_clears`] ?? 0]);
+    wrap.innerHTML = chartSvg(data, { aria: cap.textContent, daily: false });
+  };
+  // 탭에 마우스를 올리면 바로 넘어가고, 터치 화면에서는 누르면 넘어간다
+  document.querySelectorAll('#chart-tabs button').forEach((b) => {
+    b.onmouseenter = b.onclick = () => {
+      if (kind === b.dataset.kind) return;
+      kind = b.dataset.kind;
+      renderChart();
+    };
+  });
 
   const selects = app.dims.map((_, i) => document.getElementById(`f-${i}`));
   const renderStatCards = () => {
@@ -301,10 +334,9 @@ async function appBody(appId) {
   const loadStats = async () => {
     document.getElementById('stats-updated').textContent = '불러오는 중...';
     try {
-      const [s, daily] = await Promise.all([fetchSummary(appId), fetchDaily(appId)]);
-      summary = s;
+      [summary, daily] = await Promise.all([fetchSummary(appId), fetchDaily(appId)]);
       renderStatCards();
-      document.getElementById('chart-wrap').innerHTML = chartSvg(daily);
+      renderChart();
       renderLeaderboard();
       document.getElementById('stats-updated').textContent = `${new Date().toLocaleTimeString('ko-KR')} 기준`;
     } catch (e) {
@@ -327,14 +359,15 @@ async function appBody(appId) {
       const checkEl = document.getElementById('log-check');
       checkEl.textContent = '카운터 갱신 중...';
       checkEl.className = 'muted';
-      const { summary: fresh, daily } = countsFromEvents(app, events);
-      await syncCounters(appId, fresh, daily);
+      const { summary: fresh, daily: dailyMap } = countsFromEvents(app, events);
+      await syncCounters(appId, fresh, dailyMap);
 
       // 방금 로그에서 다시 센 값으로 통계 화면도 그 자리에서 갱신한다 (다시 읽을 필요 없이)
       summary = fresh;
       renderStatCards();
       renderLeaderboard();
-      document.getElementById('chart-wrap').innerHTML = chartSvg(last14Days(daily));
+      daily = last14Days(dailyMap);
+      renderChart();
       document.getElementById('stats-updated').textContent = `${new Date().toLocaleTimeString('ko-KR')} 기준 (로그로 갱신됨)`;
 
       checkEl.textContent = `카운터 갱신 완료 ✓ (${count}건 반영)`;
