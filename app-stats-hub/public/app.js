@@ -15,16 +15,30 @@ const firebaseConfig = {
 };
 const db = getFirestore(initializeApp(firebaseConfig));
 
-// 통계를 볼 앱 목록. 새 웹앱을 추가하면 여기 한 줄만 더한다 (firestore.rules 의 화이트리스트에도 추가해야 한다).
-const APPS = [{ id: 'kinship', name: 'Pocket Kinship', desc: '포켓몬 연결 퍼즐' }];
-
-// pocket-kinship 게임이 보내는 값 -> 화면에 보일 한글 이름. counters/summary 의 필드 이름도 이 값들로 만든다.
-const SCOPES = ['all', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+// 통계를 볼 앱 목록. 새 웹앱을 추가하면 여기 한 항목만 더한다 (firestore.rules 의 화이트리스트에도 추가해야 한다).
+// dims: 이벤트 필드(field) -> counters/summary 필드 이름 `${prefix}_${값}_starts|clears`. 필터·순위·로그 열이 이걸로 만들어진다.
 const BOARDS = { pentagon: '오각형', hexagon: '육각형', square: '사각형' };
-const DIFFS = ['easy', 'super', 'expert', 'master'];
-const scopeLabel = (s) => (s == null ? '-' : s === 'all' ? '전체' : `${s}세대`);
-const boardLabel = (b) => BOARDS[b] ?? b ?? '-';
-const diffLabel = (d) => (d == null ? '-' : d[0].toUpperCase() + d.slice(1));
+const SPEEDER_DIFFS = { easy: '쉬움', normal: '보통', hard: '어려움' };
+const APPS = [
+  {
+    id: 'kinship',
+    name: 'Pocket Kinship',
+    desc: '포켓몬 연결 퍼즐',
+    dims: [
+      { field: 'scope', prefix: 'scope', name: '범위', values: ['all', '1', '2', '3', '4', '5', '6', '7', '8', '9'], label: (s) => (s == null ? '-' : s === 'all' ? '전체' : `${s}세대`) },
+      { field: 'board', prefix: 'board', name: '보드', values: Object.keys(BOARDS), label: (b) => BOARDS[b] ?? b ?? '-' },
+      { field: 'difficulty', prefix: 'diff', name: '난이도', values: ['easy', 'super', 'expert', 'master'], label: (d) => (d == null ? '-' : d[0].toUpperCase() + d.slice(1)) },
+    ],
+    detail: (e) => (e.type === 'play_clear' ? `등급 ${e.grade ?? '-'} · 회수 ${e.retracts ?? '-'}회` : '-'),
+  },
+  {
+    id: 'speeder',
+    name: 'Pocket Speeder',
+    desc: '포켓몬 스파이더 솔리테어',
+    dims: [{ field: 'difficulty', prefix: 'diff', name: '난이도', values: Object.keys(SPEEDER_DIFFS), label: (d) => SPEEDER_DIFFS[d] ?? d ?? '-' }],
+    detail: () => '-',
+  },
+];
 const TYPE_LABEL = { play_start: '플레이', play_clear: '클리어' };
 
 const root = document.getElementById('root');
@@ -56,29 +70,39 @@ function homeBody() {
   `;
 }
 
+// data: [날짜, 플레이, 클리어][] — 두 꺾은선을 겹쳐 그린다. 숫자는 플레이는 점 위, 클리어는 점 아래.
 function chartSvg(data) {
   const w = 680;
-  const h = 150;
-  const padTop = 20;
-  const padBottom = 24;
-  const max = Math.max(1, ...data.map(([, c]) => c));
-  const barW = w / data.length;
+  const h = 190;
+  const pad = { l: 16, r: 16, t: 22, b: 30 };
+  const max = Math.max(1, ...data.flatMap(([, s, c]) => [s, c]));
+  const x = (i) => pad.l + (i * (w - pad.l - pad.r)) / (data.length - 1);
+  const y = (v) => pad.t + (1 - v / max) * (h - pad.t - pad.b);
   const everyNth = Math.ceil(data.length / 7);
-  const bars = data
-    .map(([date, c], i) => {
-      const barH = (c / max) * (h - padTop - padBottom);
-      const x = i * barW;
-      const y = h - padBottom - barH;
-      const num = c > 0 ? `<text x="${x + barW / 2}" y="${y - 5}" class="chart-num">${c}</text>` : '';
-      const label = i % everyNth === 0 ? `<text x="${x + barW / 2}" y="${h - 6}" class="chart-label">${date.slice(5).replace('-', '/')}</text>` : '';
-      return `<rect x="${x + 2}" y="${y}" width="${barW - 4}" height="${Math.max(barH, c > 0 ? 2 : 0)}" rx="3" class="chart-bar"></rect>${num}${label}`;
-    })
+  const grid = [0, 0.5, 1].map((f) => `<line x1="${pad.l}" x2="${w - pad.r}" y1="${y(max * f)}" y2="${y(max * f)}" class="chart-grid"></line>`).join('');
+  const line = (idx, cls, dy) => {
+    const pts = data.map((d, i) => `${x(i)},${y(d[idx])}`).join(' ');
+    const dots = data
+      .map((d, i) => {
+        const v = d[idx];
+        const label = v > 0 ? `<text x="${x(i)}" y="${y(v) + dy}" class="chart-num ${cls}">${v}</text>` : '';
+        return `<circle cx="${x(i)}" cy="${y(v)}" r="3.5" class="chart-dot ${cls}"><title>${d[0]} ${v}</title></circle>${label}`;
+      })
+      .join('');
+    return `<polyline points="${pts}" class="chart-line ${cls}"></polyline>${dots}`;
+  };
+  const labels = data
+    .map(([date], i) => (i % everyNth === 0 ? `<text x="${x(i)}" y="${h - 8}" class="chart-label">${date.slice(5).replace('-', '/')}</text>` : ''))
     .join('');
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">${bars}</svg>`;
+  return `
+    <div class="chart-legend"><span class="key starts"></span>플레이 <span class="key clears"></span>클리어</div>
+    <svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="최근 14일 일별 플레이·클리어 횟수">
+      ${grid}${line(1, 'starts', -9)}${line(2, 'clears', 16)}${labels}
+    </svg>`;
 }
 
 // 로그 창은 필터 없이 전체 기록을 최신순으로 보여준다
-function logRowsHtml(events) {
+function logRowsHtml(app, events) {
   const sorted = events
     .filter((e) => e.type === 'play_start' || e.type === 'play_clear')
     .sort((a, b) => (b.ts?.seconds ?? 0) - (a.ts?.seconds ?? 0));
@@ -87,35 +111,36 @@ function logRowsHtml(events) {
     .slice(0, 200)
     .map((e) => {
       const t = e.ts?.seconds ? new Date(e.ts.seconds * 1000).toLocaleString('ko-KR') : '-';
-      const extra = e.type === 'play_clear' ? `등급 ${e.grade ?? '-'} · 회수 ${e.retracts ?? '-'}회` : '-';
-      return `<tr><td>${t}</td><td>${TYPE_LABEL[e.type] ?? e.type}</td><td>${scopeLabel(e.scope)}</td><td>${boardLabel(e.board)}</td><td>${diffLabel(e.difficulty)}</td><td class="muted">${extra}</td></tr>`;
+      const dims = app.dims.map((d) => `<td>${d.label(e[d.field])}</td>`).join('');
+      return `<tr><td>${t}</td><td>${TYPE_LABEL[e.type] ?? e.type}</td>${dims}<td class="muted">${app.detail(e)}</td></tr>`;
     })
     .join('');
 
-  return { count: sorted.length, rows: rows || '<tr><td colspan="6" class="muted">아직 기록이 없어요.</td></tr>' };
+  return { count: sorted.length, rows: rows || `<tr><td colspan="${app.dims.length + 3}" class="muted">아직 기록이 없어요.</td></tr>` };
 }
 
-function filterOptions(select, current) {
-  return `<option value="">전체</option>${select.map((v) => `<option value="${v}" ${v === current ? 'selected' : ''}>${v}</option>`).join('')}`;
-}
 
 // 원본 이벤트에서 counters/summary 와 같은 이름의 필드를 직접 센다 (analytics.js 의 counterUpdates() 와 같은 계산).
 // 로그를 새로고침할 때 이 값으로 카운터를 통째로 덮어써서, 늘어나다 어긋났을 수 있는 걸 바로잡는다.
-function countsFromEvents(events) {
+function countsFromEvents(app, events) {
   const s = { totalStarts: 0, totalClears: 0 };
   const users = new Set();
-  const daily = new Map(); // 'YYYY-MM-DD' -> starts
+  const daily = new Map(); // 'YYYY-MM-DD' -> { starts, clears }
   for (const e of events) {
     if (e.clientId) users.add(e.clientId);
     const kind = e.type === 'play_start' ? 'starts' : e.type === 'play_clear' ? 'clears' : null;
     if (!kind) continue;
     s[e.type === 'play_start' ? 'totalStarts' : 'totalClears']++;
-    if (e.scope != null) s[`scope_${e.scope}_${kind}`] = (s[`scope_${e.scope}_${kind}`] ?? 0) + 1;
-    if (e.board) s[`board_${e.board}_${kind}`] = (s[`board_${e.board}_${kind}`] ?? 0) + 1;
-    if (e.difficulty) s[`diff_${e.difficulty}_${kind}`] = (s[`diff_${e.difficulty}_${kind}`] ?? 0) + 1;
-    if (e.type === 'play_start' && e.ts?.seconds) {
+    for (const d of app.dims) {
+      const v = e[d.field];
+      if (v == null || v === '') continue;
+      const k = `${d.prefix}_${v}_${kind}`;
+      s[k] = (s[k] ?? 0) + 1;
+    }
+    if (e.ts?.seconds) {
       const day = new Date(e.ts.seconds * 1000).toISOString().slice(0, 10);
-      daily.set(day, (daily.get(day) ?? 0) + 1);
+      if (!daily.has(day)) daily.set(day, { starts: 0, clears: 0 });
+      daily.get(day)[kind]++;
     }
   }
   s.userCount = users.size;
@@ -127,7 +152,7 @@ function countsFromEvents(events) {
 async function syncCounters(appId, summary, daily) {
   await Promise.all([
     setDoc(doc(db, 'apps', appId, 'counters', 'summary'), summary),
-    ...[...daily].map(([day, starts]) => setDoc(doc(db, 'apps', appId, 'daily', day), { starts })),
+    ...[...daily].map(([day, counts]) => setDoc(doc(db, 'apps', appId, 'daily', day), counts)),
   ]);
 }
 
@@ -138,7 +163,8 @@ function last14Days(dailyMap) {
     const d = new Date(today);
     d.setDate(d.getDate() - (13 - i));
     const key = d.toISOString().slice(0, 10);
-    return [key, dailyMap.get(key) ?? 0];
+    const c = dailyMap.get(key);
+    return [key, c?.starts ?? 0, c?.clears ?? 0];
   });
 }
 
@@ -159,22 +185,16 @@ async function fetchDaily(appId, days = 14) {
     return d.toISOString().slice(0, 10);
   });
   const docs = await Promise.all(dates.map((d) => getDoc(doc(db, 'apps', appId, 'daily', d))));
-  return dates.map((d, i) => [d, docs[i].exists() ? (docs[i].data().starts ?? 0) : 0]);
+  return dates.map((d, i) => {
+    const v = docs[i].exists() ? docs[i].data() : {};
+    return [d, v.starts ?? 0, v.clears ?? 0];
+  });
 }
 
-function statCards(summary, filters) {
-  let starts = summary.totalStarts ?? 0;
-  let clears = summary.totalClears ?? 0;
-  if (filters.scope) {
-    starts = summary[`scope_${filters.scope}_starts`] ?? 0;
-    clears = summary[`scope_${filters.scope}_clears`] ?? 0;
-  } else if (filters.board) {
-    starts = summary[`board_${filters.board}_starts`] ?? 0;
-    clears = summary[`board_${filters.board}_clears`] ?? 0;
-  } else if (filters.difficulty) {
-    starts = summary[`diff_${filters.difficulty}_starts`] ?? 0;
-    clears = summary[`diff_${filters.difficulty}_clears`] ?? 0;
-  }
+// filter: 고른 차원 하나 ({prefix, value}) 또는 null(전체)
+function statCards(summary, filter) {
+  const starts = filter ? (summary[`${filter.prefix}_${filter.value}_starts`] ?? 0) : (summary.totalStarts ?? 0);
+  const clears = filter ? (summary[`${filter.prefix}_${filter.value}_clears`] ?? 0) : (summary.totalClears ?? 0);
   // 플레이어 수·인당 플레이는 필터와 무관하게 전체 기준이다 (조합별 인원수는 따로 세지 않는다).
   const users = summary.userCount ?? 0;
   const perUser = users ? ((summary.totalStarts ?? 0) / users).toFixed(1) : '-';
@@ -198,15 +218,10 @@ function topFromSummary(summary, prefix, values, labelFn, basis) {
   return best;
 }
 
-function leaderboardHtml(summary, basis) {
-  const groups = [
-    ['scope', SCOPES, scopeLabel, '범위'],
-    ['board', Object.keys(BOARDS), boardLabel, '보드'],
-    ['difficulty', DIFFS, diffLabel, '난이도'],
-  ];
-  return groups
-    .map(([dim, values, labelFn, label]) => {
-      const top = topFromSummary(summary, dim === 'difficulty' ? 'diff' : dim, values, labelFn, basis);
+function leaderboardHtml(app, summary, basis) {
+  return app.dims
+    .map(({ prefix, values, label: labelFn, name: label }) => {
+      const top = topFromSummary(summary, prefix, values, labelFn, basis);
       if (!top || top.starts === 0) return `<div class="card"><span class="num">-</span><span class="label">${label} 1위</span></div>`;
       const detail = basis === 'winrate' ? `${Math.round(top.score * 100)}% (${top.starts}판)` : `${top.starts}회 플레이`;
       return `<div class="card"><span class="num">${top.key}</span><span class="label">${label} 1위 · ${detail}</span></div>`;
@@ -232,13 +247,11 @@ async function appBody(appId) {
     </div>
     <p class="muted" id="stats-updated"></p>
     <div class="filters">
-      <select id="f-scope">${filterOptions(SCOPES, '')}</select>
-      <select id="f-board">${filterOptions(Object.keys(BOARDS), '')}</select>
-      <select id="f-difficulty">${filterOptions(DIFFS, '')}</select>
+      ${app.dims.map((d, i) => `<select id="f-${i}" aria-label="${d.name}"><option value="">${d.name}: 전체</option>${d.values.map((v) => `<option value="${v}">${d.label(v)}</option>`).join('')}</select>`).join('')}
     </div>
-    <p class="muted">하나만 고를 수 있어요. 고르면 나머지는 '전체'로 돌아가요.</p>
+    ${app.dims.length > 1 ? `<p class="muted">하나만 고를 수 있어요. 고르면 나머지는 '전체'로 돌아가요.</p>` : ''}
     <div class="stat-cards" id="stat-cards"></div>
-    <p class="muted chart-caption">최근 14일 일별 플레이 횟수</p>
+    <p class="muted chart-caption">최근 14일 일별 플레이·클리어 횟수</p>
     <div class="table-wrap chart-wrap" id="chart-wrap"></div>
 
     <div class="title-row">
@@ -248,7 +261,7 @@ async function appBody(appId) {
         <option value="winrate">기준: 승률(클리어율)</option>
       </select>
     </div>
-    <div class="stat-cards cols-3" id="leaderboard"></div>
+    <div class="stat-cards cols-${app.dims.length}" id="leaderboard"></div>
 
     <div class="title-row">
       <h3>로그</h3>
@@ -258,7 +271,7 @@ async function appBody(appId) {
     <p class="muted" id="log-check"></p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>시각</th><th>종류</th><th>범위</th><th>보드</th><th>난이도</th><th>상세</th></tr></thead>
+        <thead><tr><th>시각</th><th>종류</th>${app.dims.map((d) => `<th>${d.name}</th>`).join('')}<th>상세</th></tr></thead>
         <tbody id="log-body"></tbody>
       </table>
     </div>
@@ -266,22 +279,19 @@ async function appBody(appId) {
 
   let summary = {};
 
+  const selects = app.dims.map((_, i) => document.getElementById(`f-${i}`));
   const renderStatCards = () => {
-    const filters = {
-      scope: document.getElementById('f-scope').value,
-      board: document.getElementById('f-board').value,
-      difficulty: document.getElementById('f-difficulty').value,
-    };
-    document.getElementById('stat-cards').innerHTML = statCards(summary, filters);
+    const i = selects.findIndex((s) => s.value);
+    document.getElementById('stat-cards').innerHTML = statCards(summary, i < 0 ? null : { prefix: app.dims[i].prefix, value: selects[i].value });
   };
   const renderLeaderboard = () => {
-    document.getElementById('leaderboard').innerHTML = leaderboardHtml(summary, document.getElementById('basis').value);
+    document.getElementById('leaderboard').innerHTML = leaderboardHtml(app, summary, document.getElementById('basis').value);
   };
 
-  // 셀렉트 하나를 고르면 나머지 둘은 '전체'로 되돌린다 (조합 카운터가 없어서 하나씩만 지원한다)
-  ['f-scope', 'f-board', 'f-difficulty'].forEach((id) => {
-    document.getElementById(id).onchange = () => {
-      ['f-scope', 'f-board', 'f-difficulty'].filter((x) => x !== id).forEach((x) => (document.getElementById(x).value = ''));
+  // 셀렉트 하나를 고르면 나머지는 '전체'로 되돌린다 (조합 카운터가 없어서 하나씩만 지원한다)
+  selects.forEach((sel) => {
+    sel.onchange = () => {
+      selects.filter((x) => x !== sel).forEach((x) => (x.value = ''));
       renderStatCards();
     };
   });
@@ -310,14 +320,14 @@ async function appBody(appId) {
     try {
       const snap = await getDocs(collection(db, 'apps', appId, 'events'));
       const events = snap.docs.map((d) => d.data());
-      const { count, rows } = logRowsHtml(events);
+      const { count, rows } = logRowsHtml(app, events);
       document.getElementById('log-body').innerHTML = rows;
       document.getElementById('log-count').textContent = `전체 ${count}건${count > 200 ? ' (최근 200건 표시)' : ''} · ${new Date().toLocaleTimeString('ko-KR')} 기준`;
 
       const checkEl = document.getElementById('log-check');
       checkEl.textContent = '카운터 갱신 중...';
       checkEl.className = 'muted';
-      const { summary: fresh, daily } = countsFromEvents(events);
+      const { summary: fresh, daily } = countsFromEvents(app, events);
       await syncCounters(appId, fresh, daily);
 
       // 방금 로그에서 다시 센 값으로 통계 화면도 그 자리에서 갱신한다 (다시 읽을 필요 없이)

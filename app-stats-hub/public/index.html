@@ -14,6 +14,7 @@
         --accent: #2f9e6b;
         --accent-2: #f7cf59;
         --bad: #d85a4a;
+        --line-2: #3f73d8;
       }
       @media (prefers-color-scheme: dark) {
         :root {
@@ -25,6 +26,7 @@
           --accent: #5cc292;
           --accent-2: #f7cf59;
           --bad: #f08a7c;
+          --line-2: #7fa8ff;
         }
       }
       * {
@@ -186,6 +188,9 @@
       .stat-cards.cols-3 {
         grid-template-columns: repeat(3, 1fr);
       }
+      .stat-cards.cols-1 {
+        grid-template-columns: 1fr;
+      }
       .card {
         background: var(--card);
         border: 1px solid var(--line);
@@ -211,18 +216,71 @@
         overflow: hidden;
       }
       .chart-wrap {
-        padding: 10px 0 0;
+        padding: 10px 8px 0;
+      }
+      .chart-wrap svg {
+        display: block;
+        height: auto;
       }
       .chart-caption {
         margin: 14px 0 6px;
       }
-      .chart-bar {
+      .chart-legend {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 2px 10px 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .chart-legend .key {
+        width: 14px;
+        height: 3px;
+        border-radius: 2px;
+        margin-left: 8px;
+      }
+      .key.starts {
+        background: var(--accent);
+      }
+      .key.clears {
+        background: var(--line-2);
+      }
+      .chart-grid {
+        stroke: var(--line);
+        stroke-width: 1;
+      }
+      .chart-line {
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+      .chart-line.starts {
+        stroke: var(--accent);
+      }
+      .chart-line.clears {
+        stroke: var(--line-2);
+      }
+      .chart-dot {
+        stroke: var(--card);
+        stroke-width: 2;
+      }
+      .chart-dot.starts {
         fill: var(--accent);
       }
+      .chart-dot.clears {
+        fill: var(--line-2);
+      }
       .chart-num {
-        font-size: 9px;
-        fill: var(--muted);
+        font-size: 10px;
+        font-weight: 600;
         text-anchor: middle;
+      }
+      .chart-num.starts {
+        fill: var(--accent);
+      }
+      .chart-num.clears {
+        fill: var(--line-2);
       }
       .chart-label {
         font-size: 10px;

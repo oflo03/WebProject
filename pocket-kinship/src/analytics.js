@@ -82,8 +82,9 @@ export function track(type, params = {}) {
   const updates = counterUpdates(type, params);
   if (updates) setDoc(summaryRef, updates, { merge: true }).catch(() => {});
 
-  if (type === 'play_start') {
+  const kind = type === 'play_start' ? 'starts' : type === 'play_clear' ? 'clears' : null;
+  if (kind) {
     const date = new Date().toISOString().slice(0, 10);
-    setDoc(doc(db, 'apps', APP_ID, 'daily', date), { starts: increment(1) }, { merge: true }).catch(() => {});
+    setDoc(doc(db, 'apps', APP_ID, 'daily', date), { [kind]: increment(1) }, { merge: true }).catch(() => {});
   }
 }

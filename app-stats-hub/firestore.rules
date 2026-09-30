@@ -8,7 +8,7 @@ service cloud.firestore {
     match /apps/{appId}/events/{eventId} {
       allow read: if true;
       allow update, delete: if false;
-      allow create: if appId in ['kinship']
+      allow create: if appId in ['kinship', 'speeder']
         && request.resource.data.type is string
         && request.resource.data.type.size() < 40
         && request.resource.data.ts == request.time;
@@ -17,19 +17,19 @@ service cloud.firestore {
     // 집계 카운터: 이벤트를 남길 때마다 숫자만 늘어난다 (increment). 문서 하나뿐이라 통계 새로고침이 가볍다.
     match /apps/{appId}/counters/summary {
       allow read: if true;
-      allow write: if appId in ['kinship'];
+      allow write: if appId in ['kinship', 'speeder'];
     }
 
     // 날짜별 카운터 (일별 그래프용). 문서 id 가 YYYY-MM-DD 형식인지만 본다.
     match /apps/{appId}/daily/{date} {
       allow read: if true;
-      allow write: if appId in ['kinship'] && date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+      allow write: if appId in ['kinship', 'speeder'] && date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
     }
 
     // 인당 플레이 횟수를 세려고, 브라우저별 식별자를 처음 볼 때만 기록해둔다 (있는지 여부만 쓴다).
     match /apps/{appId}/users/{clientId} {
       allow read: if true;
-      allow create: if appId in ['kinship'];
+      allow create: if appId in ['kinship', 'speeder'];
       allow update, delete: if false;
     }
   }
