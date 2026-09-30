@@ -32,5 +32,25 @@ service cloud.firestore {
       allow create: if appId in ['kinship', 'speeder'];
       allow update, delete: if false;
     }
+
+    // 스피더 포르세우스(힌트 없음) 클리어 랭킹. 난이도별로 따로, 추가만 되고 고칠 수 없다.
+    match /apps/{appId}/rankings/{mode}/entries/{entryId} {
+      allow read: if true;
+      allow update, delete: if false;
+      allow create: if appId == 'speeder'
+        && mode in ['easy', 'normal', 'hard']
+        && request.resource.data.keys().hasOnly(['name', 'ms', 'moves', 'clientId', 'ts'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 12
+        && request.resource.data.ms is int
+        && request.resource.data.ms > 0
+        && request.resource.data.ms < 86400000
+        && request.resource.data.moves is int
+        && request.resource.data.moves > 0
+        && request.resource.data.clientId is string
+        && request.resource.data.clientId.size() < 64
+        && request.resource.data.ts == request.time;
+    }
   }
 }

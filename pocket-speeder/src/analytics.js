@@ -1,5 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { addDoc, collection, doc, getDoc, getFirestore, increment, serverTimestamp, setDoc } from 'firebase/firestore';
+import {
+  addDoc, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, increment, limit, orderBy, query, serverTimestamp, setDoc, where,
+} from 'firebase/firestore';
 
 // Stats go to the shared app-stats-hub project, under apps/speeder only (enforced by its firestore.rules).
 const APP_ID = 'speeder';
@@ -56,4 +58,23 @@ export function track(type, difficulty) {
 
   const date = new Date().toISOString().slice(0, 10);
   setDoc(doc(db, 'apps', APP_ID, 'daily', date), { [kind]: increment(1) }, { merge: true }).catch(() => {});
+}
+
+// Legend-hint clears only, one board per difficulty: apps/speeder/rankings/{mode}/entries. Ranked by clear time only, fastest first.
+const board = (mode) => collection(db, 'apps', APP_ID, 'rankings', mode, 'entries');
+
+export async function submitScore(mode, name, ms, moves) {
+  if (import.meta.env.DEV) return 'dev';
+  const ref = await addDoc(board(mode), { name, ms, moves, clientId: clientId(), ts: serverTimestamp() });
+  return ref.id;
+}
+
+export async function topScores(mode, n = 10) {
+  const snap = await getDocs(query(board(mode), orderBy('ms'), limit(n)));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+export async function rankOf(mode, ms) {
+  const snap = await getCountFromServer(query(board(mode), where('ms', '<', ms)));
+  return snap.data().count + 1;
 }

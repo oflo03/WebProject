@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import Game, { HINT_LEVELS } from './Game.jsx';
+import Game, { HINT_LEVELS, RankList } from './Game.jsx';
+import { topScores } from './analytics.js';
 import { STR } from './i18n.js';
 import { MODES } from './rules.js';
 
@@ -124,6 +125,7 @@ function Menu({ lang, mode, hints, onHints, onLang, onMode, onStart }) {
           </span>
         </span>
         <div className="menu-nav-actions">
+          <RankButton t={t} />
           <button className="pill ghost" onClick={() => rulesRef.current.showModal()}>
             {t.howTo}
           </button>
@@ -219,5 +221,64 @@ function Menu({ lang, mode, hints, onHints, onLang, onMode, onStart }) {
         </dialog>
       </section>
     </main>
+  );
+}
+
+// Legend ranking button: hovering opens a window with the top 10 of every difficulty; clicking pins it (for touch).
+function RankButton({ t }) {
+  const [hover, setHover] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const [rows, setRows] = useState({});
+  const timer = useRef();
+  const open = hover || pinned;
+  useEffect(() => {
+    if (!open) return;
+    setRows({});
+    MODES.forEach((m) =>
+      topScores(m).then(
+        (r) => setRows((o) => ({ ...o, [m]: r })),
+        () => setRows((o) => ({ ...o, [m]: [] })),
+      ),
+    );
+  }, [open]);
+  const enter = () => {
+    clearTimeout(timer.current);
+    setHover(true);
+  };
+  const leave = () => {
+    timer.current = setTimeout(() => setHover(false), 200);
+  };
+
+  return (
+    <div className="rank-hover" onMouseEnter={enter} onMouseLeave={leave}>
+      <button className={`pill ghost ${open ? 'on' : ''}`} aria-expanded={open} onClick={() => setPinned(!pinned)}>
+        🏆 {t.rankOpen}
+      </button>
+      {open && (
+        <div className="rank-window" role="dialog" aria-label={t.rankOpen}>
+          <div className="howto-dialog-head">
+            <h2>{t.rankOpen}</h2>
+            <button
+              className="howto-close"
+              onClick={() => {
+                setPinned(false);
+                setHover(false);
+              }}
+              aria-label={t.close}
+            >
+              ×
+            </button>
+          </div>
+          <div className="rank-cols">
+            {MODES.map((m) => (
+              <section key={m} className="rank">
+                <h3>{t.modes[m][0]}</h3>
+                <RankList rows={rows[m] ?? null} t={t} />
+              </section>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

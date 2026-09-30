@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import CARDS from './cards.json';
 import { STR } from './i18n.js';
-import { track } from './analytics.js';
+import { track, submitScore, topScores, rankOf } from './analytics.js';
 import { RUN, TYPES, WILD, info, newGame, isRun, canDrop, move, deal, won, bestTarget } from './rules.js';
 
 const byId = new Map(CARDS.map((c) => [c.id, c]));
@@ -412,6 +412,7 @@ export default function Game({ mode, hints = 'boss', lang, onMenu, onNew }) {
             <img src={`/logo-${lang}.webp`} alt="" />
             <h2>{t.win}</h2>
             <p>{t.winSub(fmt(elapsed), s.moves)}</p>
+            {hints === 'legend' && <Ranking mode={mode} ms={elapsed} moves={s.moves} t={t} />}
             <div className="win-row">
               <button className="pill gold big" onClick={onNew}>
                 {t.again}
@@ -424,6 +425,90 @@ export default function Game({ mode, hints = 'boss', lang, onMenu, onNew }) {
         </div>
       )}
     </main>
+  );
+}
+
+const NAME_KEY = 'rankName';
+const NAME_MAX = 12;
+
+// Legend clears can post a name; each difficulty has its own board, fastest time first.
+function Ranking({ mode, ms, moves, t }) {
+  const [name, setName] = useState(() => {
+    try {
+      return localStorage.getItem(NAME_KEY) ?? '';
+    } catch {
+      return '';
+    }
+  });
+  const [state, setState] = useState('form'); // form | sending | done | error
+  const [mine, setMine] = useState(null);
+  const [rank, setRank] = useState(null);
+  const [top, setTop] = useState(null);
+
+  const load = () => topScores(mode).then(setTop, () => setTop([]));
+  useEffect(() => {
+    load();
+  }, [mode]);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const n = name.trim().slice(0, NAME_MAX);
+    if (!n || state === 'sending') return;
+    setState('sending');
+    try {
+      localStorage.setItem(NAME_KEY, n);
+    } catch {}
+    try {
+      const id = await submitScore(mode, n, Math.round(ms), moves);
+      setMine(id);
+      setRank(await rankOf(mode, Math.round(ms)).catch(() => null));
+      await load();
+      setState('done');
+    } catch {
+      setState('error');
+    }
+  };
+
+  return (
+    <section className="rank">
+      <h3>{t.rankTitle(t.modes[mode][0])}</h3>
+      {state !== 'done' ? (
+        <form className="rank-form" onSubmit={submit}>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={NAME_MAX}
+            placeholder={t.rankName}
+            aria-label={t.rankName}
+            autoComplete="nickname"
+          />
+          <button className="pill gold" disabled={!name.trim() || state === 'sending'}>
+            {t.rankSubmit}
+          </button>
+        </form>
+      ) : (
+        rank && <p className="rank-mine">{t.rankMine(rank)}</p>
+      )}
+      {state === 'error' && <p className="rank-error">{t.rankError}</p>}
+      <RankList rows={top} mine={mine} t={t} />
+    </section>
+  );
+}
+
+export function RankList({ rows, mine, t }) {
+  if (rows === null) return <p className="rank-empty">…</p>;
+  if (!rows.length) return <p className="rank-empty">{t.rankEmpty}</p>;
+  return (
+    <ol className="rank-list">
+      {rows.map((r, i) => (
+        <li key={r.id} className={r.id === mine ? 'me' : ''}>
+          <span className="rank-no">{i + 1}</span>
+          <span className="rank-who">{r.name}</span>
+          <span className="rank-time">{fmt(r.ms)}</span>
+          <span className="rank-moves">{t.rankMoves(r.moves)}</span>
+        </li>
+      ))}
+    </ol>
   );
 }
 
