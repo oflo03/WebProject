@@ -145,8 +145,7 @@ function entry(id, sp, poke, { ko: koName, en: enName, generation, forms }) {
     name: { ko: koName, en: enName },
     attrs: {
       type: types,
-      evolveVia: [...e.evolveVia],
-      evolvedVia: e.evolvedVia,
+      evolution: [...new Set([...e.evolveVia, ...e.evolvedVia])],
       weak4x: TYPES.filter((a) => mult(a, types) === 4),
       resist4x: TYPES.filter((a) => mult(a, types) === 0.25),
       trainer: [],
@@ -207,8 +206,7 @@ const abilities = Object.fromEntries(await pool(abilitySlugs, 8, async (s) => [s
 const typeLabels = Object.fromEntries(await pool(TYPES, 4, async (t) => [t, ko((await get(`/type/${t}`)).names) ?? t]));
 const categories = {
   type: { label: { ko: '타입', en: 'Type' }, values: typeLabels },
-  evolveVia: { label: { ko: '진화할 방법', en: 'Evolves by' }, values: METHODS },
-  evolvedVia: { label: { ko: '진화한 방법', en: 'Evolved by' }, values: METHODS },
+  evolution: { label: { ko: '진화 방법', en: 'Evolution' }, values: METHODS },
   weak4x: { label: { ko: '4배 약점 타입', en: '4x weakness' }, values: typeLabels },
   resist4x: { label: { ko: '1/4 반감 타입', en: '1/4x resistance' }, values: typeLabels },
   trainer: { label: { ko: '사용한 네임드 트레이너', en: 'Named trainer' }, values: Object.fromEntries(Object.keys(overrides.trainer).sort().map((n) => [n, trainerNames[n] ?? n])) },

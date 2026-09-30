@@ -4,11 +4,10 @@ import { EN_GENDER, EN_POSITION, cap } from './i18n.js';
 export const CATEGORY_DESC = {
   ko: {
     type: '포켓몬의 타입. 복수 타입 중 하나만 겹쳐도 돼요.',
-    evolveVia: '이 포켓몬이 다음 형태로 진화할 때 쓰는 방법. 단순 레벨업은 제외해요.',
-    evolvedVia: '이 포켓몬이 되기 위해 앞 형태가 쓴 진화 방법.',
+    evolution: '이 포켓몬이 진화할 때 쓰는 방법이나, 앞 형태가 이 포켓몬으로 진화할 때 쓴 방법. 단순 레벨업은 제외해요.',
     weak4x: '4배 약점인 타입.',
     resist4x: '데미지를 1/4만 받는 타입.',
-    trainer: '챔피언, 사천왕, 관장, 보스가 사용한 트레이너. 같은 트레이너의 포켓몬끼리만 이어져요.',
+    trainer: '챔피언, 사천왕, 관장, 보스가 사용한 트레이너. 지우는 애니메이션에서 가졌던 모든 포켓몬(진화 전 모습 포함)이에요. 같은 트레이너의 포켓몬끼리만 이어져요.',
     generation: '처음 등장한 세대. 세대별 퍼즐에서는 쓰이지 않아요.',
     forms: '가지고 있거나 자신이 해당하는 특수 폼.',
     signatureMove: '그 포켓몬 계열만 배울 수 있는 전용기가 있는지. 기술 이름은 보지 않아요.',
@@ -18,11 +17,10 @@ export const CATEGORY_DESC = {
   },
   en: {
     type: "The Pokémon's type. Sharing any one type is enough.",
-    evolveVia: 'How this Pokémon evolves into its next form. Plain level-up is excluded.',
-    evolvedVia: 'How the previous form evolved into this Pokémon.',
+    evolution: 'How this Pokémon evolves, or how its previous form evolved into it. Plain level-up is excluded.',
     weak4x: 'Types it takes 4x damage from.',
     resist4x: 'Types it takes 1/4x damage from.',
-    trainer: 'Champion, Elite Four, Gym Leader, or boss trainers who used it. Only Pokémon of the same trainer connect.',
+    trainer: 'Champion, Elite Four, Gym Leader, or boss trainers who used it. Ash covers every Pokémon he owned in the anime, including earlier evolution stages. Only Pokémon of the same trainer connect.',
     generation: 'Debut generation. Not used in generation puzzles.',
     forms: 'Special forms it has or is.',
     signatureMove: 'Whether it has a move only its evolution line can learn. The move itself does not matter.',
@@ -40,7 +38,7 @@ export function valueLabel(lang, cat, v, koLabel) {
   if (lang === 'ko') return koLabel ?? v;
   if (cat === 'trainer') return v;
   if (cat === 'type' || cat === 'weak4x' || cat === 'resist4x') return cap(v);
-  if (cat === 'evolveVia' || cat === 'evolvedVia') return EN_METHOD[v];
+  if (cat === 'evolution') return EN_METHOD[v];
   if (cat === 'forms') return EN_FORM[v];
   if (cat === 'generation') return `Gen ${v}`;
   if (cat === 'classification') return EN_POSITION[v] ?? EN_GENDER[v];

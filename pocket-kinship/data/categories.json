@@ -25,28 +25,10 @@
       "fairy": "페어리"
     }
   },
-  "evolveVia": {
+  "evolution": {
     "label": {
-      "ko": "진화할 방법",
-      "en": "Evolves by"
-    },
-    "values": {
-      "friendship": "친밀도",
-      "stone": "진화의 돌",
-      "trade": "교환",
-      "time": "시간",
-      "location": "장소",
-      "gender": "성별",
-      "move": "기술 습득",
-      "party": "파티 조건",
-      "held-item": "아이템 지참",
-      "special": "특수 행동"
-    }
-  },
-  "evolvedVia": {
-    "label": {
-      "ko": "진화한 방법",
-      "en": "Evolved by"
+      "ko": "진화 방법",
+      "en": "Evolution"
     },
     "values": {
       "friendship": "친밀도",
@@ -125,6 +107,7 @@
       "Alder": "노간주",
       "Allister": "어니언",
       "Archie": "아강",
+      "Ash": "지우",
       "Bea": "채두",
       "Bertha": "들국화",
       "Blaine": "강연",

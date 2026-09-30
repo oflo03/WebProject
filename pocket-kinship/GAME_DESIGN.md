@@ -114,8 +114,7 @@
   "name": { "ko": "피카츄", "en": "Pikachu" },
   "attrs": {
     "type": ["electric"],
-    "evolveVia": ["stone"],
-    "evolvedVia": ["friendship"],
+    "evolution": ["stone", "friendship"],
     "weak4x": [],
     "resist4x": [],
     "trainer": ["red"],
@@ -129,7 +128,7 @@
 }
 ```
 
-- 카테고리 키 12개: `type`, `evolveVia`, `evolvedVia`, `weak4x`, `resist4x`, `trainer`, `generation`, `forms`, `signatureMove`, `signatureZ`, `abilities`, `classification`
+- 카테고리 키 11개: `type`, `evolution`, `weak4x`, `resist4x`, `trainer`, `generation`, `forms`, `signatureMove`, `signatureZ`, `abilities`, `classification`
 - `signatureMove`, `signatureZ`: 보유하면 `["has"]`, 없으면 `[]`.
 - `forms` 값: `mega`, `gmax`, `primal`, `terastal`, `regional-has`, `regional-self`.
 - `classification` 값: 포지션 `starter`, `sub-legendary`, `legendary`, `mythical`, `ultra-beast`, `paradox` 다음에 성비 `male-only`, `female-only`, `genderless`.
@@ -139,7 +138,7 @@
 ### 파일 구성
 ```
 pocket-kinship/data/
-├── categories.json   # 12개 카테고리와 각 값의 한글 라벨 (자동 생성)
+├── categories.json   # 11개 카테고리와 각 값의 한글 라벨 (자동 생성)
 ├── pokemon.json      # 포켓몬 전체 (위 구조의 배열, 자동 생성)
 ├── trainer-names.json    # 트레이너 한국어 이름 (scripts/fetch-trainer-names.mjs 로 Bulbapedia 에서 수집)
 ├── signature-moves.json  # 전용기 후보와 배울 수 있는 포켓몬 (검토용, 자동 생성)
@@ -155,7 +154,7 @@ pocket-kinship/scripts/build-data.mjs   # PokéAPI + overrides.json -> 위 두 �
 | 카테고리 | 출처 |
 |---|---|
 | type, abilities, generation | PokéAPI |
-| evolveVia, evolvedVia | PokéAPI 진화 체인에서 계산 |
+| evolution | PokéAPI 진화 체인에서 계산 (진화할 방법 + 진화한 방법 합집합) |
 | weak4x, resist4x | 타입 상성표로 계산 |
 | forms | PokéAPI 폼 정보 + 일부 수동 보정 |
 | trainer, signatureMove, signatureZ | 수동 입력 (PokéAPI에 없음) |
@@ -223,7 +222,7 @@ pocket-kinship/scripts/build-data.mjs   # PokéAPI + overrides.json -> 위 두 �
 - 다국어: 한국어/영어. `src/i18n.js`에 화면 문구를 두 벌로 두고, 처음에는 브라우저 언어(`ko`면 한국어, 그 외 영어)로 정한다. 메뉴와 게임 화면의 언어 버튼으로 바꾸면 `localStorage`에 저장된다. 포켓몬 이름은 `name.ko` / `name.en`, 카테고리 이름은 `label.ko` / `label.en`을 쓴다. 카테고리 값(타입, 특성 등)의 영어 라벨은 아직 없다 (화면에 값이 나오지 않는다).
 - 게임 이름: 영어 `Pocket Kinship`, 한국어 `포켓 끼리끼리`.
 - 연결 설명: 두 칸가 규칙을 만족해 초록 선이 되면, 선 위·아래에 공통점을 문장으로 띄운다 (예: `불꽃 타입`, `얼음에 4배 약점`, `진화 없음`, `3단계 중 2번째`, `초전설`, `메가진화 있음`). 초록 선마다 항상 표시한다. 한 선에 4줄까지 보이고 넘치면 `+n`으로 줄이며, 선에 마우스를 올리면 전체가 툴팁으로 나온다.
-- 카테고리 설명: 메뉴와 게임 화면 상단의 `카테고리 설명` 버튼에 마우스를 올리면 큰 창이 뜨고 (눌러서 고정, `닫기`로 닫기도 가능), 12개 카테고리의 설명과 가능한 값을 보여준다. 특성은 종류가 많아 개수만, 트레이너는 전체 이름을 보여준다. Expert·Master나 세대별 퍼즐이면 그 규칙 안내가 함께 나오고, 세대별 퍼즐에서는 등장 세대 항목이 흐리게 표시된다.
+- 카테고리 설명: 메뉴와 게임 화면 상단의 `카테고리 설명` 버튼에 마우스를 올리면 큰 창이 뜨고 (눌러서 고정, `닫기`로 닫기도 가능), 11개 카테고리의 설명과 가능한 값을 보여준다. 특성은 종류가 많아 개수만, 트레이너는 전체 이름을 보여준다. Expert·Master나 세대별 퍼즐이면 그 규칙 안내가 함께 나오고, 세대별 퍼즐에서는 등장 세대 항목이 흐리게 표시된다.
 - 클리어 화면: 전체 화면 팝업 대신 오른쪽(모바일은 아래) 팀 패널 안에 등급, 회수 횟수, `메뉴`, `다음 퍼즐` 버튼을 띄운다. 마지막 칸를 놓은 뒤에도 보드의 연결 설명을 그대로 볼 수 있다.
 - 진화 방식(몇 단계 중 몇 번째)은 카테고리에서 뺐다. 카테고리를 줄여 Master(카테고리 2개 필요)에서 후보 조합이 줄었으므로, 후보가 적은 세대별 Master 퍼즐은 개수가 모자란다.
 - 난이도 개편: Expert도 카테고리 2개가 필요하고, Master는 정답을 하나로 좁히지 않고 "정답이 적게" 나오도록 완화했다. Super는 정답이 적은 퍼즐로 바뀌었다 (Expert의 "정답 하나" 조건이 사라짐).

@@ -169,12 +169,15 @@ if (args.includes('--explore')) {
   process.exit(0);
 }
 
+// 포켓몬 구성이 한 마리만 다른 퍼즐은 사실상 같은 문제라, 같은 세대·보드·난이도 안에서는 하나만 남긴다.
 const puzzles = [];
+const nearDup = (kept, ids) => kept.some((k) => ids.filter((id) => k.has(id)).length >= ids.length - 1);
 for (const scope of ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
   const S = buildScope(scope);
   for (const [bname, b] of Object.entries(boards)) {
     for (const [dname, d] of Object.entries(DIFFS)) {
       const seen = new Set();
+      const kept = [];
       let made = 0;
       for (let tries = 0; made < COUNT && tries < COUNT * 5000; tries++) {
         const at = attempt(S, b, d);
@@ -186,6 +189,8 @@ for (const scope of ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
         if (classes < lo || classes > hi) continue;
         seen.add(key);
         const solution = at.map((i) => S.pool[i].id);
+        if (nearDup(kept, solution)) continue;
+        kept.push(new Set(solution));
         const pz = { id: `${scope}-${bname}-${dname}-${made}`, scope, board: bname, difficulty: dname, pokemon: shuffle([...solution]), solution, classes };
         verify(pz, b, d, S.cats);
         puzzles.push(pz);

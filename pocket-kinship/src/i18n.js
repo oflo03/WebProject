@@ -194,8 +194,7 @@ export const EN_GENDER = {
 const FACT = {
   ko: {
     type: (v, L) => `${L} 타입`,
-    evolveVia: (v, L) => `진화 방법: ${L}`,
-    evolvedVia: (v, L) => `진화한 방법: ${L}`,
+    evolution: (v, L) => `진화 방법: ${L}`,
     weak4x: (v, L) => `${L}에 4배 약점`,
     resist4x: (v, L) => `${L}에 1/4 반감`,
     trainer: (v, L) => `${L} 사용`,
@@ -209,8 +208,7 @@ const FACT = {
   },
   en: {
     type: (v) => `${cap(v)} type`,
-    evolveVia: (v) => `Evolves by ${EN_METHOD[v]}`,
-    evolvedVia: (v) => `Evolved by ${EN_METHOD[v]}`,
+    evolution: (v) => `Evolution involves ${EN_METHOD[v]}`,
     weak4x: (v) => `4x weak to ${cap(v)}`,
     resist4x: (v) => `Resists ${cap(v)} 1/4x`,
     trainer: (v) => `Used by ${v}`,
