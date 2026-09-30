@@ -42,17 +42,22 @@ async function ensureUserCounted(cid) {
   } catch {}
 }
 
-// Field names must match the stats-hub dashboard: totalStarts/totalClears and diff_<difficulty>_<starts|clears>.
-export function track(type, difficulty) {
+// Field names must match the stats-hub dashboard: totalStarts/totalClears, diff_<difficulty>_<starts|clears>
+// and hint_<hints>_<starts|clears>.
+export function track(type, difficulty, hints) {
   if (import.meta.env.DEV) return;
   const cid = clientId();
   ensureUserCounted(cid);
-  addDoc(collection(db, 'apps', APP_ID, 'events'), { type, difficulty, ts: serverTimestamp(), clientId: cid }).catch(() => {});
+  addDoc(collection(db, 'apps', APP_ID, 'events'), { type, difficulty, hints, ts: serverTimestamp(), clientId: cid }).catch(() => {});
 
   const kind = type === 'play_start' ? 'starts' : 'clears';
   setDoc(
     summaryRef,
-    { [type === 'play_start' ? 'totalStarts' : 'totalClears']: increment(1), [`diff_${difficulty}_${kind}`]: increment(1) },
+    {
+      [type === 'play_start' ? 'totalStarts' : 'totalClears']: increment(1),
+      [`diff_${difficulty}_${kind}`]: increment(1),
+      [`hint_${hints}_${kind}`]: increment(1),
+    },
     { merge: true },
   ).catch(() => {});
 

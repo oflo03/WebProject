@@ -196,11 +196,11 @@ export default function Game({ mode, hints = 'boss', lang, onMenu, onNew }) {
     return () => clearTimeout(id);
   }, [ready]);
 
-  useEffect(() => track('play_start', mode), [mode]);
+  useEffect(() => track('play_start', mode, hints), [mode]);
 
   useEffect(() => {
     if (isWon) {
-      if (!endRef.current) track('play_clear', mode);
+      if (!endRef.current) track('play_clear', mode, hints);
       endRef.current ??= Date.now();
       return;
     }
