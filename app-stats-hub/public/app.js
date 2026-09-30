@@ -248,7 +248,6 @@ async function appBody(appId) {
     <div class="filters">
       ${app.dims.map((d, i) => `<select id="f-${i}" aria-label="${d.name}"><option value="">${d.name}: 전체</option>${d.values.map((v) => `<option value="${v}">${d.label(v)}</option>`).join('')}</select>`).join('')}
     </div>
-    ${app.dims.length > 1 ? `<p class="muted">하나만 고를 수 있어요. 고르면 나머지는 '전체'로 돌아가요.</p>` : ''}
     <div class="stat-cards" id="stat-cards"></div>
     <div class="title-row chart-head">
       <div class="chart-tabs" id="chart-tabs" role="tablist" aria-label="그래프 종류">
