@@ -5,7 +5,8 @@ import {
   getDoc,
   getDocs,
   getFirestore,
-  setDoc,
+  query,
+  where,
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -108,7 +109,7 @@ function chartSvg(data, { aria = '최근 14일 일별 플레이·클리어 횟�
     </svg>`;
 }
 
-// 로그 창은 필터 없이 전체 기록을 최신순으로 보여준다
+// 로그 창은 필터 없이 읽어 온 기록을 최신순으로 보여준다
 function logRowsHtml(app, events) {
   const sorted = events
     .filter((e) => e.type === 'play_start' || e.type === 'play_clear')
@@ -126,54 +127,6 @@ function logRowsHtml(app, events) {
   return { count: sorted.length, rows: rows || `<tr><td colspan="${app.dims.length + 3}" class="muted">아직 기록이 없어요.</td></tr>` };
 }
 
-
-// 원본 이벤트에서 counters/summary 와 같은 이름의 필드를 직접 센다 (analytics.js 의 counterUpdates() 와 같은 계산).
-// 로그를 새로고침할 때 이 값으로 카운터를 통째로 덮어써서, 늘어나다 어긋났을 수 있는 걸 바로잡는다.
-function countsFromEvents(app, events) {
-  const s = { totalStarts: 0, totalClears: 0 };
-  const users = new Set();
-  const daily = new Map(); // 'YYYY-MM-DD' -> { starts, clears }
-  for (const e of events) {
-    if (e.clientId) users.add(e.clientId);
-    const kind = e.type === 'play_start' ? 'starts' : e.type === 'play_clear' ? 'clears' : null;
-    if (!kind) continue;
-    s[e.type === 'play_start' ? 'totalStarts' : 'totalClears']++;
-    for (const d of app.dims) {
-      const v = e[d.field];
-      if (v == null || v === '') continue;
-      const k = `${d.prefix}_${v}_${kind}`;
-      s[k] = (s[k] ?? 0) + 1;
-    }
-    if (e.ts?.seconds) {
-      const day = new Date(e.ts.seconds * 1000).toISOString().slice(0, 10);
-      if (!daily.has(day)) daily.set(day, { starts: 0, clears: 0 });
-      daily.get(day)[kind]++;
-    }
-  }
-  s.userCount = users.size;
-  return { summary: s, daily };
-}
-
-// counters/summary 를 통째로 덮어쓰고(merge 아님 — 안 맞던 필드도 사라지게), 이벤트에 등장한 날짜의
-// daily/{날짜} 도 다시 쓴다. 로그를 이미 다 읽은 김에 하는 거라 추가 읽기는 없다.
-async function syncCounters(appId, summary, daily) {
-  await Promise.all([
-    setDoc(doc(db, 'apps', appId, 'counters', 'summary'), summary),
-    ...[...daily].map(([day, counts]) => setDoc(doc(db, 'apps', appId, 'daily', day), counts)),
-  ]);
-}
-
-// countsFromEvents 가 만든 daily Map 을, 그래프가 쓰는 최근 14일 배열 형태로 바꾼다
-function last14Days(dailyMap) {
-  const today = new Date();
-  return Array.from({ length: 14 }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(d.getDate() - (13 - i));
-    const key = d.toISOString().slice(0, 10);
-    const c = dailyMap.get(key);
-    return [key, c?.starts ?? 0, c?.clears ?? 0];
-  });
-}
 
 // counters/summary 는 apps/{appId}/counters/summary 문서 하나뿐이라 읽기 1건으로 끝난다.
 // (범위·보드·난이도를 동시에 좁혀 보는 건 지원하지 않는다 — 그러려면 조합마다 카운터가 따로 필요해서
@@ -276,7 +229,6 @@ async function appBody(appId) {
       <button id="log-refresh">↻ 로그 새로고침</button>
     </div>
     <p class="muted" id="log-count"></p>
-    <p class="muted" id="log-check"></p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>시각</th><th>종류</th>${app.dims.map((d) => `<th>${d.name}</th>`).join('')}<th>상세</th></tr></thead>
@@ -345,45 +297,25 @@ async function appBody(appId) {
     }
   };
 
-  // 로그: 원본 이벤트를 전부 읽는다. 기록이 많아지면 이 버튼만 비용이 든다.
-  // 읽은 김에 그 이벤트로 카운터를 다시 계산해서 counters/summary·daily/* 를 덮어쓴다 (검산이 아니라 바로 고친다).
+  // 로그: 오늘(이 기기 시간 기준 0시부터) 기록만 읽는다. 쌓인 기록이 많아져도 읽기 비용은 오늘 판 수만큼이다.
   const loadLog = async () => {
     document.getElementById('log-count').textContent = '불러오는 중...';
-    document.getElementById('log-check').textContent = '';
     try {
-      const snap = await getDocs(collection(db, 'apps', appId, 'events'));
-      const events = snap.docs.map((d) => d.data());
-      const { count, rows } = logRowsHtml(app, events);
+      const midnight = new Date();
+      midnight.setHours(0, 0, 0, 0);
+      const snap = await getDocs(query(collection(db, 'apps', appId, 'events'), where('ts', '>=', midnight)));
+      const { count, rows } = logRowsHtml(app, snap.docs.map((d) => d.data()));
       document.getElementById('log-body').innerHTML = rows;
-      document.getElementById('log-count').textContent = `전체 ${count}건${count > 200 ? ' (최근 200건 표시)' : ''} · ${new Date().toLocaleTimeString('ko-KR')} 기준`;
-
-      const checkEl = document.getElementById('log-check');
-      checkEl.textContent = '카운터 갱신 중...';
-      checkEl.className = 'muted';
-      const { summary: fresh, daily: dailyMap } = countsFromEvents(app, events);
-      await syncCounters(appId, fresh, dailyMap);
-
-      // 방금 로그에서 다시 센 값으로 통계 화면도 그 자리에서 갱신한다 (다시 읽을 필요 없이)
-      summary = fresh;
-      renderStatCards();
-      renderLeaderboard();
-      daily = last14Days(dailyMap);
-      renderChart();
-      document.getElementById('stats-updated').textContent = `${new Date().toLocaleTimeString('ko-KR')} 기준 (로그로 갱신됨)`;
-
-      checkEl.textContent = `카운터 갱신 완료 ✓ (${count}건 반영)`;
-      checkEl.className = 'muted ok';
+      document.getElementById('log-count').textContent = `오늘 ${count}건${count > 200 ? ' (최근 200건 표시)' : ''} · ${new Date().toLocaleTimeString('ko-KR')} 기준`;
     } catch (e) {
       document.getElementById('log-count').textContent = `로그 불러오기 실패: ${e.message}`;
-      document.getElementById('log-check').textContent = `카운터 갱신 실패: ${e.message}`;
-      document.getElementById('log-check').className = 'muted bad';
     }
   };
 
   document.getElementById('stats-refresh').onclick = loadStats;
   document.getElementById('log-refresh').onclick = loadLog;
   loadStats();
-  // 로그는 접속 시 자동으로 읽지 않는다. '로그 새로고침'을 눌러야 그때 전체를 읽는다 (비용이 드는 쪽이라 명시적으로).
+  // 로그는 접속 시 자동으로 읽지 않는다. '로그 새로고침'을 눌러야 그때 오늘 기록을 읽는다.
   document.getElementById('log-count').textContent = '아직 안 불러왔어요. 새로고침을 눌러 주세요.';
 }
 
