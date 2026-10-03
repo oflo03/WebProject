@@ -757,6 +757,7 @@ button {
   }
   .stat-label {
     font-size: 10px;
+    white-space: nowrap;
   }
   .stat-value {
     font-size: 14px;

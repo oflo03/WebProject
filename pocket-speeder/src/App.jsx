@@ -21,8 +21,15 @@ const store = {
 };
 
 // Only Android honors orientation lock, and only in fullscreen; elsewhere the portrait overlay covers it.
-function lockLandscape() {
+// Easy has three columns and fits a portrait phone, so it frees the orientation instead.
+function lockLandscape(mode) {
   if (!matchMedia('(pointer: coarse)').matches) return;
+  if (mode === 'easy') {
+    try {
+      screen.orientation?.unlock?.();
+    } catch {}
+    return;
+  }
   const el = document.documentElement;
   Promise.resolve(
     document.fullscreenElement ||
@@ -79,7 +86,7 @@ export default function App() {
         store.set('mode', m);
       }}
       onStart={() => {
-        lockLandscape();
+        lockLandscape(mode);
         setGame(1);
       }}
     />

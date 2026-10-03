@@ -396,15 +396,17 @@ export default function Game({ mode, hints = 'boss', lang, onMenu, onNew }) {
         )}
       </div>
 
-      <div className="rotate" role="alert">
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <rect x="22" y="8" width="20" height="36" rx="4" />
-          <rect x="14" y="30" width="36" height="20" rx="4" className="to" />
-          <path d="M50 18a14 14 0 0 1 4 12" />
-          <path d="m51 26 3 4 3-4" />
-        </svg>
-        <p>{t.rotate}</p>
-      </div>
+      {mode !== 'easy' && (
+        <div className="rotate" role="alert">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="22" y="8" width="20" height="36" rx="4" />
+            <rect x="14" y="30" width="36" height="20" rx="4" className="to" />
+            <path d="M50 18a14 14 0 0 1 4 12" />
+            <path d="m51 26 3 4 3-4" />
+          </svg>
+          <p>{t.rotate}</p>
+        </div>
+      )}
 
       {isWon && (
         <div className="win" ref={winRef}>
