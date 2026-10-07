@@ -33,7 +33,7 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // 스피더 포르세우스(힌트 없음) 클리어 랭킹. 난이도별로 따로, 추가만 되고 고칠 수 없다.
+    // 스피더 포악귀(힌트 없음) 클리어 랭킹. 난이도별로 따로, 추가만 되고 고칠 수 없다.
     match /apps/{appId}/rankings/{mode}/entries/{entryId} {
       allow read: if true;
       allow update, delete: if false;

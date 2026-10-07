@@ -20,7 +20,7 @@ const db = getFirestore(initializeApp(firebaseConfig));
 // dims: 이벤트 필드(field) -> counters/summary 필드 이름 `${prefix}_${값}_starts|clears`. 필터·순위·로그 열이 이걸로 만들어진다.
 const BOARDS = { pentagon: '오각형', hexagon: '육각형', square: '사각형' };
 const SPEEDER_DIFFS = { easy: '쉬움', normal: '보통', hard: '어려움' };
-const SPEEDER_HINTS = { rookie: '포린이', fan: '포덕후', boss: '포대장', legend: '포르세우스' };
+const SPEEDER_HINTS = { rookie: '포린이', fan: '포잘알', boss: '포덕후', legend: '포악귀' };
 const APPS = [
   {
     id: 'kinship',
