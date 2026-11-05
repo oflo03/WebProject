@@ -1,8 +1,74 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "pocket-kinship", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "pocket-kinship", "run", "dev", "--", "--port", "5173", "--strictPort"], "port": 5173 },
-    { "name": "pocket-speeder", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "pocket-speeder", "run", "dev", "--", "--port", "5175", "--strictPort"], "port": 5175 },
-    { "name": "app-stats-hub", "runtimeExecutable": "python", "runtimeArgs": ["-m", "http.server", "5176", "--directory", "app-stats-hub/public"], "port": 5176 }
+    {
+      "name": "pocket-kinship",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "pocket-puzzle/pocket-kinship",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "pocket-speeder",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "pocket-puzzle/pocket-speeder",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5175",
+        "--strictPort"
+      ],
+      "port": 5175
+    },
+    {
+      "name": "app-stats-hub",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5176",
+        "--directory",
+        "app-stats-hub/public"
+      ],
+      "port": 5176
+    },
+    {
+      "name": "pocket-diver",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "pocket-diver",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5177",
+        "--strictPort"
+      ],
+      "port": 5177
+    },
+    {
+      "name": "scratch",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5178",
+        "--directory",
+        "C:/Users/oFlo/AppData/Local/Temp/claude/ab9f328046d38773/0d882c0c-ebe0-4ec8-aefb-4d9bb7cd03e2/scratchpad"
+      ],
+      "port": 5178
+    }
   ]
 }
